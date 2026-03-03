@@ -34,6 +34,7 @@ npm run dev
 ## Core docs
 - `PLAN.md` — build sequence
 - `DEPLOYMENT_STEPS.md` — setup + deploy notes
+- `docs/DEPLOY_OWNERSHIP.md` — canonical Vercel ownership/scope + recovery steps
 - `SECURITY.md` — security baseline
 - `supabase/migrations/*` — production DB schema + RLS
 

@@ -43,13 +43,26 @@ Ship web-first MVP using:
 ## 5) Vercel deploy
 1. Import repo into Vercel
 2. Set root directory:
-   - `queencity-soundboard/apps/web`
-3. Add environment variables:
+   - `apps/web` (project setting may display as `queencity-soundboard/apps/web`)
+3. Confirm framework preset is `nextjs`
+4. Add environment variables:
    - `NEXT_PUBLIC_SITE_URL`
    - `NEXT_PUBLIC_SUPABASE_URL`
    - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
    - `NEXT_PUBLIC_TICKETING_WIDGET_URL`
-4. Deploy and verify preview URL
+5. Deploy and verify preview URL
+
+### 5a) Access/Scope sanity check (prevents most Vercel confusion)
+Run:
+```bash
+npx -y vercel whoami
+npx -y vercel project ls --scope 0xwaya-projects
+npx -y vercel project inspect queencity-soundboard --scope 0xwaya-projects
+```
+Expected:
+- project exists under `0xwaya-projects`
+- `Root Directory: apps/web`
+- `Framework Preset: nextjs`
 
 ## 6) Domain cutover (GoDaddy -> Vercel)
 DNS records:
