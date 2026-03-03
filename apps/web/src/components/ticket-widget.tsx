@@ -3,29 +3,12 @@
 type Props = {
   eventTitle: string;
   eventTicketUrl?: string | null;
-  eventbriteEventId?: string | null;
 };
 
-function getProviderCheckoutUrl(
-  provider: string,
-  globalWidgetUrl: string | undefined,
-  eventTicketUrl?: string | null,
-  eventbriteEventId?: string | null,
-) {
-  if (eventTicketUrl) return eventTicketUrl;
-
-  if (provider === "eventbrite" && eventbriteEventId) {
-    return `https://www.eventbrite.com/e/${eventbriteEventId}`;
-  }
-
-  return globalWidgetUrl;
-}
-
-export default function TicketWidget({ eventTitle, eventTicketUrl, eventbriteEventId }: Props) {
-  const provider = process.env.NEXT_PUBLIC_TICKETING_PROVIDER ?? "tickettailor";
+export default function TicketWidget({ eventTitle, eventTicketUrl }: Props) {
+  const provider = "tickettailor";
   const widgetUrl = process.env.NEXT_PUBLIC_TICKETING_WIDGET_URL;
-
-  const checkoutUrl = getProviderCheckoutUrl(provider, widgetUrl, eventTicketUrl, eventbriteEventId);
+  const checkoutUrl = eventTicketUrl || widgetUrl;
 
   return (
     <section className="rounded-xl border border-white/10 bg-[#0c142a] p-4">

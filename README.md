@@ -33,7 +33,7 @@ npm run dev
 
 ## Core docs
 - `PLAN.md` — build sequence
-- `WEBAPP_SETUP.md` — setup + deploy notes
+- `DEPLOYMENT_STEPS.md` — setup + deploy notes
 - `SECURITY.md` — security baseline
 - `supabase/migrations/*` — production DB schema + RLS
 

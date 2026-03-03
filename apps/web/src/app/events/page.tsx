@@ -36,11 +36,7 @@ export default async function EventsPage() {
               ) : null}
               <p className="text-sm text-slate-400">{event.artist_name}</p>
               {event.description ? <p className="text-sm text-slate-300">{event.description}</p> : null}
-              <TicketWidget
-                eventTitle={event.title}
-                eventTicketUrl={event.ticket_url}
-                eventbriteEventId={event.eventbrite_event_id}
-              />
+              <TicketWidget eventTitle={event.title} eventTicketUrl={event.ticket_url} />
             </article>
           ))}
         </div>

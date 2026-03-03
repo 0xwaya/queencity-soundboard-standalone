@@ -6,7 +6,7 @@ export async function getPublishedEvents(): Promise<EventItem[]> {
     const { data, error } = await supabase
       .from("events")
       .select(
-        "id,title,artist_name,description,hero_image_url,event_date,status,venue_id,ticket_url,eventbrite_event_id,venues(id,name,city,state)",
+        "id,title,artist_name,description,hero_image_url,event_date,status,venue_id,ticket_url,venues(id,name,city,state)",
       )
       .eq("status", "published")
       .order("event_date", { ascending: true });

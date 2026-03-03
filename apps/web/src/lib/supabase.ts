@@ -30,7 +30,6 @@ export type EventItem = {
   status: "draft" | "published" | "archived";
   venue_id: string | null;
   ticket_url?: string | null;
-  eventbrite_event_id?: string | null;
   venues?: Venue | null;
 };
 
