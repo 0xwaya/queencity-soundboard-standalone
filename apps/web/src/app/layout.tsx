@@ -14,7 +14,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="bg-neutral-50 text-neutral-900 antialiased">
+      <body className="bg-[#07090f] text-slate-100 antialiased">
         <Header />
         <main className="mx-auto max-w-6xl px-4 py-10">{children}</main>
       </body>
