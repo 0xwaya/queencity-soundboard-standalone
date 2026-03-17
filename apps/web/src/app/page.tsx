@@ -80,9 +80,11 @@ export default function Home() {
 
         <article className="rounded-2xl border border-white/10 bg-[#0b1228] p-5">
           <p className="text-[11px] font-bold uppercase tracking-wider text-cyan-300/80">Upcoming</p>
-          <h3 className="mt-2 text-xl font-bold tracking-tight text-slate-100">Latin Acoustic Sessions</h3>
-          <p className="mt-1 text-sm text-slate-400">Madison Theater • Apr 05 • 7:30 PM</p>
-          <p className="mt-3 text-sm text-slate-300">Intimate performances with a boutique fan experience and limited seating.</p>
+          <h3 className="mt-2 text-xl font-bold tracking-tight text-slate-100">Latin Acoustic Series</h3>
+          <p className="mt-1 text-sm text-slate-400">Madison Theater • Apr–Aug 2026</p>
+          <p className="mt-3 text-sm text-slate-300">
+            Five months of intimate, stripped‑down sets—limited seats, candlelit vibes, and surprise guest moments.
+          </p>
           <div className="mt-4 rounded-xl border border-white/10 bg-[#0e1732] p-3">
             <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-400">Limited Availability</p>
             <Link href="/events" className="mt-2 inline-flex rounded-md border border-white/20 bg-white/5 px-3 py-2 text-xs font-semibold text-slate-100 hover:bg-white/10">
