@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   title: "QueenCity Soundboard",
   description: "Live events, tickets, and merch.",
   icons: {
-    icon: "/qcs-crown.svg",
+    icon: "/qcs-crown.png",
   },
 };
 
