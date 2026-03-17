@@ -57,6 +57,43 @@ export default function Home() {
           </div>
         </article>
       </section>
+
+      <section className="rounded-3xl border border-white/10 bg-gradient-to-r from-[#0b1228] via-[#0c1634] to-[#101b3a] p-6 md:p-8">
+        <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+          <div>
+            <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-cyan-300/80">Contact Us</p>
+            <h2 className="mt-2 text-2xl font-extrabold tracking-tight text-white md:text-3xl">Let’s build your next sold-out night.</h2>
+            <p className="mt-3 max-w-2xl text-sm text-slate-300">
+              Book talent, secure the venue, or collaborate on branded drops. Our event team responds fast and keeps the flow seamless.
+            </p>
+          </div>
+          <div className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-[#0b1024]/70 p-4">
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">Direct line</p>
+              <a
+                className="mt-1 inline-flex text-base font-semibold text-white hover:text-cyan-200"
+                href="mailto:event@queencitysoundboard.com"
+              >
+                event@queencitysoundboard.com
+              </a>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <a
+                className="inline-flex items-center justify-center rounded-lg bg-cyan-500 px-4 py-2 text-xs font-semibold text-[#050816] hover:bg-cyan-400"
+                href="mailto:event@queencitysoundboard.com?subject=Event%20Inquiry"
+              >
+                Start an inquiry
+              </a>
+              <Link
+                href="/events"
+                className="inline-flex items-center justify-center rounded-lg border border-white/15 bg-white/5 px-4 py-2 text-xs font-semibold text-slate-100 hover:bg-white/10"
+              >
+                Browse events
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
