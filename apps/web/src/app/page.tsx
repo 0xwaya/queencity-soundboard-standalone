@@ -9,7 +9,7 @@ export default function Home() {
           Live culture. Seamless tickets. Sold-out nights.
         </h1>
         <p className="mt-4 max-w-2xl text-sm leading-6 text-slate-300 md:text-base">
-          QueenCity Soundboard connects Venezuelan artists and Midwest audiences through premium event
+          QueenCity Soundboard connects Latin American artists and Midwest audiences through premium event
           experiences with a mobile-first ticket flow.
         </p>
 
