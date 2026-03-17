@@ -13,8 +13,25 @@ export default async function EventsPage() {
       </div>
 
       {events.length === 0 ? (
-        <div className="rounded-2xl border border-white/10 bg-[#0b1228] p-6">
-          <p className="text-slate-300">No published events yet. Add and publish from admin.</p>
+        <div className="grid gap-5 md:grid-cols-2">
+          <article className="space-y-4 rounded-2xl border border-white/10 bg-[#0b1228] p-5">
+            <div className="flex items-start justify-between gap-3">
+              <h2 className="text-xl font-bold tracking-tight text-slate-100">Caracas Unplugged: After Dark Sessions</h2>
+              <span className="rounded-full border border-white/20 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-300">
+                Mock Event
+              </span>
+            </div>
+            <p className="text-sm text-slate-300">May 16 • 8:00 PM</p>
+            <p className="text-sm text-slate-400">Madison Theater • Covington, KY</p>
+            <p className="text-sm text-slate-300">
+              Intimate acoustic sets, warm storytelling, and a close-up fan experience.
+            </p>
+            <TicketWidget eventTitle="Caracas Unplugged: After Dark Sessions" />
+          </article>
+          <div className="rounded-2xl border border-dashed border-white/10 bg-[#0b1228] p-6 text-sm text-slate-300">
+            Publish events in Supabase to replace this mock card. Ticket CTA uses
+            <code className="mx-1 rounded bg-white/10 px-1">NEXT_PUBLIC_TICKETING_WIDGET_URL</code> when set.
+          </div>
         </div>
       ) : (
         <div className="grid gap-5 md:grid-cols-2">
