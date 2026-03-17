@@ -5,6 +5,9 @@ import Header from "@/components/header";
 export const metadata: Metadata = {
   title: "QueenCity Soundboard",
   description: "Live events, tickets, and merch.",
+  icons: {
+    icon: "/qcs-crown.svg",
+  },
 };
 
 export default function RootLayout({
