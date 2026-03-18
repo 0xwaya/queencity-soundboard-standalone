@@ -75,7 +75,7 @@ export default function RootLayout({
 
             <div className="flex flex-wrap items-center gap-4">
               <div className="space-y-1">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Social</p>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Socials</p>
                 <div className="flex items-center gap-3">
                   <a
                     className="rounded-full border border-white/10 bg-white/5 p-2 text-slate-200 transition hover:border-white/30 hover:text-white"
