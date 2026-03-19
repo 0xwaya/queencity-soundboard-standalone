@@ -20,7 +20,16 @@ where title in (
 
 -- Insert seed events (published)
 insert into public.events (title, description, artist_name, hero_image_url, event_date, venue_id, status, ticket_url)
-select * from (
+select
+  seed_events.title,
+  seed_events.description,
+  seed_events.artist_name,
+  seed_events.hero_image_url,
+  seed_events.event_date,
+  v.id,
+  seed_events.status,
+  seed_events.ticket_url
+from (
   values
     (
       'Caracas Unplugged: After Dark Sessions',
@@ -68,7 +77,6 @@ select * from (
       null
     )
 ) as seed_events(title, description, artist_name, hero_image_url, event_date, status, ticket_url)
-join public.venues v on v.name = 'Madison Theater'
-returning 1;
+join public.venues v on v.name = 'Madison Theater';
 
 commit;
