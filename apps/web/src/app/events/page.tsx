@@ -44,6 +44,39 @@ export default async function EventsPage() {
         }
       : null;
 
+  const mockEvents = [
+    {
+      title: "Caracas Unplugged: After Dark Sessions",
+      artist: "Franco De Vita",
+      dateLabel: "May 16 • 8:00 PM",
+      description: "Candlelit storytelling, acoustic classics, and an intimate fan-forward set.",
+    },
+    {
+      title: "Noche Acústica: Leyendas y Velas",
+      artist: "José Feliciano",
+      dateLabel: "May 23 • 8:00 PM",
+      description: "Legendary songs, warm strings, and a velvet-lit night of classics.",
+    },
+    {
+      title: "Bolero Nights: After Dark Sessions",
+      artist: "Rudy La Escala",
+      dateLabel: "May 30 • 8:00 PM",
+      description: "Romantic boleros, slow-burn grooves, and a close-up theater experience.",
+    },
+    {
+      title: "Alma Acústica: Intimate Sessions",
+      artist: "Elena Rose",
+      dateLabel: "June 6 • 8:00 PM",
+      description: "Soulful, stripped-down sets with candlelight and premium sound.",
+    },
+    {
+      title: "Merenhouse Unplugged: After Dark Energy Session",
+      artist: "Proyecto Uno",
+      dateLabel: "June 27 • 8:00 PM",
+      description: "Merengue + house crossover energy with an acoustic twist.",
+    },
+  ];
+
   return (
     <>
       {jsonLd ? (
@@ -62,22 +95,23 @@ export default async function EventsPage() {
 
       {events.length === 0 ? (
         <div className="grid gap-5 md:grid-cols-2">
-          <article className="space-y-4 rounded-2xl border border-white/10 bg-[#0b1228] p-5">
-            <div className="flex items-start justify-between gap-3">
-              <h2 className="text-xl font-bold tracking-tight text-slate-100">Caracas Unplugged: After Dark Sessions</h2>
-              <span className="rounded-full border border-white/20 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-300">
-                Mock Event
-              </span>
-            </div>
-            <p className="text-sm text-slate-300">May 16 • 8:00 PM</p>
-            <p className="text-sm text-slate-400">Madison Theater • Covington, KY</p>
-            <p className="text-sm text-slate-300">
-              Intimate acoustic sets, warm storytelling, and a close-up fan experience.
-            </p>
-            <TicketWidget eventTitle="Caracas Unplugged: After Dark Sessions" />
-          </article>
+          {mockEvents.map((event) => (
+            <article key={event.title} className="space-y-4 rounded-2xl border border-white/10 bg-[#0b1228] p-5">
+              <div className="flex items-start justify-between gap-3">
+                <h2 className="text-xl font-bold tracking-tight text-slate-100">{event.title}</h2>
+                <span className="rounded-full border border-white/20 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-300">
+                  Mock Event
+                </span>
+              </div>
+              <p className="text-sm text-slate-300">{event.dateLabel}</p>
+              <p className="text-sm text-slate-400">Madison Theater • Covington, KY</p>
+              <p className="text-sm text-slate-400">{event.artist}</p>
+              <p className="text-sm text-slate-300">{event.description}</p>
+              <TicketWidget eventTitle={event.title} />
+            </article>
+          ))}
           <div className="rounded-2xl border border-dashed border-white/10 bg-[#0b1228] p-6 text-sm text-slate-300">
-            Publish events in Supabase to replace this mock card. Ticket CTA uses
+            Publish events in Supabase to replace these mock cards. Ticket CTA uses
             <code className="mx-1 rounded bg-white/10 px-1">NEXT_PUBLIC_TICKETING_WIDGET_URL</code> when set.
           </div>
         </div>

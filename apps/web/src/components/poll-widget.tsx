@@ -5,9 +5,10 @@ import { getSupabaseBrowserClient } from "@/lib/supabase";
 
 const ARTISTS = [
   "Franco De Vita",
-  "Ilan Chester",
-  "Maria Teresa Chacín",
-  "Guillermo Dávila",
+  "José Feliciano",
+  "Rudy La Escala",
+  "Elena Rose",
+  "Proyecto Uno",
 ];
 
 type VoteCounts = Record<string, number>;
