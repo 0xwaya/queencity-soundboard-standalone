@@ -15,7 +15,7 @@ export default function Home() {
         </p>
 
         <div className="mt-7 flex flex-wrap gap-3">
-          <Link href="/events" className="rounded-lg bg-fuchsia-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-fuchsia-400">
+          <Link href="/events" className="qcs-button-3d rounded-lg bg-fuchsia-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-fuchsia-400">
             Explore Events
           </Link>
           <Link
@@ -72,7 +72,7 @@ export default function Home() {
             <h2 className="mt-2 text-2xl font-extrabold tracking-tight text-white md:text-3xl">Spotlight nights</h2>
             <p className="mt-2 text-sm text-slate-300">Choose your night and lock in seats fast.</p>
           </div>
-          <Link href="/events" className="inline-flex items-center justify-center rounded-lg bg-fuchsia-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-fuchsia-400">
+          <Link href="/events" className="qcs-button-3d inline-flex items-center justify-center rounded-lg bg-fuchsia-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-fuchsia-400">
             View all events
           </Link>
         </div>
@@ -86,7 +86,7 @@ export default function Home() {
               <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-cyan-300/80">Featured</p>
               <h3 className="mt-2 text-lg font-bold text-white">{item.title}</h3>
               <p className="mt-1 text-sm text-slate-300">{item.meta}</p>
-              <Link href="/events" className="mt-4 inline-flex rounded-md bg-fuchsia-500 px-3 py-2 text-xs font-semibold text-white hover:bg-fuchsia-400">
+              <Link href="/events" className="qcs-button-3d mt-4 inline-flex rounded-md bg-fuchsia-500 px-3 py-2 text-xs font-semibold text-white hover:bg-fuchsia-400">
                 Buy Tickets
               </Link>
             </article>
@@ -117,7 +117,7 @@ export default function Home() {
             </div>
             <div className="flex flex-wrap gap-2">
               <a
-                className="inline-flex items-center justify-center rounded-lg bg-cyan-500 px-4 py-2 text-xs font-semibold text-[#050816] hover:bg-cyan-400"
+                className="qcs-button-3d inline-flex items-center justify-center rounded-lg bg-cyan-500 px-4 py-2 text-xs font-semibold text-[#050816] hover:bg-cyan-400"
                 href="mailto:event@queencitysoundboard.com?subject=Event%20Inquiry"
               >
                 Start an inquiry

@@ -25,7 +25,7 @@ export default function TicketWidget({ eventTitle, eventTicketUrl }: Props) {
             href={checkoutUrl}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex w-full items-center justify-center rounded-lg bg-fuchsia-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-fuchsia-400"
+            className="qcs-button-3d inline-flex w-full items-center justify-center rounded-lg bg-fuchsia-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-fuchsia-400"
           >
             Buy Tickets
           </a>
