@@ -2,15 +2,27 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import type { Locale } from "@/lib/i18n";
 
-const nav = [
-  { href: "/events", label: "Events" },
-  { href: "/merch", label: "Merch" },
-  { href: "/about", label: "About" },
-];
+type HeaderProps = {
+  locale: Locale;
+};
 
-export default function Header() {
+export default function Header({ locale }: HeaderProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
+  const nav = [
+    { href: "/events", label: locale === "es-ve" ? "Eventos" : "Events" },
+    { href: "/merch", label: locale === "es-ve" ? "Merch" : "Merch" },
+    { href: "/about", label: locale === "es-ve" ? "Nosotros" : "About" },
+  ];
+
+  const toggleLocale = () => {
+    const next = locale === "es-ve" ? "en" : "es-ve";
+    document.cookie = `qcs_locale=${next}; path=/; max-age=31536000`;
+    router.refresh();
+  };
 
   return (
     <header className="sticky top-0 z-20 border-b border-white/10 bg-[#0b1020]/85 backdrop-blur">
@@ -40,20 +52,39 @@ export default function Header() {
               {item.label}
             </Link>
           ))}
+          <button
+            type="button"
+            onClick={toggleLocale}
+            className="flex items-center gap-2 rounded-full border border-white/10 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-200 transition hover:border-white/30 hover:bg-white/10"
+            aria-label={locale === "es-ve" ? "Switch to English" : "Cambiar a español de Venezuela"}
+          >
+            <span className="text-base">🇻🇪</span>
+            <span>{locale === "es-ve" ? "EN" : "ES"}</span>
+          </button>
         </nav>
 
-        <button
-          type="button"
-          className="inline-flex items-center justify-center rounded-md border border-white/10 p-2 text-slate-300 transition hover:border-white/30 hover:bg-white/10 hover:text-white md:hidden"
-          aria-label="Toggle navigation"
-          aria-expanded={isOpen}
-          aria-controls="mobile-menu"
-          onClick={() => setIsOpen((prev) => !prev)}
-        >
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={toggleLocale}
+            className="inline-flex items-center justify-center rounded-md border border-white/10 px-2 py-1 text-xs font-semibold text-slate-200 transition hover:border-white/30 hover:bg-white/10 md:hidden"
+            aria-label={locale === "es-ve" ? "Switch to English" : "Cambiar a español de Venezuela"}
+          >
+            🇻🇪
+          </button>
+          <button
+            type="button"
+            className="inline-flex items-center justify-center rounded-md border border-white/10 p-2 text-slate-300 transition hover:border-white/30 hover:bg-white/10 hover:text-white md:hidden"
+            aria-label="Toggle navigation"
+            aria-expanded={isOpen}
+            aria-controls="mobile-menu"
+            onClick={() => setIsOpen((prev) => !prev)}
+          >
           <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
             {isOpen ? <path d="M6 18L18 6M6 6l12 12" /> : <path d="M3 6h18M3 12h18M3 18h18" />}
           </svg>
-        </button>
+          </button>
+        </div>
       </div>
 
       <nav

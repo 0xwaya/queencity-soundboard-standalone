@@ -1,4 +1,5 @@
 import { getActiveMerch } from "@/lib/data";
+import { getLocale } from "@/lib/i18n";
 
 const formatPrice = (cents: number) =>
   new Intl.NumberFormat("en-US", {
@@ -8,19 +9,34 @@ const formatPrice = (cents: number) =>
 
 export default async function MerchPage() {
   const merch = await getActiveMerch();
+  const locale = getLocale();
+  const t =
+    locale === "es-ve"
+      ? {
+          eyebrow: "Merch de la casa",
+          title: "Merch",
+          subtitle: "Drops limitados conectados a noches y momentos de artistas.",
+          empty: "El merch viene pronto. El primer drop se anuncia en el canal de eventos.",
+          stock: "en stock",
+        }
+      : {
+          eyebrow: "Fan gear",
+          title: "Merch",
+          subtitle: "Limited-run drops tied to event nights and artist moments.",
+          empty: "Merch is coming soon. First drop will be announced in the events channel.",
+          stock: "in stock",
+        };
 
   return (
     <div className="space-y-6">
       <section className="rounded-3xl border border-white/10 bg-gradient-to-br from-[#0f1630] via-[#0b1228] to-[#070b17] p-6 md:p-8">
-        <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-fuchsia-300/80">Fan gear</p>
-        <h1 className="mt-2 text-3xl font-extrabold tracking-tight text-slate-100 md:text-4xl">Merch</h1>
-        <p className="mt-2 text-sm text-slate-300">Limited-run drops tied to event nights and artist moments.</p>
+        <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-fuchsia-300/80">{t.eyebrow}</p>
+        <h1 className="mt-2 text-3xl font-extrabold tracking-tight text-slate-100 md:text-4xl">{t.title}</h1>
+        <p className="mt-2 text-sm text-slate-300">{t.subtitle}</p>
       </section>
 
       {merch.length === 0 ? (
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-6 text-slate-300">
-          Merch is coming soon. First drop will be announced in the events channel.
-        </div>
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-6 text-slate-300">{t.empty}</div>
       ) : (
         <section className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {merch.map((item) => (
@@ -29,7 +45,9 @@ export default async function MerchPage() {
               {item.description ? <p className="mt-2 text-sm text-slate-300">{item.description}</p> : null}
               <div className="mt-4 flex items-center justify-between">
                 <p className="text-base font-semibold text-fuchsia-300">{formatPrice(item.price_cents)}</p>
-                <p className="text-xs text-slate-400">{item.inventory_count} in stock</p>
+                <p className="text-xs text-slate-400">
+                  {item.inventory_count} {t.stock}
+                </p>
               </div>
             </article>
           ))}

@@ -5,9 +5,14 @@ import Link from "next/link";
 
 type Props = {
   view: "spotlight" | "compact";
+  labels?: {
+    spotlight: string;
+    compact: string;
+  };
 };
 
-export default function EventsViewToggle({ view }: Props) {
+export default function EventsViewToggle({ view, labels }: Props) {
+  const copy = labels ?? { spotlight: "Spotlight", compact: "Compact" };
   return (
     <div className="ml-auto flex items-center gap-2">
       <Link
@@ -19,7 +24,7 @@ export default function EventsViewToggle({ view }: Props) {
             : "border-white/10 bg-white/5 text-slate-300 hover:border-white/30"
         }`}
       >
-        Spotlight
+        {copy.spotlight}
       </Link>
       <Link
         href="/events?view=compact"
@@ -30,7 +35,7 @@ export default function EventsViewToggle({ view }: Props) {
             : "border-white/10 bg-white/5 text-slate-300 hover:border-white/30"
         }`}
       >
-        Compact
+        {copy.compact}
       </Link>
     </div>
   );

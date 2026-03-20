@@ -1,6 +1,7 @@
 import EventsViewToggle from "@/components/events-view-toggle";
 import TicketWidget from "@/components/ticket-widget";
 import { getPublishedEvents } from "@/lib/data";
+import { getLocale } from "@/lib/i18n";
 
 type EventsPageProps = {
   searchParams?: { view?: string };
@@ -9,6 +10,45 @@ type EventsPageProps = {
 export default async function EventsPage({ searchParams }: EventsPageProps) {
   const view = searchParams?.view === "compact" ? "compact" : "spotlight";
   const events = await getPublishedEvents();
+  const locale = getLocale();
+  const t =
+    locale === "es-ve"
+      ? {
+          eyebrow: "Lineup en vivo",
+          title: "After Dark Sessions",
+          subtitle: "Artistas latinos en spotlight. Sonido pro. Compra en segundos.",
+          seriesLabel: "Foco de la serie",
+          seriesTitle: "Madison Theater • Covington, KY",
+          seriesMeta: "Puertas 7:00 PM • Show 8:00 PM",
+          tags: ["Todo", "After Dark", "Acústico", "Latino", "VIP"],
+          featured: "Destacado",
+          mock: "Evento demo",
+          live: "En vivo",
+          artist: "Artista",
+          venue: "Madison Theater • Covington, KY",
+          publishHint:
+            "Publica eventos en Supabase para reemplazar estas tarjetas demo. El CTA usa NEXT_PUBLIC_TICKETING_WIDGET_URL cuando esté listo.",
+          spotlight: "Destacado",
+          compact: "Compacto",
+        }
+      : {
+          eyebrow: "Live lineup",
+          title: "After Dark Sessions",
+          subtitle: "Spotlighted Latin artists. Premium sound. Seamless checkout. Secure your seat in seconds.",
+          seriesLabel: "Series Focus",
+          seriesTitle: "Madison Theater • Covington, KY",
+          seriesMeta: "Doors 7:00 PM • Showtime 8:00 PM",
+          tags: ["All", "After Dark", "Acoustic", "Latin", "VIP"],
+          featured: "Featured",
+          mock: "Mock Event",
+          live: "Live",
+          artist: "Artist",
+          venue: "Madison Theater • Covington, KY",
+          publishHint:
+            "Publish events in Supabase to replace these mock cards. Ticket CTA uses NEXT_PUBLIC_TICKETING_WIDGET_URL when set.",
+          spotlight: "Spotlight",
+          compact: "Compact",
+        };
   const jsonLd =
     events.length > 0
       ? {
@@ -90,22 +130,20 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
       <section className="rounded-3xl border border-white/10 bg-gradient-to-br from-[#0f1630] via-[#0b1228] to-[#070b17] p-7 md:p-11">
         <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
           <div>
-            <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-cyan-300/80">Live lineup</p>
+            <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-cyan-300/80">{t.eyebrow}</p>
             <h1 className="mt-3 text-3xl font-extrabold tracking-tight text-slate-100 md:text-5xl">
-              After Dark Sessions
+              {t.title}
             </h1>
-            <p className="mt-2 max-w-2xl text-sm text-slate-300 md:text-base">
-              Spotlighted Latin artists. Premium sound. Seamless checkout. Secure your seat in seconds.
-            </p>
+            <p className="mt-2 max-w-2xl text-sm text-slate-300 md:text-base">{t.subtitle}</p>
           </div>
           <div className="rounded-2xl border border-white/10 bg-[#0e1732] px-5 py-4 text-sm text-slate-300">
-            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-fuchsia-300/80">Series Focus</p>
-            <p className="mt-2 text-base font-semibold text-white">Madison Theater • Covington, KY</p>
-            <p className="mt-1 text-xs text-slate-400">Doors 7:00 PM • Showtime 8:00 PM</p>
+            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-fuchsia-300/80">{t.seriesLabel}</p>
+            <p className="mt-2 text-base font-semibold text-white">{t.seriesTitle}</p>
+            <p className="mt-1 text-xs text-slate-400">{t.seriesMeta}</p>
           </div>
         </div>
         <div className="mt-6 flex flex-wrap items-center gap-2">
-          {['All', 'After Dark', 'Acoustic', 'Latin', 'VIP'].map((label) => (
+          {t.tags.map((label) => (
             <span
               key={label}
               className="rounded-full border border-fuchsia-400/30 bg-fuchsia-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-fuchsia-200"
@@ -113,7 +151,7 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
               {label}
             </span>
           ))}
-          <EventsViewToggle view={view} />
+          <EventsViewToggle view={view} labels={{ spotlight: t.spotlight, compact: t.compact }} />
         </div>
       </section>
 
@@ -137,23 +175,23 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
                       featured ? "border-fuchsia-300/60 text-fuchsia-200" : "border-white/20 text-slate-300"
                     }`}
                   >
-                    {featured ? "Featured" : "Mock Event"}
+                    {featured ? t.featured : t.mock}
                   </span>
                 </div>
                 <p className="text-sm text-slate-300">{event.dateLabel}</p>
-                <p className="text-sm text-slate-400">Madison Theater • Covington, KY</p>
+                <p className="text-sm text-slate-400">{t.venue}</p>
                 <div className="inline-flex items-center gap-2 rounded-full border border-fuchsia-400/40 bg-fuchsia-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-fuchsia-200">
-                  <span className="text-[10px] font-bold text-fuchsia-300/80">Artist</span>
+                  <span className="text-[10px] font-bold text-fuchsia-300/80">{t.artist}</span>
                   <span className="text-sm font-semibold normal-case tracking-normal text-white">{event.artist}</span>
                 </div>
                 <p className="text-sm text-slate-300">{event.description}</p>
-                <TicketWidget eventTitle={event.title} />
+                <TicketWidget eventTitle={event.title} locale={locale} />
               </article>
             );
           })}
           <div className="rounded-2xl border border-dashed border-white/10 bg-[#0b1228] p-6 text-sm text-slate-300">
-            Publish events in Supabase to replace these mock cards. Ticket CTA uses
-            <code className="mx-1 rounded bg-white/10 px-1">NEXT_PUBLIC_TICKETING_WIDGET_URL</code> when set.
+            {t.publishHint}
+            <code className="mx-1 rounded bg-white/10 px-1">NEXT_PUBLIC_TICKETING_WIDGET_URL</code>.
           </div>
         </div>
       ) : (
@@ -176,7 +214,7 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
                     featured ? "border-fuchsia-300/60 text-fuchsia-200" : "border-white/20 text-slate-300"
                   }`}
                 >
-                  {featured ? "Featured" : "Live"}
+                  {featured ? t.featured : t.live}
                 </span>
               </div>
 
@@ -189,12 +227,12 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
               ) : null}
               {event.artist_name ? (
                 <div className="inline-flex items-center gap-2 rounded-full border border-fuchsia-400/40 bg-fuchsia-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-fuchsia-200">
-                  <span className="text-[10px] font-bold text-fuchsia-300/80">Artist</span>
+                  <span className="text-[10px] font-bold text-fuchsia-300/80">{t.artist}</span>
                   <span className="text-sm font-semibold normal-case tracking-normal text-white">{event.artist_name}</span>
                 </div>
               ) : null}
               {event.description ? <p className="text-sm text-slate-300">{event.description}</p> : null}
-              <TicketWidget eventTitle={event.title} eventTicketUrl={event.ticket_url} />
+              <TicketWidget eventTitle={event.title} eventTicketUrl={event.ticket_url} locale={locale} />
             </article>
           );
           })}

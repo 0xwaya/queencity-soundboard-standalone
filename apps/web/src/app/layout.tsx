@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import Header from "@/components/header";
+import { getLocale } from "@/lib/i18n";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://queencitysoundboard.com"),
@@ -60,19 +61,29 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = getLocale();
+  const footerTagline =
+    locale === "es-ve"
+      ? "Noches con cultura. Boletos listos. Full nivel."
+      : "Culture-forward nights. Ticketed. Elevated.";
+  const footerCredit =
+    locale === "es-ve"
+      ? "Construido por"
+      : "Built by";
+
   return (
-    <html lang="en">
+    <html lang={locale === "es-ve" ? "es" : "en"}>
       <body className="bg-[#07090f] text-slate-100 antialiased">
-        <Header />
+        <Header locale={locale} />
         <main className="mx-auto max-w-6xl px-4 py-10">{children}</main>
         <Analytics />
         <footer className="border-t border-white/10 bg-[#0b1020]">
           <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-8 text-xs text-slate-400 md:flex-row md:items-center md:justify-between">
             <div className="space-y-1">
               <p className="text-sm font-semibold text-slate-100">QueenCity Soundboard</p>
-              <p className="truncate text-xs text-slate-400 max-w-xs sm:max-w-none">Culture-forward nights. Ticketed. Elevated.</p>
+              <p className="truncate text-xs text-slate-400 max-w-xs sm:max-w-none">{footerTagline}</p>
               <p className="text-[11px] text-slate-500">
-                © {new Date().getFullYear()} QueenCity Soundboard. Built by {" "}
+                © {new Date().getFullYear()} QueenCity Soundboard. {footerCredit} {" "}
                 <span className="wayalabs-word text-slate-200">wayalabs</span>.
               </p>
             </div>
