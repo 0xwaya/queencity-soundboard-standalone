@@ -82,10 +82,10 @@ export default async function RootLayout({
     <html lang={locale === "es-ve" ? "es" : "en"}>
       <body className={`${bebasNeue.variable} bg-[#07090f] text-slate-100 antialiased`}>
         <Header locale={locale} />
-        <main className="mx-auto max-w-6xl px-4 py-10">{children}</main>
+        <main className="qcs-shell py-10">{children}</main>
         <Analytics />
         <footer className="border-t border-white/10 bg-[#0b1020]">
-          <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-8 text-xs text-slate-400 md:flex-row md:items-center md:justify-between">
+          <div className="qcs-shell flex flex-col gap-4 py-8 text-xs text-slate-400 md:flex-row md:items-center md:justify-between">
             <div className="space-y-1">
               <p className="text-sm font-semibold text-slate-100">QueenCity Soundboard</p>
               <p className="truncate text-xs text-slate-400 max-w-xs sm:max-w-none">{footerTagline}</p>

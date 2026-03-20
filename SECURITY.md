@@ -9,6 +9,7 @@
 - Use Supabase Row Level Security (RLS) on all tables.
 - Restrict write operations to service role/admin paths.
 - Store only required customer data.
+- Keep preference cookies non-sensitive. For locale or UI state cookies, use scoped values only and set `SameSite=Lax`; add `Secure` on HTTPS.
 
 ## Payments
 - Use third-party hosted checkout/widget (Ticket Tailor) for PCI scope reduction.

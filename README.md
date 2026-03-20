@@ -17,6 +17,10 @@ A web-first, mobile-friendly platform for:
 - **Data/Auth/Storage:** Supabase
 - **Ticketing:** Ticket Tailor widget
 
+## Runtime notes
+- Locale switching uses a client-side `qcs_locale` preference cookie only. It stores language choice, not auth or sensitive user data.
+- Next.js 16 route APIs such as `cookies()` and `searchParams` must be handled asynchronously in server components.
+
 ## Why this architecture
 - Fast to ship
 - Low fixed cost

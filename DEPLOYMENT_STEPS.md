@@ -77,11 +77,16 @@ In Vercel project:
 
 ## 7) Launch QA checklist
 - [ ] Home renders properly on mobile + desktop
+- [ ] Header shell aligns with page content on desktop and mobile
+- [ ] Locale toggle switches between `EN`/`ES` and preserves preference after refresh
 - [ ] `/events` lists published events
 - [ ] Ticket button opens Ticket Tailor flow
 - [ ] No secrets exposed in client code
 - [ ] Basic performance sanity (no broken images/console errors)
 - [ ] Domain + HTTPS active
+
+## 9) Framework notes
+- On Next.js 16, server-side `cookies()` and route `searchParams` are async. Treating them synchronously can degrade route performance and break builds.
 
 ## 8) Post-launch day-1 ops
 - Track:

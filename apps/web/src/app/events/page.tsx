@@ -4,13 +4,17 @@ import { getPublishedEvents } from "@/lib/data";
 import { getLocale } from "@/lib/i18n";
 
 type EventsPageProps = {
-  searchParams?: { view?: string };
+  searchParams?: Promise<{ view?: string }>;
 };
 
 export default async function EventsPage({ searchParams }: EventsPageProps) {
-  const view = searchParams?.view === "compact" ? "compact" : "spotlight";
-  const events = await getPublishedEvents();
-  const locale = await getLocale();
+  const [resolvedSearchParams, events, locale] = await Promise.all([
+    searchParams,
+    getPublishedEvents(),
+    getLocale(),
+  ]);
+  const selectedView = resolvedSearchParams?.view;
+  const view = selectedView === "compact" ? "compact" : "spotlight";
   const t =
     locale === "es-ve"
       ? {

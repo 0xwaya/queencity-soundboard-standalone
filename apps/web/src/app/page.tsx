@@ -103,8 +103,8 @@ export default async function Home() {
       </section>
 
       <section className="relative overflow-hidden rounded-3xl border border-white/10 bg-[#0b1228] p-6 md:p-8">
-        <div className="absolute inset-0 bg-[url('/madison3.JPG')] bg-cover bg-[position:50%_70%] opacity-25" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0b1228] via-[#0b1228]/80 to-transparent" />
+        <div className="absolute inset-0 bg-[url('/madison3.JPG')] bg-cover bg-position-[50%_70%] opacity-25" />
+        <div className="absolute inset-0 bg-linear-to-r from-[#0b1228] via-[#0b1228]/80 to-transparent" />
         <div className="relative flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
           <div>
             <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-amber-300/80">{t.venueEyebrow}</p>
@@ -175,7 +175,7 @@ export default async function Home() {
 
       <PollWidget locale={locale} />
 
-      <section className="rounded-3xl border border-white/10 bg-gradient-to-r from-[#0b1228] via-[#0c1634] to-[#101b3a] p-6 md:p-8">
+      <section className="rounded-3xl border border-white/10 bg-linear-to-r from-[#0b1228] via-[#0c1634] to-[#101b3a] p-6 md:p-8">
         <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
           <div>
             <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-cyan-300/80">{t.contactEyebrow}</p>
