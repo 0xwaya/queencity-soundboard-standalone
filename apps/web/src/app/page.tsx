@@ -65,34 +65,33 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="grid gap-4 md:grid-cols-2">
-        <article className="rounded-2xl border border-white/10 bg-[#0b1228] p-5">
-          <p className="text-[11px] font-bold uppercase tracking-wider text-fuchsia-300/80">Trending</p>
-          <h3 className="mt-2 text-xl font-bold tracking-tight text-slate-100">Caracas Unplugged: After Dark Sessions</h3>
-          <p className="mt-1 text-sm text-slate-400">Franco De Vita • May 16 • 8:00 PM</p>
-          <p className="mt-3 text-sm text-slate-300">
-            Candlelit storytelling, acoustic classics, and a close-up fan experience.
-          </p>
-          <div className="mt-4 rounded-xl border border-white/10 bg-[#0e1732] p-3">
-            <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-400">Ticket Tailor</p>
-            <Link href="/events" className="mt-2 inline-flex rounded-md bg-fuchsia-500 px-3 py-2 text-xs font-semibold text-white hover:bg-fuchsia-400">Buy Tickets</Link>
+      <section className="rounded-3xl border border-white/10 bg-[#0b1228] p-6 md:p-8">
+        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <div>
+            <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-fuchsia-300/80">Featured lineup</p>
+            <h2 className="mt-2 text-2xl font-extrabold tracking-tight text-white md:text-3xl">Spotlight nights</h2>
+            <p className="mt-2 text-sm text-slate-300">Choose your night and lock in seats fast.</p>
           </div>
-        </article>
-
-        <article className="rounded-2xl border border-white/10 bg-[#0b1228] p-5">
-          <p className="text-[11px] font-bold uppercase tracking-wider text-cyan-300/80">Upcoming</p>
-          <h3 className="mt-2 text-xl font-bold tracking-tight text-slate-100">After Dark Acoustic Series</h3>
-          <p className="mt-1 text-sm text-slate-400">Madison Theater • May–Jun 2026</p>
-          <p className="mt-3 text-sm text-slate-300">
-            Four consecutive Saturdays with Franco De Vita, Rudy La Escala, Elena Rose, and Proyecto Uno.
-          </p>
-          <div className="mt-4 rounded-xl border border-white/10 bg-[#0e1732] p-3">
-            <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-400">Limited Availability</p>
-            <Link href="/events" className="mt-2 inline-flex rounded-md border border-white/20 bg-white/5 px-3 py-2 text-xs font-semibold text-slate-100 hover:bg-white/10">
-              See Details
-            </Link>
-          </div>
-        </article>
+          <Link href="/events" className="inline-flex items-center justify-center rounded-lg bg-fuchsia-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-fuchsia-400">
+            View all events
+          </Link>
+        </div>
+        <div className="mt-6 grid gap-4 md:grid-cols-3">
+          {[
+            { title: "Caracas Unplugged", meta: "Franco De Vita • May 16" },
+            { title: "Bolero Nights", meta: "Rudy La Escala • May 30" },
+            { title: "Alma Acústica", meta: "Elena Rose • Jun 6" },
+          ].map((item) => (
+            <article key={item.title} className="rounded-2xl border border-white/10 bg-[#0e1732] p-4">
+              <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-cyan-300/80">Featured</p>
+              <h3 className="mt-2 text-lg font-bold text-white">{item.title}</h3>
+              <p className="mt-1 text-sm text-slate-300">{item.meta}</p>
+              <Link href="/events" className="mt-4 inline-flex rounded-md bg-fuchsia-500 px-3 py-2 text-xs font-semibold text-white hover:bg-fuchsia-400">
+                Buy Tickets
+              </Link>
+            </article>
+          ))}
+        </div>
       </section>
 
       <PollWidget />
