@@ -52,12 +52,6 @@ export default async function EventsPage() {
       description: "Candlelit storytelling, acoustic classics, and an intimate fan-forward set.",
     },
     {
-      title: "Noche Acústica: Leyendas y Velas",
-      artist: "José Feliciano",
-      dateLabel: "May 23 • 8:00 PM",
-      description: "Legendary songs, warm strings, and a velvet-lit night of classics.",
-    },
-    {
       title: "Bolero Nights: After Dark Sessions",
       artist: "Rudy La Escala",
       dateLabel: "May 30 • 8:00 PM",

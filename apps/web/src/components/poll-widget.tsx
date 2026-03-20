@@ -5,7 +5,6 @@ import { getSupabaseBrowserClient } from "@/lib/supabase";
 
 const ARTISTS = [
   "Franco De Vita",
-  "José Feliciano",
   "Rudy La Escala",
   "Elena Rose",
   "Proyecto Uno",

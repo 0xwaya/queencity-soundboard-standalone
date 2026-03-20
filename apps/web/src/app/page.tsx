@@ -84,7 +84,7 @@ export default function Home() {
           <h3 className="mt-2 text-xl font-bold tracking-tight text-slate-100">After Dark Acoustic Series</h3>
           <p className="mt-1 text-sm text-slate-400">Madison Theater • May–Jun 2026</p>
           <p className="mt-3 text-sm text-slate-300">
-            Five consecutive Saturdays with Franco De Vita, José Feliciano, Rudy La Escala, Elena Rose, and Proyecto Uno.
+            Four consecutive Saturdays with Franco De Vita, Rudy La Escala, Elena Rose, and Proyecto Uno.
           </p>
           <div className="mt-4 rounded-xl border border-white/10 bg-[#0e1732] p-3">
             <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-400">Limited Availability</p>
