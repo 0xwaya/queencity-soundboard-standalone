@@ -10,10 +10,46 @@ branding/
 .env
 .env.*
 !.env.example
-!.env.encrypted
 *.key
 secrets/
 credentials/
+
+# Encrypted env bundles and keys (never commit)
+*.env.enc
+*.env.key
+
+# Secrets and tokens
+*.secret*
+*.token*
+*apikey*
+*api_key*
+
+# Keys, certs, keystores
+*.pem
+*.p12
+*.pfx
+*.p7b
+*.der
+*.crt
+*.csr
+*.jks
+*.keystore
+*id_rsa*
+*id_ed25519*
+
+# Logs, caches, local data
+logs/
+cache/
+tmp/
+*.log
+*.sqlite
+*.sqlite3
+*.db
+*.jsonl
+
+# Python venvs
+.venv/
+venv/
 
 # Node
 node_modules/

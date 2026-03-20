@@ -14,8 +14,9 @@ export default function Header({ locale }: HeaderProps) {
   const [isPending, startRefreshTransition] = useTransition();
   const router = useRouter();
   const nextLocale = locale === "es-ve" ? "en" : "es-ve";
-  const activeLocaleFlag = locale === "es-ve" ? "🇻🇪" : "🇺🇸";
-  const activeLocaleLabel = locale === "es-ve" ? "ES" : "EN";
+  // Show the flag of the language the user would switch to
+  const toggleFlag = locale === "es-ve" ? "🇺🇸" : "🇻🇪";
+  const toggleLabel = locale === "es-ve" ? "EN" : "ES";
   const nav = [
     { href: "/events", label: locale === "es-ve" ? "Eventos" : "Events" },
     { href: "/merch", label: locale === "es-ve" ? "Merch" : "Merch" },
@@ -66,8 +67,8 @@ export default function Header({ locale }: HeaderProps) {
             className="flex items-center gap-2 rounded-full border border-white/10 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-200 transition hover:border-white/30 hover:bg-white/10"
             aria-label={locale === "es-ve" ? "Switch to English" : "Cambiar a español de Venezuela"}
           >
-            <span className="text-base">{activeLocaleFlag}</span>
-            <span>{activeLocaleLabel}</span>
+            <span className="text-base">{toggleFlag}</span>
+            <span>{toggleLabel}</span>
           </button>
         </nav>
 
@@ -79,13 +80,13 @@ export default function Header({ locale }: HeaderProps) {
             className="inline-flex items-center justify-center rounded-md border border-white/10 px-2 py-1 text-xs font-semibold text-slate-200 transition hover:border-white/30 hover:bg-white/10"
             aria-label={locale === "es-ve" ? "Switch to English" : "Cambiar a español de Venezuela"}
           >
-            {activeLocaleFlag}
+            {toggleFlag}
           </button>
           <button
             type="button"
             className="inline-flex items-center justify-center rounded-md border border-white/10 p-2 text-slate-300 transition hover:border-white/30 hover:bg-white/10 hover:text-white"
             aria-label="Toggle navigation"
-            aria-expanded={isOpen ? "true" : "false"}
+            aria-expanded={isOpen ? 'true' : 'false'}
             aria-controls="mobile-menu"
             onClick={() => setIsOpen((prev) => !prev)}
           >
