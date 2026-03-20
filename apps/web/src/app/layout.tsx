@@ -1,8 +1,15 @@
 import type { Metadata } from "next";
+import { Bebas_Neue } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import Header from "@/components/header";
 import { getLocale } from "@/lib/i18n";
+
+const bebasNeue = Bebas_Neue({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-bebas-neue",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://queencitysoundboard.com"),
@@ -56,12 +63,12 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const locale = getLocale();
+  const locale = await getLocale();
   const footerTagline =
     locale === "es-ve"
       ? "Noches con cultura. Boletos listos. Full nivel."
@@ -73,7 +80,7 @@ export default function RootLayout({
 
   return (
     <html lang={locale === "es-ve" ? "es" : "en"}>
-      <body className="bg-[#07090f] text-slate-100 antialiased">
+      <body className={`${bebasNeue.variable} bg-[#07090f] text-slate-100 antialiased`}>
         <Header locale={locale} />
         <main className="mx-auto max-w-6xl px-4 py-10">{children}</main>
         <Analytics />
@@ -96,7 +103,7 @@ export default function RootLayout({
                     className="rounded-full border border-white/10 bg-white/5 p-2 text-slate-200 transition hover:border-white/30 hover:text-white"
                     href="https://www.instagram.com/"
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noreferrer noopener"
                     aria-label="Instagram"
                   >
                     <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none">
@@ -109,7 +116,7 @@ export default function RootLayout({
                     className="rounded-full border border-white/10 bg-white/5 p-2 text-slate-200 transition hover:border-white/30 hover:text-white"
                     href="https://www.tiktok.com/"
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noreferrer noopener"
                     aria-label="TikTok"
                   >
                     <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none">
@@ -123,7 +130,7 @@ export default function RootLayout({
                     className="rounded-full border border-white/10 bg-white/5 p-2 text-slate-200 transition hover:border-white/30 hover:text-white"
                     href="https://x.com/"
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noreferrer noopener"
                     aria-label="X"
                   >
                     <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none">

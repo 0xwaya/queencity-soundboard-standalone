@@ -2,8 +2,8 @@ import PollWidget from "@/components/poll-widget";
 import TrackedLink from "@/components/tracked-link";
 import { getLocale } from "@/lib/i18n";
 
-export default function Home() {
-  const locale = getLocale();
+export default async function Home() {
+  const locale = await getLocale();
   const t =
     locale === "es-ve"
       ? {
@@ -67,7 +67,7 @@ export default function Home() {
 
   return (
     <div className="space-y-8">
-      <section className="rounded-3xl border border-white/10 bg-gradient-to-br from-[#0f1630] via-[#0b1228] to-[#070b17] p-7 md:p-11">
+      <section className="rounded-3xl border border-white/10 bg-linear-to-br from-[#0f1630] via-[#0b1228] to-[#070b17] p-7 md:p-11">
         <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-cyan-300/80">{t.eyebrow}</p>
         <h1 className="mt-3 max-w-4xl text-4xl font-extrabold tracking-tight text-slate-100 md:text-6xl">
           {t.hero}
@@ -118,7 +118,7 @@ export default function Home() {
               className="text-base font-semibold text-amber-200 hover:text-amber-100"
               href="https://madisontheater.com/"
               target="_blank"
-              rel="noreferrer"
+              rel="noreferrer noopener"
             >
               madisontheater.com
             </a>
@@ -126,7 +126,7 @@ export default function Home() {
               className="inline-flex items-center justify-center rounded-lg bg-amber-400 px-4 py-2 text-xs font-semibold text-[#0b1020] hover:bg-amber-300"
               href="https://madisontheater.com/"
               target="_blank"
-              rel="noreferrer"
+              rel="noreferrer noopener"
             >
               {t.venueCta}
             </a>
