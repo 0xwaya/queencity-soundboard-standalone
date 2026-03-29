@@ -36,4 +36,4 @@ The checkout button resolves in this order:
 
 ## Deploy
 
-Deploy `apps/web` to Vercel and add the same environment variables in project settings.
+Deploy `apps/web` from `0xwaya/queencity-soundboard-standalone` to Vercel and add the same environment variables in project settings.

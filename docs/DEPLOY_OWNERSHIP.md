@@ -3,10 +3,12 @@
 ## Canonical Deployment Ownership
 - **Vercel Team/Scope:** `0xwaya-projects`
 - **Vercel Project:** `queencity-soundboard`
-- **Git repo:** `github.com/0xwaya/queencity-soundboard`
+- **Git repo:** `github.com/0xwaya/queencity-soundboard-standalone`
 - **Production branch:** `master`
 - **Root Directory:** `apps/web`
 - **Framework:** `nextjs`
+
+The legacy monorepo-shaped repo is not the canonical deploy source for this project.
 
 ## Canonical Domains
 - `queencitysoundboard.com`

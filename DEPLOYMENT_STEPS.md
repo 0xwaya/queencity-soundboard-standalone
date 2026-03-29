@@ -46,9 +46,9 @@ Ship web-first MVP using:
    - `NEXT_PUBLIC_TICKETING_WIDGET_URL=<ticket_tailor_url>` (global fallback)
 
 ## 5) Vercel deploy
-1. Import repo into Vercel
+1. Import repo `0xwaya/queencity-soundboard-standalone` into Vercel
 2. Set root directory:
-   - `apps/web` (project setting may display as `queencity-soundboard/apps/web`)
+   - `apps/web`
 3. Confirm framework preset is `nextjs`
 4. Add environment variables:
    - `NEXT_PUBLIC_SITE_URL`
@@ -68,6 +68,7 @@ Expected:
 - project exists under `0xwaya-projects`
 - `Root Directory: apps/web`
 - `Framework Preset: nextjs`
+- linked repo is `0xwaya/queencity-soundboard-standalone`
 
 ## 6) Domain cutover (GoDaddy -> Vercel)
 DNS records:

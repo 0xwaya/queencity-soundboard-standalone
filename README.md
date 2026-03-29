@@ -16,6 +16,7 @@ A web-first, mobile-friendly platform for:
 - **Web:** Next.js on Vercel
 - **Data/Auth/Storage:** Supabase
 - **Ticketing:** Ticket Tailor widget
+- **Canonical GitHub repo:** `github.com/0xwaya/queencity-soundboard-standalone`
 
 ## Runtime notes
 - Locale switching uses a client-side `qcs_locale` preference cookie only. It stores language choice, not auth or sensitive user data.
