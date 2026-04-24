@@ -1,4 +1,11 @@
+import type { Metadata } from "next";
 import { getLocale } from "@/lib/i18n";
+
+export const metadata: Metadata = {
+  alternates: {
+    canonical: "/about",
+  },
+};
 
 export default async function AboutPage() {
   const locale = await getLocale();

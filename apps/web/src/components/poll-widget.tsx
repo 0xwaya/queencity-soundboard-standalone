@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { getSupabaseBrowserClient } from "@/lib/supabase";
 import type { Locale } from "@/lib/i18n";
 
@@ -52,27 +52,30 @@ export default function PollWidget({ locale }: PollWidgetProps) {
           voteError: "Vote failed. Please try again.",
         };
 
-  const loadVotes = async () => {
+  const loadVotes = useCallback(async () => {
+    const nextCounts: VoteCounts = {};
+    ARTISTS.forEach((artist) => (nextCounts[artist] = 0));
+
     try {
       const supabase = getSupabaseBrowserClient();
       const { data, error: fetchError } = await supabase
-        .from("artist_votes")
-        .select("artist_name");
+        .rpc("get_artist_vote_totals");
 
       if (fetchError) throw fetchError;
 
-      const nextCounts: VoteCounts = {};
-      ARTISTS.forEach((artist) => (nextCounts[artist] = 0));
-      (data ?? []).forEach((row: { artist_name: string }) => {
+      (data ?? []).forEach((row: { artist_name: string; vote_count: number | string }) => {
         if (nextCounts[row.artist_name] !== undefined) {
-          nextCounts[row.artist_name] += 1;
+          const value = Number(row.vote_count);
+          nextCounts[row.artist_name] = Number.isFinite(value) ? value : 0;
         }
       });
       setCounts(nextCounts);
     } catch (err) {
+      console.error("[PollWidget] Failed to load vote totals", err);
+      setCounts(nextCounts);
       setError(copy.loadError);
     }
-  };
+  }, [copy.loadError]);
 
   const handleVote = async (artist: string) => {
     setLoading(true);
@@ -87,6 +90,7 @@ export default function PollWidget({ locale }: PollWidgetProps) {
       setVoted(true);
       await loadVotes();
     } catch (err) {
+      console.error("[PollWidget] Failed to submit vote", err);
       setError(copy.voteError);
     } finally {
       setLoading(false);
@@ -95,7 +99,7 @@ export default function PollWidget({ locale }: PollWidgetProps) {
 
   useEffect(() => {
     loadVotes();
-  }, []);
+  }, [loadVotes]);
 
   return (
     <section className="rounded-3xl border border-white/10 bg-[#0b1228] p-6 md:p-8">

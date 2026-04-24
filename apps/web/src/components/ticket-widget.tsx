@@ -1,28 +1,37 @@
 "use client";
 
 import { track } from "@vercel/analytics";
+import { normalizeHttpsUrl } from "@/lib/url";
 
 type Props = {
   eventTitle: string;
   eventTicketUrl?: string | null;
   locale?: "en" | "es-ve";
+  salesDisabled?: boolean;
 };
 
-export default function TicketWidget({ eventTitle, eventTicketUrl, locale = "en" }: Props) {
+export default function TicketWidget({
+  eventTitle,
+  eventTicketUrl,
+  locale = "en",
+  salesDisabled = false,
+}: Props) {
   const provider = "tickettailor";
-  const widgetUrl = process.env.NEXT_PUBLIC_TICKETING_WIDGET_URL;
-  const checkoutUrl = eventTicketUrl || widgetUrl;
+  const widgetUrl = normalizeHttpsUrl(process.env.NEXT_PUBLIC_TICKETING_WIDGET_URL);
+  const checkoutUrl = salesDisabled ? null : normalizeHttpsUrl(eventTicketUrl) ?? widgetUrl;
   const copy =
     locale === "es-ve"
       ? {
           title: "Checkout de entradas",
           cta: "Comprar entradas",
           missing: "Falta el link de tickets. Agrega",
+          disabled: "Venta de entradas pausada para este concierto por confirmación pendiente del artista.",
         }
       : {
           title: "Ticket Checkout",
           cta: "Buy Tickets",
           missing: "Missing ticket URL. Add",
+          disabled: "Ticket sales are paused for this concert pending artist confirmation.",
         };
 
   return (
@@ -45,6 +54,8 @@ export default function TicketWidget({ eventTitle, eventTicketUrl, locale = "en"
           >
             {copy.cta}
           </a>
+        ) : salesDisabled ? (
+          <p className="text-sm text-amber-300">{copy.disabled}</p>
         ) : (
           <p className="text-sm text-amber-300">
             {copy.missing} <code>NEXT_PUBLIC_TICKETING_WIDGET_URL</code> {locale === "es-ve" ? "o define" : "or set"} {" "}

@@ -1,6 +1,12 @@
 import { getSupabaseBrowserClient, type EventItem, type MerchItem } from "@/lib/supabase";
+import { normalizeHttpsUrl } from "@/lib/url";
 
-export async function getPublishedEvents(): Promise<EventItem[]> {
+export type QueryResult<T> = {
+  data: T;
+  error: string | null;
+};
+
+export async function getPublishedEvents(): Promise<QueryResult<EventItem[]>> {
   try {
     const supabase = getSupabaseBrowserClient();
     const { data, error } = await supabase
@@ -11,19 +17,25 @@ export async function getPublishedEvents(): Promise<EventItem[]> {
       .eq("status", "published")
       .order("event_date", { ascending: true });
 
-    if (error) throw error;
+    if (error) {
+      console.error("[getPublishedEvents] Supabase query failed", error);
+      return { data: [], error: "Unable to load events right now." };
+    }
 
     const rows = (data ?? []) as Array<EventItem & { venues?: EventItem["venues"] | EventItem["venues"][] }>;
-    return rows.map((row) => ({
+    const normalizedRows = rows.map((row) => ({
       ...row,
+      ticket_url: normalizeHttpsUrl(row.ticket_url),
       venues: Array.isArray(row.venues) ? row.venues[0] ?? null : row.venues ?? null,
     }));
-  } catch {
-    return [];
+    return { data: normalizedRows, error: null };
+  } catch (err) {
+    console.error("[getPublishedEvents] Unexpected failure", err);
+    return { data: [], error: "Unable to load events right now." };
   }
 }
 
-export async function getActiveMerch(): Promise<MerchItem[]> {
+export async function getActiveMerch(): Promise<QueryResult<MerchItem[]>> {
   try {
     const supabase = getSupabaseBrowserClient();
     const { data, error } = await supabase
@@ -32,9 +44,13 @@ export async function getActiveMerch(): Promise<MerchItem[]> {
       .eq("is_active", true)
       .order("created_at", { ascending: false });
 
-    if (error) throw error;
-    return (data as MerchItem[]) ?? [];
-  } catch {
-    return [];
+    if (error) {
+      console.error("[getActiveMerch] Supabase query failed", error);
+      return { data: [], error: "Unable to load merch right now." };
+    }
+    return { data: (data as MerchItem[]) ?? [], error: null };
+  } catch (err) {
+    console.error("[getActiveMerch] Unexpected failure", err);
+    return { data: [], error: "Unable to load merch right now." };
   }
 }

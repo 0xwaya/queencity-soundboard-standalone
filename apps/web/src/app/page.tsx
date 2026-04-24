@@ -1,6 +1,13 @@
+import type { Metadata } from "next";
 import PollWidget from "@/components/poll-widget";
 import TrackedLink from "@/components/tracked-link";
 import { getLocale } from "@/lib/i18n";
+
+export const metadata: Metadata = {
+  alternates: {
+    canonical: "/",
+  },
+};
 
 export default async function Home() {
   const locale = await getLocale();

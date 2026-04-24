@@ -29,9 +29,6 @@ export const metadata: Metadata = {
     "merch",
     "QueenCity Soundboard",
   ],
-  alternates: {
-    canonical: "/",
-  },
   openGraph: {
     title: "QueenCity Soundboard",
     description: "Live events, tickets, merch, and culture-forward nights in Cincinnati.",

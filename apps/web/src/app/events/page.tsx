@@ -1,18 +1,31 @@
+import type { Metadata } from "next";
 import EventsViewToggle from "@/components/events-view-toggle";
 import TicketWidget from "@/components/ticket-widget";
 import { getPublishedEvents } from "@/lib/data";
 import { getLocale } from "@/lib/i18n";
 
+export const metadata: Metadata = {
+  alternates: {
+    canonical: "/events",
+  },
+};
+
 type EventsPageProps = {
   searchParams?: Promise<{ view?: string }>;
 };
 
+function isFrancoDeVitaEvent(input?: string | null): boolean {
+  return (input ?? "").trim().toLowerCase().includes("franco de vita");
+}
+
 export default async function EventsPage({ searchParams }: EventsPageProps) {
-  const [resolvedSearchParams, events, locale] = await Promise.all([
+  const [resolvedSearchParams, eventsResult, locale] = await Promise.all([
     searchParams,
     getPublishedEvents(),
     getLocale(),
   ]);
+  const events = eventsResult.data;
+  const eventsError = eventsResult.error;
   const selectedView = resolvedSearchParams?.view;
   const view = selectedView === "compact" ? "compact" : "spotlight";
   const t =
@@ -34,6 +47,7 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
             "Publica eventos en Supabase pa’ quitar estas tarjetas demo. El botón usa NEXT_PUBLIC_TICKETING_WIDGET_URL cuando esté listo. ¡No seas lento!",
           spotlight: "Brilla’o",
           compact: "Compacto",
+          unavailable: "Los eventos están temporalmente no disponibles. Intenta de nuevo en breve.",
         }
       : {
           eyebrow: "Live lineup",
@@ -52,6 +66,7 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
             "Publish events in Supabase to replace these mock cards. Ticket CTA uses NEXT_PUBLIC_TICKETING_WIDGET_URL when set.",
           spotlight: "Spotlight",
           compact: "Compact",
+          unavailable: "Events are temporarily unavailable. Please try again soon.",
         };
   const jsonLd =
     events.length > 0
@@ -81,7 +96,7 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
               description:
                 event.description ?? `${event.title} live at ${event.venues?.name ?? "Madison Theater"}.`,
               performer: event.artist_name ? { "@type": "PerformingGroup", name: event.artist_name } : undefined,
-              offers: event.ticket_url
+              offers: event.ticket_url && !isFrancoDeVitaEvent(event.artist_name)
                 ? {
                     "@type": "Offer",
                     url: event.ticket_url,
@@ -126,7 +141,6 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
       {jsonLd ? (
         <script
           type="application/ld+json"
-          // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       ) : null}
@@ -159,10 +173,15 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
         </div>
       </section>
 
-      {events.length === 0 ? (
+      {eventsError ? (
+        <div className="rounded-2xl border border-amber-300/30 bg-amber-500/10 p-5 text-sm text-amber-200">
+          {t.unavailable}
+        </div>
+      ) : events.length === 0 ? (
         <div className={`grid gap-5 ${view === "compact" ? "md:grid-cols-1" : "md:grid-cols-2"}`}>
           {mockEvents.map((event, index) => {
             const featured = index === 0;
+            const salesDisabled = isFrancoDeVitaEvent(event.artist);
             return (
               <article
                 key={event.title}
@@ -189,7 +208,7 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
                   <span className="text-sm font-semibold normal-case tracking-normal text-white">{event.artist}</span>
                 </div>
                 <p className="text-sm text-slate-300">{event.description}</p>
-                <TicketWidget eventTitle={event.title} locale={locale} />
+                <TicketWidget eventTitle={event.title} locale={locale} salesDisabled={salesDisabled} />
               </article>
             );
           })}
@@ -202,6 +221,7 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
         <div className={`grid gap-5 ${view === "compact" ? "md:grid-cols-1" : "md:grid-cols-2"}`}>
           {events.map((event, index) => {
             const featured = index === 0;
+            const salesDisabled = isFrancoDeVitaEvent(event.artist_name) || isFrancoDeVitaEvent(event.title);
             return (
             <article
               key={event.id}
@@ -236,7 +256,12 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
                 </div>
               ) : null}
               {event.description ? <p className="text-sm text-slate-300">{event.description}</p> : null}
-              <TicketWidget eventTitle={event.title} eventTicketUrl={event.ticket_url} locale={locale} />
+              <TicketWidget
+                eventTitle={event.title}
+                eventTicketUrl={event.ticket_url}
+                locale={locale}
+                salesDisabled={salesDisabled}
+              />
             </article>
           );
           })}

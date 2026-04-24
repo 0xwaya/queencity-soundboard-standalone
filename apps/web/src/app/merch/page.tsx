@@ -1,5 +1,12 @@
+import type { Metadata } from "next";
 import { getActiveMerch } from "@/lib/data";
 import { getLocale } from "@/lib/i18n";
+
+export const metadata: Metadata = {
+  alternates: {
+    canonical: "/merch",
+  },
+};
 
 const formatPrice = (cents: number) =>
   new Intl.NumberFormat("en-US", {
@@ -8,7 +15,8 @@ const formatPrice = (cents: number) =>
   }).format(cents / 100);
 
 export default async function MerchPage() {
-  const merch = await getActiveMerch();
+  const merchResult = await getActiveMerch();
+  const merch = merchResult.data;
   const locale = await getLocale();
   const t =
     locale === "es-ve"
@@ -18,6 +26,7 @@ export default async function MerchPage() {
           subtitle: "Drops limitados pa’ que te vistas como es, conectado a noches y momentos de artistas. ¡Póntelo y saca pecho!",
           empty: "El merch viene pronto, así que pilas. El primer drop lo soltamos por el canal de eventos. ¡No te quedes sin el tuyo!",
           stock: "disponible (apúrate)",
+          unavailable: "El merch está temporalmente no disponible. Intenta de nuevo en breve.",
         }
       : {
           eyebrow: "Fan gear",
@@ -25,6 +34,7 @@ export default async function MerchPage() {
           subtitle: "Limited-run drops tied to event nights and artist moments.",
           empty: "Merch is coming soon. First drop will be announced in the events channel.",
           stock: "in stock",
+          unavailable: "Merch is temporarily unavailable. Please try again soon.",
         };
 
   return (
@@ -35,7 +45,11 @@ export default async function MerchPage() {
         <p className="mt-2 text-sm text-slate-300">{t.subtitle}</p>
       </section>
 
-      {merch.length === 0 ? (
+      {merchResult.error ? (
+        <div className="rounded-2xl border border-amber-300/30 bg-amber-500/10 p-6 text-sm text-amber-200">
+          {t.unavailable}
+        </div>
+      ) : merch.length === 0 ? (
         <div className="rounded-2xl border border-white/10 bg-white/5 p-6 text-slate-300">{t.empty}</div>
       ) : (
         <section className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
