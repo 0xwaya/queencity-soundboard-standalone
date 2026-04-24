@@ -1,32 +1,31 @@
 import type { MetadataRoute } from "next";
-
-const BASE_URL = "https://queencitysoundboard.com";
+import { SEO } from "@/lib/seo";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const now = new Date();
+  const lastModified = new Date();
 
   return [
     {
-      url: `${BASE_URL}/`,
-      lastModified: now,
-      changeFrequency: "weekly",
+      url: `${SEO.baseUrl}/`,
+      lastModified,
+      changeFrequency: "daily",
       priority: 1,
     },
     {
-      url: `${BASE_URL}/events`,
-      lastModified: now,
-      changeFrequency: "weekly",
-      priority: 0.9,
+      url: `${SEO.baseUrl}/events`,
+      lastModified,
+      changeFrequency: "daily",
+      priority: 0.95,
     },
     {
-      url: `${BASE_URL}/merch`,
-      lastModified: now,
+      url: `${SEO.baseUrl}/merch`,
+      lastModified,
       changeFrequency: "weekly",
       priority: 0.8,
     },
     {
-      url: `${BASE_URL}/about`,
-      lastModified: now,
+      url: `${SEO.baseUrl}/about`,
+      lastModified,
       changeFrequency: "monthly",
       priority: 0.6,
     },

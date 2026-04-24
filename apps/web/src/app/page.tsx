@@ -2,12 +2,21 @@ import type { Metadata } from "next";
 import PollWidget from "@/components/poll-widget";
 import TrackedLink from "@/components/tracked-link";
 import { getLocale } from "@/lib/i18n";
+import { buildPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  alternates: {
-    canonical: "/",
-  },
-};
+export const metadata: Metadata = buildPageMetadata({
+  title: "Latin Live Music Events in Cincinnati & Covington",
+  description:
+    "Discover culture-forward Latin acoustic nights, artist showcases, and premium ticket experiences from QueenCity Soundboard.",
+  path: "/",
+  keywords: [
+    "Latin events Cincinnati",
+    "Covington live music",
+    "acoustic concerts Kentucky",
+    "Madison Theater tickets",
+    "QueenCity Soundboard events",
+  ],
+});
 
 export default async function Home() {
   const locale = await getLocale();
@@ -39,6 +48,9 @@ export default async function Home() {
           contactCopy:
             "Reserva talento, asegura el venue o colabora en drops. Nuestro team responde rápido y deja todo fino.",
           directLine: "Línea directa",
+          localLabel: "Presencia local",
+          localAddress: "Madison Theater, 730 Madison Ave, Covington, KY 41011",
+          maps: "Cómo llegar",
           contactCta: "Iniciar consulta",
           browseEvents: "Ver eventos",
         }
@@ -68,6 +80,9 @@ export default async function Home() {
           contactCopy:
             "Book talent, secure the venue, or collaborate on branded drops. Our event team responds fast and keeps the flow seamless.",
           directLine: "Direct line",
+          localLabel: "Local presence",
+          localAddress: "Madison Theater, 730 Madison Ave, Covington, KY 41011",
+          maps: "Get directions",
           contactCta: "Start an inquiry",
           browseEvents: "Browse events",
         };
@@ -197,6 +212,18 @@ export default async function Home() {
                 href="mailto:event@queencitysoundboard.com"
               >
                 event@queencitysoundboard.com
+              </a>
+            </div>
+            <div className="space-y-1">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">{t.localLabel}</p>
+              <p className="text-xs text-slate-300">{t.localAddress}</p>
+              <a
+                className="text-xs font-semibold text-cyan-200 hover:text-cyan-100"
+                href="https://maps.google.com/?q=Madison+Theater+730+Madison+Ave+Covington+KY+41011"
+                target="_blank"
+                rel="noreferrer noopener"
+              >
+                {t.maps}
               </a>
             </div>
             <div className="flex flex-wrap gap-2">

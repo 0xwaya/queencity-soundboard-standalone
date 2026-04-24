@@ -1,11 +1,18 @@
 import type { Metadata } from "next";
 import { getLocale } from "@/lib/i18n";
+import { buildPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  alternates: {
-    canonical: "/about",
-  },
-};
+export const metadata: Metadata = buildPageMetadata({
+  title: "About QueenCity Soundboard",
+  description:
+    "Learn how QueenCity Soundboard connects Latin artists with Midwest audiences through premium local live music experiences.",
+  path: "/about",
+  keywords: [
+    "about QueenCity Soundboard",
+    "Latin music community Cincinnati",
+    "live event platform Kentucky",
+  ],
+});
 
 export default async function AboutPage() {
   const locale = await getLocale();

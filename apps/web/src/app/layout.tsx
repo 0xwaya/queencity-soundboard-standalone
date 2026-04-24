@@ -4,6 +4,7 @@ import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import Header from "@/components/header";
 import { getLocale } from "@/lib/i18n";
+import { SEO } from "@/lib/seo";
 
 const bebasNeue = Bebas_Neue({
   subsets: ["latin"],
@@ -12,34 +13,27 @@ const bebasNeue = Bebas_Neue({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://queencitysoundboard.com"),
+  metadataBase: new URL(SEO.baseUrl),
   title: {
-    default: "QueenCity Soundboard",
-    template: "%s | QueenCity Soundboard",
+    default: SEO.defaultTitle,
+    template: `%s | ${SEO.siteName}`,
   },
-  description: "Live events, tickets, merch, and culture-forward nights in Cincinnati.",
-  applicationName: "QueenCity Soundboard",
-  keywords: [
-    "Cincinnati events",
-    "Covington KY events",
-    "Latin music",
-    "live music",
-    "concerts",
-    "tickets",
-    "merch",
-    "QueenCity Soundboard",
-  ],
+  description: SEO.defaultDescription,
+  applicationName: SEO.siteName,
+  keywords: SEO.defaultKeywords,
+  category: "events",
+  authors: [{ name: SEO.siteName }],
   openGraph: {
-    title: "QueenCity Soundboard",
-    description: "Live events, tickets, merch, and culture-forward nights in Cincinnati.",
-    url: "https://queencitysoundboard.com",
-    siteName: "QueenCity Soundboard",
+    title: SEO.defaultTitle,
+    description: SEO.defaultDescription,
+    url: SEO.baseUrl,
+    siteName: SEO.siteName,
     images: [
       {
-        url: "/og-image.png?v=2",
+        url: SEO.ogImage,
         width: 1200,
         height: 630,
-        alt: "QueenCity Soundboard",
+        alt: SEO.siteName,
       },
     ],
     locale: "en_US",
@@ -47,16 +41,26 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "QueenCity Soundboard",
-    description: "Live events, tickets, merch, and culture-forward nights in Cincinnati.",
-    images: ["/og-image.png?v=2"],
+    title: SEO.defaultTitle,
+    description: SEO.defaultDescription,
+    images: [SEO.ogImage],
   },
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
   icons: {
     icon: "/qcs-logo-animated.gif",
+  },
+  other: {
+    "geo.region": "US-KY",
+    "geo.placename": "Covington",
   },
 };
 
@@ -74,10 +78,33 @@ export default async function RootLayout({
     locale === "es-ve"
       ? "Construido por"
       : "Built by";
+  const localBusinessJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "MusicVenue",
+    name: SEO.siteName,
+    url: SEO.baseUrl,
+    email: SEO.contactEmail,
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: SEO.venue.streetAddress,
+      addressLocality: SEO.venue.city,
+      addressRegion: SEO.venue.region,
+      postalCode: SEO.venue.postalCode,
+      addressCountry: SEO.venue.country,
+    },
+    areaServed: [
+      { "@type": "City", name: "Covington" },
+      { "@type": "City", name: "Cincinnati" },
+    ],
+  };
 
   return (
     <html lang={locale === "es-ve" ? "es" : "en"}>
       <body className={`${bebasNeue.variable} bg-[#07090f] text-slate-100 antialiased`}>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd) }}
+        />
         <Header locale={locale} />
         <main className="qcs-shell py-10">{children}</main>
         <Analytics />

@@ -3,12 +3,20 @@ import EventsViewToggle from "@/components/events-view-toggle";
 import TicketWidget from "@/components/ticket-widget";
 import { getPublishedEvents } from "@/lib/data";
 import { getLocale } from "@/lib/i18n";
+import { buildPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  alternates: {
-    canonical: "/events",
-  },
-};
+export const metadata: Metadata = buildPageMetadata({
+  title: "Upcoming Latin Concerts and Acoustic Nights",
+  description:
+    "Browse upcoming QueenCity Soundboard events, check artist lineups, and secure seats for Latin live music nights in Covington and Cincinnati.",
+  path: "/events",
+  keywords: [
+    "upcoming concerts Covington KY",
+    "Latin concerts Cincinnati",
+    "Madison Theater events",
+    "live music calendar Kentucky",
+  ],
+});
 
 type EventsPageProps = {
   searchParams?: Promise<{ view?: string }>;

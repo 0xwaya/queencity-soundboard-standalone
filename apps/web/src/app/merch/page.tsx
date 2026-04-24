@@ -1,12 +1,20 @@
 import type { Metadata } from "next";
 import { getActiveMerch } from "@/lib/data";
 import { getLocale } from "@/lib/i18n";
+import { buildPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  alternates: {
-    canonical: "/merch",
-  },
-};
+export const metadata: Metadata = buildPageMetadata({
+  title: "Official Event Merch Drops",
+  description:
+    "Shop limited-run merch connected to QueenCity Soundboard artists, events, and local culture nights.",
+  path: "/merch",
+  keywords: [
+    "concert merch Cincinnati",
+    "Latin music merch",
+    "event merch drops Kentucky",
+    "QueenCity Soundboard merch",
+  ],
+});
 
 const formatPrice = (cents: number) =>
   new Intl.NumberFormat("en-US", {
