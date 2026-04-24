@@ -58,10 +58,19 @@ export default function PollWidget({ locale }: PollWidgetProps) {
 
     try {
       const supabase = getSupabaseBrowserClient();
-      const { data, error: fetchError } = await supabase
-        .rpc("get_artist_vote_totals");
+      const { data, error: rpcError } = await supabase.rpc("get_artist_vote_totals");
 
-      if (fetchError) throw fetchError;
+      if (rpcError) {
+        const { data: rows, error: selectError } = await supabase.from("artist_votes").select("artist_name");
+        if (selectError) throw selectError;
+        (rows ?? []).forEach((row: { artist_name: string }) => {
+          if (nextCounts[row.artist_name] !== undefined) {
+            nextCounts[row.artist_name] += 1;
+          }
+        });
+        setCounts(nextCounts);
+        return;
+      }
 
       (data ?? []).forEach((row: { artist_name: string; vote_count: number | string }) => {
         if (nextCounts[row.artist_name] !== undefined) {
