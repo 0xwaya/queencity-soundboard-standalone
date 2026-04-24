@@ -6,29 +6,46 @@ Bridging Venezuelan artists, Midwest roots music lovers, and unforgettable live 
 > Not just ticket links. We curate moments.
 
 ## What this repo is
+
 A web-first, mobile-friendly platform for:
+
 - Event discovery
 - Third-party ticket checkout (no in-house payment risk)
 - Merch + fan engagement
 - Scalable venue/event ops backend
 
 ## Stack
+
 - **Web:** Next.js on Vercel
 - **Data/Auth/Storage:** Supabase
 - **Ticketing:** Ticket Tailor widget
 - **Canonical GitHub repo:** `github.com/0xwaya/queencity-soundboard-standalone`
 
 ## Runtime notes
+
 - Locale switching uses a client-side `qcs_locale` preference cookie only. It stores language choice, not auth or sensitive user data.
 - Next.js 16 route APIs such as `cookies()` and `searchParams` must be handled asynchronously in server components.
 
+## Recent updates (2026-04-23)
+
+- Added URL hardening for ticket checkout links (`https://` only) in app + DB constraints.
+- Added Franco De Vita ticket-sales hold logic and migration to null existing `ticket_url` values for affected events.
+- Added poll vote aggregation RPC (`get_artist_vote_totals`) to avoid full-table client reads.
+- Added SEO/local-SEO structure:
+  - page-level metadata templates (title/description/keywords/canonical/OG/Twitter)
+  - robots and sitemap tuning
+  - `MusicVenue` structured data + local address signals
+- Added web stability tests with Vitest + Testing Library (`npm run test:run`).
+
 ## Why this architecture
+
 - Fast to ship
 - Low fixed cost
 - Pro UX out of the gate
 - Security-first (reduced PCI scope)
 
 ## Quick start
+
 ```bash
 # one-time setup
 cd apps/web
@@ -45,11 +62,13 @@ bash tools/env-crypto.sh dev
 ```
 
 ### Env security workflow
+
 - Keep `apps/web/.env.local` as temporary runtime material only.
 - Commit `apps/web/.env.encrypted` when you need shared encrypted defaults.
 - Set `QCS_ENV_PASSPHRASE` in your shell, or enter passphrase interactively.
 
 ## Core docs
+
 - `PLAN.md` — build sequence
 - `DEPLOYMENT_STEPS.md` — setup + deploy notes
 - `docs/DEPLOY_OWNERSHIP.md` — canonical Vercel ownership/scope + recovery steps
@@ -57,6 +76,7 @@ bash tools/env-crypto.sh dev
 - `supabase/migrations/*` — production DB schema + RLS
 
 ## Brand direction
+
 Clean. Pro. Edgy.
 Like a velvet rope with great Wi‑Fi.
 

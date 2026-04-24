@@ -10,3 +10,7 @@
 | 2026-04-18 | Instagram   | Conversion    | Social Proof Carousel    | Get tickets   | Use testimonials, quotes, or partner reposts       | Content | Planned  |
 | 2026-04-22 | IG Stories  | Conversion    | Countdown Sequence       | Get tickets   | Push urgency with lineup, timing, and logistics    | Social  | Planned  |
 | 2026-04-25 | X / Twitter | Conversion    | Ticket CTA Post          | Get tickets   | Final launch-week conversion push                  | Brand   | Planned  |
+
+## Hold-state rule
+
+- If ticket sales are paused for a specific artist/event, update CTA to `Join waitlist` and remove direct ticket links from scheduled posts before publish.

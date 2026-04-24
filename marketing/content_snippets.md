@@ -43,3 +43,9 @@ Tickets are live for the Latin Acoustic Series.
 If you want the first run before it gets noisy, this is the moment.
 
 Claim your spot: [link]
+
+## Ticket Sales Paused (Artist Confirmation Pending)
+
+Ticket sales for this event are temporarily paused while artist confirmation is finalized.
+
+Join the updates list and we will notify you first if the event opens or is rescheduled: [link]

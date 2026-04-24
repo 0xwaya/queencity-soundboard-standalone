@@ -3,6 +3,7 @@
 Date: 2026-03-02 (America/New_York)
 
 ## Security posture snapshot
+
 - Frontend-only Next.js app with Supabase client dependency.
 - Build/lint currently pass.
 
@@ -27,6 +28,13 @@ Date: 2026-03-02 (America/New_York)
    - Use strict environment separation (dev/staging/prod).
    - Enable CSP and security headers in production hosting config.
 
+## 2026-04-23 addendum
+
+- Added DB + app URL hardening so ticket links must be valid HTTPS.
+- Added poll totals RPC to reduce direct client reads of raw vote rows.
+- Added explicit event-level ticket pause path (Franco De Vita hold) to prevent accidental sales while confirmation is pending.
+
 ## Solidity / Cyfrin note
+
 - No Solidity contracts found in this repo.
 - If contracts are introduced, adopt Cyfrin-aligned practices: CEI, strict auth, fuzz/invariant tests, and explicit threat modeling.
