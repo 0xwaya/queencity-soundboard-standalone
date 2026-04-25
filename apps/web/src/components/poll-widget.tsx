@@ -1,23 +1,24 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { getSupabaseBrowserClient } from "@/lib/supabase";
+import { getSupabaseBrowserClient, hasSupabaseConfig } from "@/lib/supabase";
 import type { Locale } from "@/lib/i18n";
 
 const ARTISTS = [
-  "Franco De Vita",
   "Rudy La Escala",
   "Elena Rose",
-  "Proyecto Uno",
+  "José Feliciano",
+  "Servando y Florentino",
 ];
 
 type VoteCounts = Record<string, number>;
 
 type PollWidgetProps = {
   locale: Locale;
+  variant?: "full" | "compact";
 };
 
-export default function PollWidget({ locale }: PollWidgetProps) {
+export default function PollWidget({ locale, variant = "full" }: PollWidgetProps) {
   const [counts, setCounts] = useState<VoteCounts>({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -28,33 +29,43 @@ export default function PollWidget({ locale }: PollWidgetProps) {
   const copy =
     locale === "es-ve"
       ? {
-          eyebrow: "Voto del público",
-          title: "¿A quién quieres ver en tarima?",
-          body: "Vota por el artista que quieres en vivo. Este dato nos ayuda a cuadrar el próximo show.",
+          eyebrow: "Pulso del público",
+          title: "¿Quién va después?",
+          body: "Vota por el artista que quieres sumar al próximo showcase.",
           tally: "Conteo en vivo",
           total: "votos totales",
           votes: "votos",
           thanks: "Gracias por votar",
           vote: "Votar",
+          offline: "Votación disponible pronto.",
           loadError: "No se pudieron cargar los votos todavía.",
           voteError: "La votación falló. Intenta de nuevo.",
         }
       : {
-          eyebrow: "Fan Vote",
-          title: "Who should we book next?",
-          body: "Vote for the artist you want to see live. We’ll use this signal to lock in the next showcase.",
+          eyebrow: "Fan Signal",
+          title: "Who should follow?",
+          body: "Vote for the artist you want added to the next showcase.",
           tally: "Live tally",
           total: "total votes",
           votes: "votes",
           thanks: "Thanks for voting",
           vote: "Vote",
+          offline: "Voting will be available soon.",
           loadError: "Unable to load votes yet.",
           voteError: "Vote failed. Please try again.",
         };
+  const isCompact = variant === "compact";
+  const pollEnabled = hasSupabaseConfig();
 
   const loadVotes = useCallback(async () => {
     const nextCounts: VoteCounts = {};
     ARTISTS.forEach((artist) => (nextCounts[artist] = 0));
+
+    if (!pollEnabled) {
+      setCounts(nextCounts);
+      setError(copy.offline);
+      return;
+    }
 
     try {
       const supabase = getSupabaseBrowserClient();
@@ -84,9 +95,14 @@ export default function PollWidget({ locale }: PollWidgetProps) {
       setCounts(nextCounts);
       setError(copy.loadError);
     }
-  }, [copy.loadError]);
+  }, [copy.loadError, copy.offline, pollEnabled]);
 
   const handleVote = async (artist: string) => {
+    if (!pollEnabled) {
+      setError(copy.offline);
+      return;
+    }
+
     setLoading(true);
     setError(null);
     try {
@@ -111,39 +127,45 @@ export default function PollWidget({ locale }: PollWidgetProps) {
   }, [loadVotes]);
 
   return (
-    <section className="rounded-3xl border border-white/10 bg-[#0b1228] p-6 md:p-8">
-      <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+    <section
+      className={`rounded-2xl border border-white/10 bg-[#09111f] shadow-[0_18px_50px_rgba(0,0,0,0.18)] ${
+        isCompact ? "p-4" : "p-6 md:p-8"
+      }`}
+    >
+      <div className={`flex flex-col ${isCompact ? "gap-3" : "gap-4 md:flex-row md:items-start md:justify-between"}`}>
         <div>
           <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-fuchsia-300/80">{copy.eyebrow}</p>
-          <h2 className="mt-2 text-2xl font-extrabold tracking-tight text-white md:text-3xl">{copy.title}</h2>
-          <p className="mt-2 max-w-2xl text-sm text-slate-300">{copy.body}</p>
+          <h2 className={`${isCompact ? "mt-1 text-lg" : "mt-2 text-2xl md:text-3xl"} font-extrabold tracking-tight text-white`}>
+            {copy.title}
+          </h2>
+          <p className={`${isCompact ? "mt-1" : "mt-2 max-w-2xl"} text-sm text-slate-300`}>{copy.body}</p>
         </div>
-        <div className="rounded-2xl border border-white/10 bg-[#0e1732] px-4 py-3 text-xs text-slate-300">
-          <p className="font-semibold text-slate-200">{copy.tally}</p>
+        <div className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-slate-300">
+          <p className="font-semibold text-slate-200">{isCompact ? copy.total : copy.tally}</p>
           <p>
-            {totalVotes} {copy.total}
+            {totalVotes} {isCompact ? "" : copy.total}
           </p>
         </div>
       </div>
 
-      <div className="mt-5 grid gap-3">
+      <div className={`${isCompact ? "mt-4" : "mt-5"} grid gap-2.5`}>
         {ARTISTS.map((artist) => {
           const count = counts[artist] ?? 0;
           const pct = totalVotes > 0 ? Math.round((count / totalVotes) * 100) : 0;
 
           return (
-            <div key={artist} className="rounded-2xl border border-white/10 bg-[#0c142a] p-4">
-              <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-                <div>
+            <div key={artist} className="rounded-xl border border-white/10 bg-[#0c142a] p-3">
+              <div className="flex items-center justify-between gap-3">
+                <div className="min-w-0">
                   <p className="text-sm font-semibold text-white">{artist}</p>
                   <p className="text-xs text-slate-400">
                     {count} {copy.votes}
                   </p>
                 </div>
                 <button
-                  disabled={loading || voted}
+                  disabled={!pollEnabled || loading || voted}
                   onClick={() => handleVote(artist)}
-                  className="rounded-lg bg-fuchsia-500 px-4 py-2 text-xs font-semibold text-white transition hover:bg-fuchsia-400 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="shrink-0 rounded-lg bg-fuchsia-500 px-3 py-2 text-xs font-semibold text-white transition hover:bg-fuchsia-400 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {voted ? copy.thanks : copy.vote}
                 </button>

@@ -1,4 +1,4 @@
-import { getSupabaseBrowserClient, type EventItem, type MerchItem } from "@/lib/supabase";
+import { getSupabaseBrowserClient, hasSupabaseConfig, type EventItem, type MerchItem } from "@/lib/supabase";
 import { normalizeHttpsUrl } from "@/lib/url";
 
 export type QueryResult<T> = {
@@ -7,6 +7,10 @@ export type QueryResult<T> = {
 };
 
 export async function getPublishedEvents(): Promise<QueryResult<EventItem[]>> {
+  if (!hasSupabaseConfig()) {
+    return { data: [], error: null };
+  }
+
   try {
     const supabase = getSupabaseBrowserClient();
     const { data, error } = await supabase
@@ -36,6 +40,10 @@ export async function getPublishedEvents(): Promise<QueryResult<EventItem[]>> {
 }
 
 export async function getActiveMerch(): Promise<QueryResult<MerchItem[]>> {
+  if (!hasSupabaseConfig()) {
+    return { data: [], error: null };
+  }
+
   try {
     const supabase = getSupabaseBrowserClient();
     const { data, error } = await supabase

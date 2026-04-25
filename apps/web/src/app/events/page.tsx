@@ -22,8 +22,13 @@ type EventsPageProps = {
   searchParams?: Promise<{ view?: string }>;
 };
 
-function isFrancoDeVitaEvent(input?: string | null): boolean {
-  return (input ?? "").trim().toLowerCase().includes("franco de vita");
+function isProyectoUnoTbdEvent(input?: string | null): boolean {
+  const value = (input ?? "").trim().toLowerCase();
+  return value.includes("proyecto uno") || value.includes("90's hiphop merengue");
+}
+
+function getProyectoUnoHeroImage(input?: string | null): string | null {
+  return isProyectoUnoTbdEvent(input) ? "/proyecto-uno-live.jpg" : null;
 }
 
 export default async function EventsPage({ searchParams }: EventsPageProps) {
@@ -41,7 +46,7 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
       ? {
           eyebrow: "Lineup pa’ la gozadera",
           title: "After Dark Sessions",
-          subtitle: "Artistas latinos en el spotlight. Sonido pro, compra sin estrés. ¡Asegura tu entrada, mi pana!",
+          subtitle: "Proyecto Uno quiere venir a Cincinnati. Fecha por anunciar, lineup activo y sonido pro.",
           seriesLabel: "El flow de la serie",
           seriesTitle: "Madison Theater • Covington, KY",
           seriesMeta: "Puertas 7:00 PM • Show 8:00 PM (¡Llega temprano pa’ agarrar puesto!)",
@@ -56,11 +61,12 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
           spotlight: "Brilla’o",
           compact: "Compacto",
           unavailable: "Los eventos están temporalmente no disponibles. Intenta de nuevo en breve.",
+          dateTbd: "Fecha por anunciar",
         }
       : {
           eyebrow: "Live lineup",
           title: "After Dark Sessions",
-          subtitle: "Spotlighted Latin artists. Premium sound. Seamless checkout. Secure your seat in seconds.",
+          subtitle: "Proyecto Uno wants to perform in Cincinnati. Date to be announced, lineup active, premium sound.",
           seriesLabel: "Series Focus",
           seriesTitle: "Madison Theater • Covington, KY",
           seriesMeta: "Doors 7:00 PM • Showtime 8:00 PM",
@@ -75,6 +81,7 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
           spotlight: "Spotlight",
           compact: "Compact",
           unavailable: "Events are temporarily unavailable. Please try again soon.",
+          dateTbd: "Date TBD",
         };
   const jsonLd =
     events.length > 0
@@ -104,7 +111,7 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
               description:
                 event.description ?? `${event.title} live at ${event.venues?.name ?? "Madison Theater"}.`,
               performer: event.artist_name ? { "@type": "PerformingGroup", name: event.artist_name } : undefined,
-              offers: event.ticket_url && !isFrancoDeVitaEvent(event.artist_name)
+              offers: event.ticket_url && !isProyectoUnoTbdEvent(event.artist_name) && !isProyectoUnoTbdEvent(event.title)
                 ? {
                     "@type": "Offer",
                     url: event.ticket_url,
@@ -119,28 +126,32 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
 
   const mockEvents = [
     {
-      title: "Caracas Unplugged: After Dark Sessions",
-      artist: "Franco De Vita",
-      dateLabel: "May 16 • 8:00 PM",
-      description: "Candlelit storytelling, acoustic classics, and an intimate fan-forward set.",
+      title: "90's Hiphop Merengue: Proyecto Uno Live",
+      artist: "Proyecto Uno",
+      dateLabel: t.dateTbd,
+      description: "Confirmed interest for Cincinnati with the 90's merengue hiphop sound that defined a dance era.",
+      heroImageUrl: "/proyecto-uno-live.jpg",
     },
     {
       title: "Bolero Nights: After Dark Sessions",
       artist: "Rudy La Escala",
       dateLabel: "May 30 • 8:00 PM",
       description: "Romantic boleros, slow-burn grooves, and a close-up theater experience.",
+      heroImageUrl: null,
     },
     {
       title: "Alma Acústica: Intimate Sessions",
       artist: "Elena Rose",
       dateLabel: "June 6 • 8:00 PM",
       description: "Soulful, stripped-down sets with candlelight and premium sound.",
+      heroImageUrl: null,
     },
     {
-      title: "Merenhouse Unplugged: After Dark Energy Session",
-      artist: "Proyecto Uno",
-      dateLabel: "June 27 • 8:00 PM",
-      description: "Merengue + house crossover energy with an acoustic twist.",
+      title: "Noche Acústica: Leyendas y Velas",
+      artist: "José Feliciano",
+      dateLabel: "May 23 • 8:00 PM",
+      description: "Legendary songs, warm strings, and a velvet-lit night of classics.",
+      heroImageUrl: null,
     },
   ];
 
@@ -189,16 +200,27 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
         <div className={`grid gap-5 ${view === "compact" ? "md:grid-cols-1" : "md:grid-cols-2"}`}>
           {mockEvents.map((event, index) => {
             const featured = index === 0;
-            const salesDisabled = isFrancoDeVitaEvent(event.artist);
+            const salesDisabled = isProyectoUnoTbdEvent(event.artist) || isProyectoUnoTbdEvent(event.title);
+            const heroImageUrl = event.heroImageUrl;
             return (
               <article
                 key={event.title}
-                className={`space-y-4 rounded-2xl border bg-[#0b1228] p-5 transition hover:-translate-y-0.5 hover:shadow-[0_18px_40px_rgba(15,23,42,0.35)] ${
+                className={`relative overflow-hidden rounded-2xl border bg-[#0b1228] p-5 transition hover:-translate-y-0.5 hover:shadow-[0_18px_40px_rgba(15,23,42,0.35)] ${
                   featured
                     ? "border-fuchsia-400/60 shadow-[0_0_35px_rgba(217,70,239,0.18)]"
                     : "border-white/10 hover:border-fuchsia-400/30"
                 }`}
               >
+                {heroImageUrl ? (
+                  <>
+                    <div
+                      className="absolute inset-0 bg-cover bg-center opacity-28 mix-blend-screen"
+                      style={{ backgroundImage: `url('${heroImageUrl}')` }}
+                    />
+                    <div className="absolute inset-0 bg-linear-to-r from-[#08111f] via-[#08111f]/82 to-[#08111f]/45" />
+                  </>
+                ) : null}
+                <div className="relative z-10 space-y-4">
                 <div className="flex items-start justify-between gap-3">
                   <h2 className="text-xl font-bold tracking-tight text-slate-100">{event.title}</h2>
                   <span
@@ -216,7 +238,13 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
                   <span className="text-sm font-semibold normal-case tracking-normal text-white">{event.artist}</span>
                 </div>
                 <p className="text-sm text-slate-300">{event.description}</p>
-                <TicketWidget eventTitle={event.title} locale={locale} salesDisabled={salesDisabled} />
+                <TicketWidget
+                  eventTitle={event.title}
+                  locale={locale}
+                  salesDisabled={salesDisabled}
+                  salesDisabledReason={salesDisabled ? "date-tbd" : "paused"}
+                />
+                </div>
               </article>
             );
           })}
@@ -229,16 +257,28 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
         <div className={`grid gap-5 ${view === "compact" ? "md:grid-cols-1" : "md:grid-cols-2"}`}>
           {events.map((event, index) => {
             const featured = index === 0;
-            const salesDisabled = isFrancoDeVitaEvent(event.artist_name) || isFrancoDeVitaEvent(event.title);
+            const dateTbd = isProyectoUnoTbdEvent(event.artist_name) || isProyectoUnoTbdEvent(event.title);
+            const salesDisabled = dateTbd;
+            const heroImageUrl = event.hero_image_url ?? getProyectoUnoHeroImage(event.artist_name) ?? getProyectoUnoHeroImage(event.title);
             return (
             <article
               key={event.id}
-              className={`space-y-4 rounded-2xl border bg-[#0b1228] p-5 transition hover:-translate-y-0.5 hover:shadow-[0_18px_40px_rgba(15,23,42,0.35)] ${
+              className={`relative overflow-hidden rounded-2xl border bg-[#0b1228] p-5 transition hover:-translate-y-0.5 hover:shadow-[0_18px_40px_rgba(15,23,42,0.35)] ${
                 featured
                   ? "border-fuchsia-400/60 shadow-[0_0_35px_rgba(217,70,239,0.18)]"
                   : "border-white/10 hover:border-fuchsia-400/30"
               }`}
             >
+              {heroImageUrl ? (
+                <>
+                  <div
+                    className="absolute inset-0 bg-cover bg-center opacity-28 mix-blend-screen"
+                    style={{ backgroundImage: `url('${heroImageUrl}')` }}
+                  />
+                  <div className="absolute inset-0 bg-linear-to-r from-[#08111f] via-[#08111f]/82 to-[#08111f]/45" />
+                </>
+              ) : null}
+              <div className="relative z-10 space-y-4">
               <div className="flex items-start justify-between gap-3">
                 <h2 className="text-xl font-bold tracking-tight text-slate-100">{event.title}</h2>
                 <span
@@ -250,7 +290,9 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
                 </span>
               </div>
 
-              <p className="text-sm text-slate-300">{new Date(event.event_date).toLocaleString()}</p>
+              <p className="text-sm text-slate-300">
+                {dateTbd ? t.dateTbd : new Date(event.event_date).toLocaleString()}
+              </p>
               {event.venues?.name ? (
                 <p className="text-sm text-slate-400">
                   {event.venues.name}
@@ -269,7 +311,9 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
                 eventTicketUrl={event.ticket_url}
                 locale={locale}
                 salesDisabled={salesDisabled}
+                salesDisabledReason={dateTbd ? "date-tbd" : "paused"}
               />
+              </div>
             </article>
           );
           })}

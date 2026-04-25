@@ -8,6 +8,7 @@ type Props = {
   eventTicketUrl?: string | null;
   locale?: "en" | "es-ve";
   salesDisabled?: boolean;
+  salesDisabledReason?: "paused" | "date-tbd";
 };
 
 export default function TicketWidget({
@@ -15,6 +16,7 @@ export default function TicketWidget({
   eventTicketUrl,
   locale = "en",
   salesDisabled = false,
+  salesDisabledReason = "paused",
 }: Props) {
   const provider = "tickettailor";
   const widgetUrl = normalizeHttpsUrl(process.env.NEXT_PUBLIC_TICKETING_WIDGET_URL);
@@ -25,13 +27,19 @@ export default function TicketWidget({
           title: "Checkout de entradas",
           cta: "Comprar entradas",
           missing: "Falta el link de tickets. Agrega",
-          disabled: "Venta de entradas pausada para este concierto por confirmación pendiente del artista.",
+          disabled:
+            salesDisabledReason === "date-tbd"
+              ? "Entradas disponibles cuando se confirme la fecha."
+              : "Venta de entradas pausada para este concierto.",
         }
       : {
           title: "Ticket Checkout",
           cta: "Buy Tickets",
           missing: "Missing ticket URL. Add",
-          disabled: "Ticket sales are paused for this concert pending artist confirmation.",
+          disabled:
+            salesDisabledReason === "date-tbd"
+              ? "Tickets will open when the date is confirmed."
+              : "Ticket sales are paused for this concert.",
         };
 
   return (

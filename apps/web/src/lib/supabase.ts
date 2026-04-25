@@ -3,12 +3,16 @@ import { createClient } from "@supabase/supabase-js";
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
+export function hasSupabaseConfig() {
+  return Boolean(supabaseUrl && supabaseAnonKey);
+}
+
 export function getSupabaseBrowserClient() {
-  if (!supabaseUrl || !supabaseAnonKey) {
+  if (!hasSupabaseConfig()) {
     throw new Error("Missing Supabase env vars");
   }
 
-  return createClient(supabaseUrl, supabaseAnonKey, {
+  return createClient(supabaseUrl!, supabaseAnonKey!, {
     auth: { persistSession: false },
   });
 }

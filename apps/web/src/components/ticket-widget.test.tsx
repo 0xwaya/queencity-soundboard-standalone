@@ -19,7 +19,7 @@ describe("TicketWidget", () => {
   it("hides checkout when sales are disabled", () => {
     render(
       <TicketWidget
-        eventTitle="Franco De Vita Live"
+        eventTitle="Paused Concert"
         eventTicketUrl="https://tickets.example.com/e/123"
         salesDisabled
       />,

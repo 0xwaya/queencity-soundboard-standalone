@@ -12,6 +12,7 @@ on conflict do nothing;
 delete from public.events
 where title in (
   'Caracas Unplugged: After Dark Sessions',
+  '90''s Hiphop Merengue: Proyecto Uno Live',
   'Noche Acústica: Leyendas y Velas',
   'Bolero Nights: After Dark Sessions',
   'Alma Acústica: Intimate Sessions',
@@ -32,11 +33,11 @@ select
 from (
   values
     (
-      'Caracas Unplugged: After Dark Sessions',
-      'Candlelit storytelling, acoustic classics, and an intimate fan-forward set.',
-      'Franco De Vita',
-      null,
-      '2026-05-16 20:00:00-04'::timestamptz,
+      '90''s Hiphop Merengue: Proyecto Uno Live',
+      'Proyecto Uno confirmed interest in performing in Cincinnati. Date TBD for a 90''s merengue hiphop night.',
+      'Proyecto Uno',
+      '/proyecto-uno-live.jpg',
+      '2026-12-31 20:00:00-05'::timestamptz,
       'published',
       null
     ),
@@ -64,15 +65,6 @@ from (
       'Elena Rose',
       null,
       '2026-06-06 20:00:00-04'::timestamptz,
-      'published',
-      null
-    ),
-    (
-      'Merenhouse Unplugged: After Dark Energy Session',
-      'Merengue + house crossover energy with an acoustic twist.',
-      'Proyecto Uno',
-      null,
-      '2026-06-27 20:00:00-04'::timestamptz,
       'published',
       null
     )
