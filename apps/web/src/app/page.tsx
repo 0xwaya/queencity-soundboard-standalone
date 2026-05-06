@@ -97,7 +97,7 @@ export default async function Home() {
     <div className="space-y-7">
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_22rem]">
         <section className="qcs-ambient-card rounded-3xl p-6 md:p-10">
-          <div className="absolute inset-0 bg-[url('/madison2.JPG')] bg-cover bg-position-[50%_42%] opacity-24" />
+          <div className="absolute inset-0 bg-[url('/madison2.JPG')] bg-cover bg-position-[50%_42%] opacity-40 [filter:contrast(1.14)_saturate(1.1)_brightness(1.03)]" />
           <div className="absolute inset-0 bg-linear-to-r from-[#08111f] via-[#08111f]/88 to-[#08111f]/38" />
           <div className="qcs-card-content max-w-3xl">
             <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-amber-300/90">{t.eyebrow}</p>
@@ -150,7 +150,7 @@ export default async function Home() {
       </div>
 
       <section className="qcs-ambient-card rounded-3xl p-6 md:p-8">
-        <div className="absolute inset-0 bg-[url('/madison3.JPG')] bg-cover bg-position-[50%_70%] opacity-25" />
+        <div className="absolute inset-0 bg-[url('/madison3.JPG')] bg-cover bg-position-[50%_70%] opacity-40 [filter:contrast(1.14)_saturate(1.1)_brightness(1.03)]" />
         <div className="absolute inset-0 bg-linear-to-r from-[#0b1228] via-[#0b1228]/80 to-transparent" />
         <div className="qcs-card-content flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
           <div>
@@ -210,7 +210,7 @@ export default async function Home() {
               {item.heroImage ? (
                 <>
                   <div
-                    className="absolute inset-0 bg-cover bg-center opacity-30 mix-blend-screen"
+                    className="absolute inset-0 bg-cover bg-center opacity-45 [filter:contrast(1.18)_saturate(1.12)_brightness(1.03)]"
                     style={{ backgroundImage: `url('${item.heroImage}')` }}
                   />
                   <div className="absolute inset-0 bg-linear-to-r from-[#0e1732] via-[#0e1732]/84 to-[#0e1732]/58" />

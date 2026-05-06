@@ -214,7 +214,7 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
                 {heroImageUrl ? (
                   <>
                     <div
-                      className="absolute inset-0 bg-cover bg-center opacity-28 mix-blend-screen"
+                      className="absolute inset-0 bg-cover bg-center opacity-45 [filter:contrast(1.18)_saturate(1.12)_brightness(1.03)]"
                       style={{ backgroundImage: `url('${heroImageUrl}')` }}
                     />
                     <div className="absolute inset-0 bg-linear-to-r from-[#08111f] via-[#08111f]/82 to-[#08111f]/45" />
@@ -272,7 +272,7 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
               {heroImageUrl ? (
                 <>
                   <div
-                    className="absolute inset-0 bg-cover bg-center opacity-28 mix-blend-screen"
+                    className="absolute inset-0 bg-cover bg-center opacity-45 [filter:contrast(1.18)_saturate(1.12)_brightness(1.03)]"
                     style={{ backgroundImage: `url('${heroImageUrl}')` }}
                   />
                   <div className="absolute inset-0 bg-linear-to-r from-[#08111f] via-[#08111f]/82 to-[#08111f]/45" />
