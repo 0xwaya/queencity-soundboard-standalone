@@ -134,23 +134,24 @@ export default async function MadisonTheaterPage() {
     <div className="space-y-7">
       <section className="qcs-ambient-card rounded-3xl p-6 md:p-10">
         <div className="absolute inset-0 bg-[url('/madison2.JPG')] bg-cover bg-position-[50%_42%] opacity-42 [filter:contrast(1.12)_saturate(1.04)_brightness(0.95)]" />
-        <div className="absolute inset-0 bg-linear-to-r from-[#08111f] via-[#08111f]/90 to-[#08111f]/45" />
+        <div className="absolute inset-0 bg-linear-to-r from-[#0a1020] via-[#0a1020]/92 to-[#0a1020]/48" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_12%,rgba(212,184,126,0.22),transparent_28rem)]" />
         <div className="qcs-card-content max-w-4xl">
-          <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-amber-300/90">{t.heroEyebrow}</p>
-          <h1 className="mt-3 text-4xl font-extrabold tracking-tight text-white md:text-6xl">{t.heroTitle}</h1>
+          <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-[#d4b87e]">{t.heroEyebrow}</p>
+          <h1 className="mt-3 text-4xl font-extrabold tracking-tight text-[#f4ecda] md:text-6xl">{t.heroTitle}</h1>
           <p className="mt-4 max-w-2xl text-sm leading-6 text-slate-200 md:text-base">{t.heroCopy}</p>
           <div className="mt-6 flex flex-wrap gap-2 text-xs">
             <a
               href="https://maps.google.com/maps?q=Madison+Theater,+Madison+Avenue,+Covington,+KY&hl=en&sll=39.13634,-84.540401&sspn=0.350446,0.727158&hq=Madison+Theater,&hnear=Madison+Ave,+Covington,+Kentucky&t=m&z=14&iwloc=A"
               target="_blank"
               rel="noreferrer noopener"
-              className="rounded-full border border-white/15 bg-white/8 px-3 py-1 text-slate-100 hover:bg-white/12"
+              className="rounded-full border border-[#d4b87e]/35 bg-[#d4b87e]/10 px-3 py-1 text-[#f4ecda] hover:bg-[#d4b87e]/16"
             >
               {t.address}
             </a>
             <a
               href="tel:+1-859-491-2444"
-              className="rounded-full border border-white/15 bg-white/8 px-3 py-1 text-slate-100 hover:bg-white/12"
+              className="rounded-full border border-[#d4b87e]/35 bg-[#d4b87e]/10 px-3 py-1 text-[#f4ecda] hover:bg-[#d4b87e]/16"
             >
               {t.phone}
             </a>
@@ -160,7 +161,7 @@ export default async function MadisonTheaterPage() {
 
       <section className="qcs-ambient-card rounded-3xl p-6 md:p-8">
         <div className="qcs-card-content">
-          <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-cyan-300/80">{t.quickLinksTitle}</p>
+          <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#d4b87e]/90">{t.quickLinksTitle}</p>
           <div className="mt-4 flex flex-wrap gap-3">
             {t.quickLinks.map((link) => (
               <a
@@ -168,7 +169,7 @@ export default async function MadisonTheaterPage() {
                 href={link.href}
                 target="_blank"
                 rel="noreferrer noopener"
-                className="qcs-button-3d rounded-lg border border-white/20 bg-white/8 px-4 py-2.5 text-sm font-semibold text-slate-100 hover:bg-white/12"
+                className="qcs-button-3d rounded-lg border border-[#d4b87e]/35 bg-linear-to-r from-[#101a33]/95 to-[#2a2330]/85 px-4 py-2.5 text-sm font-semibold text-[#f4ecda] hover:from-[#16213f] hover:to-[#342a3a]"
               >
                 {link.label}
               </a>
@@ -179,26 +180,26 @@ export default async function MadisonTheaterPage() {
 
       <section className="qcs-ambient-card rounded-3xl p-6 md:p-8">
         <div className="qcs-card-content">
-          <h2 className="text-2xl font-extrabold tracking-tight text-white md:text-3xl">{t.featuredTitle}</h2>
+          <h2 className="text-2xl font-extrabold tracking-tight text-[#f4ecda] md:text-3xl">{t.featuredTitle}</h2>
           <div className="mt-6 grid gap-4 md:grid-cols-2">
             {featuredEvents.map((event) => (
-              <article key={event.title} className="qcs-glass-panel rounded-2xl p-6">
-                <h3 className="text-xl font-bold tracking-tight text-white">{event.title}</h3>
+              <article key={event.title} className="qcs-glass-panel rounded-2xl border border-[#d4b87e]/20 p-6">
+                <h3 className="text-xl font-bold tracking-tight text-[#f5efe1]">{event.title}</h3>
                 <p className="mt-1 text-sm text-slate-300">{event.support}</p>
-                <p className="mt-1 text-sm text-cyan-200">{event.venue}</p>
+                <p className="mt-1 text-sm text-[#d4b87e]">{event.venue}</p>
                 <div className="mt-4 flex flex-wrap gap-2 text-xs text-slate-300">
-                  <span className="rounded-full border border-white/15 bg-white/8 px-3 py-1">{event.date}</span>
-                  <span className="rounded-full border border-white/15 bg-white/8 px-3 py-1">{event.doors}</span>
-                  <span className="rounded-full border border-white/15 bg-white/8 px-3 py-1">{event.show}</span>
-                  <span className="rounded-full border border-white/15 bg-white/8 px-3 py-1">{event.price}</span>
-                  <span className="rounded-full border border-white/15 bg-white/8 px-3 py-1">{t.allAges}</span>
+                  <span className="rounded-full border border-[#d4b87e]/30 bg-[#d4b87e]/10 px-3 py-1 text-[#f4ecda]">{event.date}</span>
+                  <span className="rounded-full border border-[#d4b87e]/20 bg-white/6 px-3 py-1">{event.doors}</span>
+                  <span className="rounded-full border border-[#d4b87e]/20 bg-white/6 px-3 py-1">{event.show}</span>
+                  <span className="rounded-full border border-[#d4b87e]/20 bg-white/6 px-3 py-1">{event.price}</span>
+                  <span className="rounded-full border border-[#d4b87e]/20 bg-white/6 px-3 py-1">{t.allAges}</span>
                 </div>
                 <div className="mt-5 flex flex-wrap gap-2">
                   <a
                     href={event.detailsUrl}
                     target="_blank"
                     rel="noreferrer noopener"
-                    className="rounded-md border border-white/20 bg-white/6 px-3 py-2 text-xs font-semibold text-slate-100 hover:bg-white/12"
+                    className="rounded-md border border-[#d4b87e]/35 bg-white/6 px-3 py-2 text-xs font-semibold text-[#efe4cd] hover:bg-[#d4b87e]/12"
                   >
                     {t.details}
                   </a>
@@ -206,7 +207,7 @@ export default async function MadisonTheaterPage() {
                     href={event.buyUrl}
                     target="_blank"
                     rel="noreferrer noopener"
-                    className="qcs-button-3d rounded-md bg-fuchsia-500 px-3 py-2 text-xs font-semibold text-white hover:bg-fuchsia-400"
+                    className="qcs-button-3d rounded-md bg-[#c6a15c] px-3 py-2 text-xs font-semibold text-[#0b1020] hover:bg-[#d4b87e]"
                   >
                     {t.buy}
                   </a>
@@ -220,24 +221,24 @@ export default async function MadisonTheaterPage() {
       <section className="qcs-ambient-card rounded-3xl p-6 md:p-8">
         <div className="qcs-card-content">
           <div className="flex items-center justify-between gap-4">
-            <h2 className="text-2xl font-extrabold tracking-tight text-white md:text-3xl">{t.listingTitle}</h2>
+            <h2 className="text-2xl font-extrabold tracking-tight text-[#f4ecda] md:text-3xl">{t.listingTitle}</h2>
             <a
               href="webcal://madisontheater.com/calendar.ics"
-              className="rounded-md border border-white/20 bg-white/6 px-3 py-2 text-xs font-semibold text-slate-100 hover:bg-white/12"
+              className="rounded-md border border-[#d4b87e]/35 bg-[#d4b87e]/10 px-3 py-2 text-xs font-semibold text-[#f4ecda] hover:bg-[#d4b87e]/16"
             >
               {t.subscribe}
             </a>
           </div>
           <div className="mt-5 space-y-3">
             {fullListing.map((event) => (
-              <article key={`${event.date}-${event.title}`} className="qcs-glass-panel rounded-xl p-4">
+              <article key={`${event.date}-${event.title}`} className="qcs-glass-panel rounded-xl border border-[#d4b87e]/15 p-4">
                 <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
                   <div>
-                    <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-cyan-300/80">{event.date}</p>
-                    <h3 className="mt-1 text-lg font-bold text-white">{event.title}</h3>
+                    <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#d4b87e]">{event.date}</p>
+                    <h3 className="mt-1 text-lg font-bold text-[#f4ecda]">{event.title}</h3>
                     <p className="mt-1 text-sm text-slate-300">{event.support}</p>
                     <p className="mt-1 text-sm text-slate-400">{event.time}</p>
-                    <p className="mt-1 text-sm text-cyan-200">{event.venue}</p>
+                    <p className="mt-1 text-sm text-[#d4b87e]">{event.venue}</p>
                     <p className="mt-1 text-xs text-slate-400">{t.allAges}</p>
                   </div>
                   <div className="flex shrink-0 flex-wrap gap-2">
@@ -245,7 +246,7 @@ export default async function MadisonTheaterPage() {
                       href={event.buyUrl}
                       target="_blank"
                       rel="noreferrer noopener"
-                      className="qcs-button-3d rounded-md bg-fuchsia-500 px-3 py-2 text-xs font-semibold text-white hover:bg-fuchsia-400"
+                      className="qcs-button-3d rounded-md bg-[#c6a15c] px-3 py-2 text-xs font-semibold text-[#0b1020] hover:bg-[#d4b87e]"
                     >
                       {t.buy}
                     </a>
@@ -253,7 +254,7 @@ export default async function MadisonTheaterPage() {
                       href={event.detailsUrl}
                       target="_blank"
                       rel="noreferrer noopener"
-                      className="rounded-md border border-white/20 bg-white/6 px-3 py-2 text-xs font-semibold text-slate-100 hover:bg-white/12"
+                      className="rounded-md border border-[#d4b87e]/35 bg-white/6 px-3 py-2 text-xs font-semibold text-[#efe4cd] hover:bg-[#d4b87e]/12"
                     >
                       {t.details}
                     </a>
@@ -268,9 +269,9 @@ export default async function MadisonTheaterPage() {
       <section className="qcs-ambient-card rounded-3xl p-6 md:p-8">
         <div className="qcs-card-content flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
-            <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-amber-300/80">Madison Theater</p>
+            <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#d4b87e]">Madison Theater</p>
             <p className="mt-1 text-sm text-slate-300">{t.address}</p>
-            <a href="tel:+1-859-491-2444" className="mt-1 inline-flex text-sm font-semibold text-white hover:text-cyan-200">
+            <a href="tel:+1-859-491-2444" className="mt-1 inline-flex text-sm font-semibold text-[#f4ecda] hover:text-[#d4b87e]">
               {t.phone}
             </a>
           </div>
@@ -279,7 +280,7 @@ export default async function MadisonTheaterPage() {
               href="https://madisontheater.com/"
               target="_blank"
               rel="noreferrer noopener"
-              className="qcs-button-3d rounded-md bg-fuchsia-500 px-4 py-2 text-sm font-semibold text-white hover:bg-fuchsia-400"
+              className="qcs-button-3d rounded-md bg-[#c6a15c] px-4 py-2 text-sm font-semibold text-[#0b1020] hover:bg-[#d4b87e]"
             >
               {t.officialSite}
             </a>
@@ -287,7 +288,7 @@ export default async function MadisonTheaterPage() {
               href="https://maps.google.com/maps?q=Madison+Theater,+Madison+Avenue,+Covington,+KY&hl=en&sll=39.13634,-84.540401&sspn=0.350446,0.727158&hq=Madison+Theater,&hnear=Madison+Ave,+Covington,+Kentucky&t=m&z=14&iwloc=A"
               target="_blank"
               rel="noreferrer noopener"
-              className="rounded-md border border-white/20 bg-white/6 px-4 py-2 text-sm font-semibold text-slate-100 hover:bg-white/12"
+              className="rounded-md border border-[#d4b87e]/35 bg-white/6 px-4 py-2 text-sm font-semibold text-[#efe4cd] hover:bg-[#d4b87e]/12"
             >
               {t.directions}
             </a>
