@@ -1,20 +1,19 @@
 import type { Metadata } from "next";
-import TrackedLink from "@/components/tracked-link";
 import { buildPageMetadata } from "@/lib/seo";
 import { getLocale } from "@/lib/i18n";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Madison Theater — A New Chapter. A New Partnership.",
+  title: "Madison Theater — Events, FAQ, Contact",
   description:
-    "QueenCity Soundboard is building Cincinnati's premium Latin cultural programming home at Madison Theater in Covington, KY. An invitation for partnership.",
+    "Explore Madison Theater's public venue information: featured events, full event listing, FAQ, contact, and ticket links.",
   path: "/madison-theater",
   keywords: [
-    "Madison Theater partnership",
+    "Madison Theater events",
+    "Madison Theater FAQ",
+    "Madison Theater contact",
     "Covington KY venue",
-    "Latin events Cincinnati",
-    "venue partnership",
-    "live music programming",
-    "QueenCity Soundboard Madison Theater",
+    "ticket links",
+    "live music Covington",
   ],
 });
 
@@ -23,334 +22,274 @@ export default async function MadisonTheaterPage() {
   const t =
     locale === "es-ve"
       ? {
-          heroEyebrow: "Propuesta de asociación",
-          heroTitle: "Una nueva era para Madison Theater.",
+          heroEyebrow: "Sitio oficial",
+          heroTitle: "Madison Theater",
           heroCopy:
-            "Somos QueenCity Soundboard — el operador de eventos culturales latinos de Cincinnati. Queremos construir nuestra casa permanente aquí.",
-          heroCta: "Iniciemos la conversación",
-          heroSecondaryCta: "Ver lo que estamos construyendo",
-          visionEyebrow: "La visión",
-          visionTitle: "Un partnership que llena butacas.",
-          visionCopy:
-            "Traemos el talento, el público y la producción. Tú traes la casa. Juntos construimos la noche cultural más esperada de Covington.",
-          pillars: [
-            {
-              eyebrow: "Programación",
-              title: "Noches vendidas.",
-              body: "Temporadas de Latin acoustic, merengue hiphop, bolero y jazz. Calendarios confirmados, no ideas.",
-            },
-            {
-              eyebrow: "Audiencia",
-              title: "Comunidad ya construida.",
-              body: "Nuestra lista de seguidores bilingüe crece activamente en Cincinnati y Covington. Lista de correo, redes, presencia local.",
-            },
-            {
-              eyebrow: "Ingresos",
-              title: "Modelo de reparto claro.",
-              body: "Revenue sharing en taquilla, patrocinio y merch. Un acuerdo limpio, sin sorpresas.",
-            },
+            "Resumen de la experiencia web actual: eventos destacados, listado completo, FAQ, contacto y links de tickets.",
+          address: "730 Madison Ave, Covington, KY 41011",
+          phone: "859.491.2444",
+          quickLinksTitle: "Navegacion",
+          quickLinks: [
+            { label: "Events", href: "https://madisontheater.com/" },
+            { label: "FAQ", href: "https://madisontheater.com/faq" },
+            { label: "Contact", href: "https://madisontheater.com/contact" },
           ],
-          venueEyebrow: "El escenario",
-          venueTitle: "730 Madison Ave. Covington, KY.",
-          venueCopy:
-            "Un venue histórico con capacidad, acústica y carácter. El tipo de espacio que un artista recuerda y un público busca repetir.",
-          venueSpecs: [
-            { label: "Capacidad", value: "~1,200" },
-            { label: "Ubicación", value: "Covington, KY 41011" },
-            { label: "Tipo", value: "Historic venue" },
-            { label: "Infraestructura", value: "Full stage + PA" },
-          ],
-          weOfferEyebrow: "Qué traemos",
-          weOfferTitle: "No somos promotores. Somos operadores.",
-          weOfferCopy:
-            "Producción de eventos completa, identidad de marca, marketing digital, relaciones con artistas y experiencia de ticketing integrada.",
-          weOfferItems: [
-            "Contactos confirmados con artistas latinos internacionales",
-            "Marketing bilingüe con audiencia activa en Cincinnati y Covington",
-            "Diseño de producción y experiencia de marca en cada evento",
-            "Integración de ticketing (venta online + puerta)",
-            "Presencia social y contenido documental de cada noche",
-          ],
-          proofEyebrow: "Por qué ahora",
-          proofTitle: "El momentum es real.",
-          proofCopy:
-            "Proyecto Uno confirmó interés. La demanda de Latin music en Cincinnati no tiene venue a la altura. Madison Theater puede ser ese lugar.",
-          proofPoints: [
-            { stat: "1er artista", detail: "Proyecto Uno — interés confirmado" },
-            { stat: "2 idiomas", detail: "Audiencia bilingüe EN / ES activa" },
-            { stat: "Covington KY", detail: "Único venue posicionado para esta escena" },
-          ],
-          askEyebrow: "La propuesta",
-          askTitle: "Una conversación. Sin compromiso.",
-          askCopy:
-            "30 minutos. Te mostramos el calendario de artistas, el plan de marketing y el modelo de ingresos. Tú decides si tiene sentido.",
-          askCta: "Escribirnos",
-          askSecondary: "Ver eventos actuales",
-          trustEyebrow: "Presencia local",
-          trustAddress: "Madison Theater, 730 Madison Ave, Covington, KY 41011",
-          trustMaps: "Cómo llegar",
+          featuredTitle: "Featured Events",
+          listingTitle: "Full Event Listing",
+          subscribe: "Subscribe",
+          details: "Event Details",
+          buy: "Buy Tickets",
+          allAges: "All Ages",
+          officialSite: "Official site",
+          directions: "Get directions",
         }
       : {
-          heroEyebrow: "Partnership Proposal",
-          heroTitle: "A new era for Madison Theater.",
+          heroEyebrow: "Official Site",
+          heroTitle: "Madison Theater",
           heroCopy:
-            "We're QueenCity Soundboard — Cincinnati's Latin cultural event operator. We want to build our permanent home here.",
-          heroCta: "Start the conversation",
-          heroSecondaryCta: "See what we're building",
-          visionEyebrow: "The Vision",
-          visionTitle: "A partnership that fills seats.",
-          visionCopy:
-            "We bring the talent, the audience, and the production. You bring the house. Together we build Covington's most anticipated cultural night.",
-          pillars: [
-            {
-              eyebrow: "Programming",
-              title: "Sold-out nights.",
-              body: "Latin acoustic, merengue hiphop, bolero and jazz seasons. Confirmed calendars — not ideas.",
-            },
-            {
-              eyebrow: "Audience",
-              title: "Community already built.",
-              body: "Our bilingual fanbase is actively growing in Cincinnati and Covington. Email list, social presence, local roots.",
-            },
-            {
-              eyebrow: "Revenue",
-              title: "Clean revenue share.",
-              body: "Ticket splits, sponsorship, and merch. A clear, fair deal with no surprises.",
-            },
+            "A mirror of the current public web experience: featured events, full event listing, FAQ, contact, and ticket links.",
+          address: "730 Madison Ave, Covington, KY 41011",
+          phone: "859.491.2444",
+          quickLinksTitle: "Navigation",
+          quickLinks: [
+            { label: "Events", href: "https://madisontheater.com/" },
+            { label: "FAQ", href: "https://madisontheater.com/faq" },
+            { label: "Contact", href: "https://madisontheater.com/contact" },
           ],
-          venueEyebrow: "The Stage",
-          venueTitle: "730 Madison Ave. Covington, KY.",
-          venueCopy:
-            "A historic venue with the capacity, acoustics, and character that artists remember and audiences come back for.",
-          venueSpecs: [
-            { label: "Capacity", value: "~1,200" },
-            { label: "Location", value: "Covington, KY 41011" },
-            { label: "Type", value: "Historic venue" },
-            { label: "Infrastructure", value: "Full stage + PA" },
-          ],
-          weOfferEyebrow: "What We Bring",
-          weOfferTitle: "We're not promoters. We're operators.",
-          weOfferCopy:
-            "Full event production, brand identity, digital marketing, artist relations, and an integrated ticketing experience.",
-          weOfferItems: [
-            "Confirmed contacts with international Latin artists",
-            "Bilingual marketing with an active Cincinnati & Covington audience",
-            "Production design and brand experience at every event",
-            "Integrated ticketing (online sales + door)",
-            "Social presence and documentary content for every night",
-          ],
-          proofEyebrow: "Why Now",
-          proofTitle: "The momentum is real.",
-          proofCopy:
-            "Proyecto Uno confirmed interest. The demand for Latin music in Cincinnati has no venue to match it. Madison Theater can be that place.",
-          proofPoints: [
-            { stat: "1st artist", detail: "Proyecto Uno — interest confirmed" },
-            { stat: "2 languages", detail: "Active bilingual EN / ES audience" },
-            { stat: "Covington KY", detail: "Sole venue positioned for this scene" },
-          ],
-          askEyebrow: "The Offer",
-          askTitle: "One conversation. No commitment.",
-          askCopy:
-            "30 minutes. We show you the artist calendar, the marketing plan, and the revenue model. You decide if it makes sense.",
-          askCta: "Write to us",
-          askSecondary: "Browse current events",
-          trustEyebrow: "Local presence",
-          trustAddress: "Madison Theater, 730 Madison Ave, Covington, KY 41011",
-          trustMaps: "Get directions",
+          featuredTitle: "Featured Events",
+          listingTitle: "Full Event Listing",
+          subscribe: "Subscribe",
+          details: "Event Details",
+          buy: "Buy Tickets",
+          allAges: "All Ages",
+          officialSite: "Official site",
+          directions: "Get directions",
         };
+
+  const featuredEvents = [
+    {
+      title: "Graham Nash - Live on Tour 2026",
+      support: "With Graham Nash",
+      venue: "@ Madison Theater",
+      date: "Jul 28",
+      doors: "Doors: 6:30 PM",
+      show: "Show: 7:30 PM",
+      price: "$60 - $335",
+      detailsUrl: "https://madisontheater.com/events/2026/07/graham-nash-live-on-tour-2026",
+      buyUrl: "https://www.ticketweb.com/event/graham-nash-live-madison-theater-730-tickets/14795033",
+    },
+    {
+      title: "Resonance Theory Presents: BOOGIE T",
+      support: "With Boogie T",
+      venue: "@ Madison Theater",
+      date: "May 9",
+      doors: "Doors: 8:00 PM",
+      show: "Show: 8:00 PM",
+      price: "$20 - $35",
+      detailsUrl: "https://madisontheater.com/events/2026/05/resonance-theory-presents-boogie-t",
+      buyUrl: "https://www.ticketweb.com/event/resonance-theory-presents-boogie-t-madison-theater-730-tickets/14096614",
+    },
+  ];
+
+  const fullListing = [
+    {
+      date: "May 9",
+      title: "Resonance Theory Presents: BOOGIE T",
+      support: "With Boogie T",
+      venue: "@ Madison Theater",
+      time: "Doors 8:00PM / Show 8:00PM",
+      detailsUrl: "https://madisontheater.com/events/2026/05/resonance-theory-presents-boogie-t",
+      buyUrl: "https://www.ticketweb.com/event/resonance-theory-presents-boogie-t-madison-theater-730-tickets/14096614",
+    },
+    {
+      date: "May 12",
+      title: "Unprocessed",
+      support: "With ALLT, Midwinter",
+      venue: "@ Madison Live",
+      time: "Doors 6:30PM / Show 7:30PM",
+      detailsUrl: "https://madisontheater.com/events/2026/05/unprocessed",
+      buyUrl: "https://www.ticketweb.com/event/unprocessed-allt-midwinter-madison-live-734-tickets/14673323",
+    },
+    {
+      date: "May 15",
+      title: "Boy Bandicoot - MULLIGAN Vinyl Release Show",
+      support: "With Moonbeau, Feems",
+      venue: "@ Madison Live",
+      time: "Doors 6:00PM / Show 7:00PM",
+      detailsUrl: "https://madisontheater.com/events/2026/05/boy-bandicoot-mulligan-vinyl-release-show-w-moonbeau-and-feems",
+      buyUrl: "https://www.ticketweb.com/event/boy-bandicoot-mulligan-madison-live-734-tickets/14819523",
+    },
+    {
+      date: "May 16",
+      title: "False Hydra",
+      support: "With Run Rabbit Run, Moneyball, R.A.A.W",
+      venue: "@ The Rooftop",
+      time: "Doors 6:00PM / Show 7:00PM",
+      detailsUrl: "https://madisontheater.com/events/2026/05/false-hyrda",
+      buyUrl: "https://www.ticketweb.com/event/false-hydra-run-rabbit-run-the-rooftop-madison-live-tickets/14824393",
+    },
+  ];
 
   return (
     <div className="space-y-7">
-      {/* ── Hero ── */}
-      <section className="qcs-ambient-card rounded-3xl p-6 md:p-12">
-        <div className="absolute inset-0 bg-[url('/madison1.JPG')] bg-cover bg-center opacity-50 [filter:contrast(1.1)_saturate(0.8)_brightness(0.88)]" />
-        <div className="absolute inset-0 bg-linear-to-r from-[#040810] via-[#040810]/92 to-[#040810]/48" />
-        <div className="absolute inset-0 bg-linear-to-t from-[#040810]/65 via-transparent to-transparent" />
-        <div className="qcs-card-content max-w-3xl py-6 md:py-12">
-          <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-amber-400/90">
-            {t.heroEyebrow}
-          </p>
-          <h1 className="mt-3 text-4xl font-extrabold tracking-tight text-white md:text-6xl lg:text-7xl">
-            {t.heroTitle}
-          </h1>
-          <p className="mt-5 max-w-2xl text-base leading-7 text-slate-200 md:text-lg">
-            {t.heroCopy}
-          </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <a
-              href="mailto:event@queencitysoundboard.com?subject=Madison%20Theater%20Partnership"
-              className="qcs-button-3d rounded-lg bg-amber-500 px-5 py-3 text-sm font-bold text-[#07090f] hover:bg-amber-400"
-            >
-              {t.heroCta}
-            </a>
-            <TrackedLink
-              href="#vision"
-              event="cta_click"
-              label="madison_hero_see_vision"
-              className="rounded-lg border border-white/20 bg-white/8 px-5 py-3 text-sm font-semibold text-slate-100 hover:bg-white/12"
-            >
-              {t.heroSecondaryCta}
-            </TrackedLink>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Vision + Pillars ── */}
-      <section id="vision" className="qcs-ambient-card rounded-3xl p-6 md:p-10">
-        <div className="qcs-card-content">
-          <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-amber-400/80">
-            {t.visionEyebrow}
-          </p>
-          <h2 className="mt-2 text-2xl font-extrabold tracking-tight text-white md:text-3xl">
-            {t.visionTitle}
-          </h2>
-          <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-300 md:text-base">
-            {t.visionCopy}
-          </p>
-          <div className="mt-7 grid gap-4 md:grid-cols-3">
-            {t.pillars.map((p) => (
-              <div key={p.title} className="qcs-glass-panel rounded-2xl p-6">
-                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-amber-300/70">
-                  {p.eyebrow}
-                </p>
-                <h3 className="mt-2 text-lg font-extrabold text-white">{p.title}</h3>
-                <p className="mt-2 text-sm leading-6 text-slate-300">{p.body}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Venue ── */}
       <section className="qcs-ambient-card rounded-3xl p-6 md:p-10">
-        <div className="absolute inset-0 bg-[url('/madison3.JPG')] bg-cover bg-position-[50%_55%] opacity-40 [filter:contrast(1.1)_saturate(0.8)_brightness(0.88)]" />
-        <div className="absolute inset-0 bg-linear-to-r from-[#040810] via-[#040810]/90 to-[#040810]/52" />
-        <div className="qcs-card-content">
-          <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-amber-400/80">
-            {t.venueEyebrow}
-          </p>
-          <h2 className="mt-2 text-2xl font-extrabold tracking-tight text-white md:text-3xl">
-            {t.venueTitle}
-          </h2>
-          <p className="mt-3 max-w-xl text-sm leading-6 text-slate-300 md:text-base">
-            {t.venueCopy}
-          </p>
-          <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
-            {t.venueSpecs.map((s) => (
-              <div key={s.label} className="qcs-glass-panel rounded-xl p-4">
-                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
-                  {s.label}
-                </p>
-                <p className="mt-1.5 text-base font-extrabold text-white">{s.value}</p>
-              </div>
-            ))}
-          </div>
-          <a
-            href="https://maps.google.com/?q=Madison+Theater+730+Madison+Ave+Covington+KY+41011"
-            target="_blank"
-            rel="noreferrer noopener"
-            className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-amber-300 hover:text-amber-200"
-          >
-            {t.trustMaps} ↗
-          </a>
-        </div>
-      </section>
-
-      {/* ── What We Bring ── */}
-      <section className="qcs-ambient-card rounded-3xl p-6 md:p-10">
-        <div className="qcs-card-content md:grid md:grid-cols-2 md:gap-10">
-          <div>
-            <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-cyan-400/80">
-              {t.weOfferEyebrow}
-            </p>
-            <h2 className="mt-2 text-2xl font-extrabold tracking-tight text-white md:text-3xl">
-              {t.weOfferTitle}
-            </h2>
-            <p className="mt-3 text-sm leading-6 text-slate-300 md:text-base">{t.weOfferCopy}</p>
-          </div>
-          <ul className="mt-6 space-y-3 md:mt-0">
-            {t.weOfferItems.map((item) => (
-              <li key={item} className="flex items-start gap-3 text-sm text-slate-200">
-                <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-amber-400/40 bg-amber-400/10 text-[10px] font-bold text-amber-300">
-                  ✓
-                </span>
-                {item}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-
-      {/* ── Proof Points ── */}
-      <section className="qcs-ambient-card rounded-3xl p-6 md:p-10">
-        <div className="absolute inset-0 bg-[url('/proyecto-uno-live.jpg')] bg-cover bg-center opacity-20 [filter:contrast(1.1)_saturate(0.7)_brightness(0.85)]" />
-        <div className="absolute inset-0 bg-linear-to-r from-[#040810] via-[#040810]/90 to-[#040810]/58" />
-        <div className="qcs-card-content">
-          <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-fuchsia-300/80">
-            {t.proofEyebrow}
-          </p>
-          <h2 className="mt-2 text-2xl font-extrabold tracking-tight text-white md:text-3xl">
-            {t.proofTitle}
-          </h2>
-          <p className="mt-3 max-w-xl text-sm leading-6 text-slate-300 md:text-base">
-            {t.proofCopy}
-          </p>
-          <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
-            {t.proofPoints.map((pt) => (
-              <div key={pt.stat} className="qcs-glass-panel rounded-2xl p-5">
-                <p className="text-2xl font-extrabold tracking-tight text-white">{pt.stat}</p>
-                <p className="mt-1 text-sm text-slate-300">{pt.detail}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── The Ask ── */}
-      <section className="qcs-ambient-card rounded-3xl p-6 md:p-12">
-        <div className="absolute inset-0 bg-linear-to-br from-amber-900/10 via-transparent to-transparent" />
-        <div className="qcs-card-content max-w-2xl">
-          <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-amber-400/80">
-            {t.askEyebrow}
-          </p>
-          <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-white md:text-4xl">
-            {t.askTitle}
-          </h2>
-          <p className="mt-4 text-base leading-7 text-slate-200">{t.askCopy}</p>
-          <div className="mt-8 flex flex-wrap gap-3">
+        <div className="absolute inset-0 bg-[url('/madison2.JPG')] bg-cover bg-position-[50%_42%] opacity-42 [filter:contrast(1.12)_saturate(1.04)_brightness(0.95)]" />
+        <div className="absolute inset-0 bg-linear-to-r from-[#08111f] via-[#08111f]/90 to-[#08111f]/45" />
+        <div className="qcs-card-content max-w-4xl">
+          <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-amber-300/90">{t.heroEyebrow}</p>
+          <h1 className="mt-3 text-4xl font-extrabold tracking-tight text-white md:text-6xl">{t.heroTitle}</h1>
+          <p className="mt-4 max-w-2xl text-sm leading-6 text-slate-200 md:text-base">{t.heroCopy}</p>
+          <div className="mt-6 flex flex-wrap gap-2 text-xs">
             <a
-              href="mailto:event@queencitysoundboard.com?subject=Madison%20Theater%20Partnership"
-              className="qcs-button-3d rounded-lg bg-amber-500 px-6 py-3 text-sm font-bold text-[#07090f] hover:bg-amber-400"
-            >
-              {t.askCta}
-            </a>
-            <TrackedLink
-              href="/events"
-              event="cta_click"
-              label="madison_ask_browse_events"
-              className="rounded-lg border border-white/20 bg-white/8 px-5 py-3 text-sm font-semibold text-slate-100 hover:bg-white/12"
-            >
-              {t.askSecondary}
-            </TrackedLink>
-          </div>
-          <div className="mt-8 flex flex-col gap-1.5 border-t border-white/8 pt-6">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
-              {t.trustEyebrow}
-            </p>
-            <p className="mt-0.5 text-xs text-slate-400">{t.trustAddress}</p>
-            <a
-              href="mailto:event@queencitysoundboard.com"
-              className="text-sm font-semibold text-amber-300 hover:text-amber-200"
-            >
-              event@queencitysoundboard.com
-            </a>
-            <a
-              href="https://maps.google.com/?q=Madison+Theater+730+Madison+Ave+Covington+KY+41011"
+              href="https://maps.google.com/maps?q=Madison+Theater,+Madison+Avenue,+Covington,+KY&hl=en&sll=39.13634,-84.540401&sspn=0.350446,0.727158&hq=Madison+Theater,&hnear=Madison+Ave,+Covington,+Kentucky&t=m&z=14&iwloc=A"
               target="_blank"
               rel="noreferrer noopener"
-              className="text-xs font-semibold text-cyan-400 hover:text-cyan-300"
+              className="rounded-full border border-white/15 bg-white/8 px-3 py-1 text-slate-100 hover:bg-white/12"
             >
-              {t.trustMaps} ↗
+              {t.address}
+            </a>
+            <a
+              href="tel:+1-859-491-2444"
+              className="rounded-full border border-white/15 bg-white/8 px-3 py-1 text-slate-100 hover:bg-white/12"
+            >
+              {t.phone}
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section className="qcs-ambient-card rounded-3xl p-6 md:p-8">
+        <div className="qcs-card-content">
+          <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-cyan-300/80">{t.quickLinksTitle}</p>
+          <div className="mt-4 flex flex-wrap gap-3">
+            {t.quickLinks.map((link) => (
+              <a
+                key={link.label}
+                href={link.href}
+                target="_blank"
+                rel="noreferrer noopener"
+                className="qcs-button-3d rounded-lg border border-white/20 bg-white/8 px-4 py-2.5 text-sm font-semibold text-slate-100 hover:bg-white/12"
+              >
+                {link.label}
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="qcs-ambient-card rounded-3xl p-6 md:p-8">
+        <div className="qcs-card-content">
+          <h2 className="text-2xl font-extrabold tracking-tight text-white md:text-3xl">{t.featuredTitle}</h2>
+          <div className="mt-6 grid gap-4 md:grid-cols-2">
+            {featuredEvents.map((event) => (
+              <article key={event.title} className="qcs-glass-panel rounded-2xl p-6">
+                <h3 className="text-xl font-bold tracking-tight text-white">{event.title}</h3>
+                <p className="mt-1 text-sm text-slate-300">{event.support}</p>
+                <p className="mt-1 text-sm text-cyan-200">{event.venue}</p>
+                <div className="mt-4 flex flex-wrap gap-2 text-xs text-slate-300">
+                  <span className="rounded-full border border-white/15 bg-white/8 px-3 py-1">{event.date}</span>
+                  <span className="rounded-full border border-white/15 bg-white/8 px-3 py-1">{event.doors}</span>
+                  <span className="rounded-full border border-white/15 bg-white/8 px-3 py-1">{event.show}</span>
+                  <span className="rounded-full border border-white/15 bg-white/8 px-3 py-1">{event.price}</span>
+                  <span className="rounded-full border border-white/15 bg-white/8 px-3 py-1">{t.allAges}</span>
+                </div>
+                <div className="mt-5 flex flex-wrap gap-2">
+                  <a
+                    href={event.detailsUrl}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    className="rounded-md border border-white/20 bg-white/6 px-3 py-2 text-xs font-semibold text-slate-100 hover:bg-white/12"
+                  >
+                    {t.details}
+                  </a>
+                  <a
+                    href={event.buyUrl}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    className="qcs-button-3d rounded-md bg-fuchsia-500 px-3 py-2 text-xs font-semibold text-white hover:bg-fuchsia-400"
+                  >
+                    {t.buy}
+                  </a>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="qcs-ambient-card rounded-3xl p-6 md:p-8">
+        <div className="qcs-card-content">
+          <div className="flex items-center justify-between gap-4">
+            <h2 className="text-2xl font-extrabold tracking-tight text-white md:text-3xl">{t.listingTitle}</h2>
+            <a
+              href="webcal://madisontheater.com/calendar.ics"
+              className="rounded-md border border-white/20 bg-white/6 px-3 py-2 text-xs font-semibold text-slate-100 hover:bg-white/12"
+            >
+              {t.subscribe}
+            </a>
+          </div>
+          <div className="mt-5 space-y-3">
+            {fullListing.map((event) => (
+              <article key={`${event.date}-${event.title}`} className="qcs-glass-panel rounded-xl p-4">
+                <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+                  <div>
+                    <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-cyan-300/80">{event.date}</p>
+                    <h3 className="mt-1 text-lg font-bold text-white">{event.title}</h3>
+                    <p className="mt-1 text-sm text-slate-300">{event.support}</p>
+                    <p className="mt-1 text-sm text-slate-400">{event.time}</p>
+                    <p className="mt-1 text-sm text-cyan-200">{event.venue}</p>
+                    <p className="mt-1 text-xs text-slate-400">{t.allAges}</p>
+                  </div>
+                  <div className="flex shrink-0 flex-wrap gap-2">
+                    <a
+                      href={event.buyUrl}
+                      target="_blank"
+                      rel="noreferrer noopener"
+                      className="qcs-button-3d rounded-md bg-fuchsia-500 px-3 py-2 text-xs font-semibold text-white hover:bg-fuchsia-400"
+                    >
+                      {t.buy}
+                    </a>
+                    <a
+                      href={event.detailsUrl}
+                      target="_blank"
+                      rel="noreferrer noopener"
+                      className="rounded-md border border-white/20 bg-white/6 px-3 py-2 text-xs font-semibold text-slate-100 hover:bg-white/12"
+                    >
+                      {t.details}
+                    </a>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="qcs-ambient-card rounded-3xl p-6 md:p-8">
+        <div className="qcs-card-content flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div>
+            <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-amber-300/80">Madison Theater</p>
+            <p className="mt-1 text-sm text-slate-300">{t.address}</p>
+            <a href="tel:+1-859-491-2444" className="mt-1 inline-flex text-sm font-semibold text-white hover:text-cyan-200">
+              {t.phone}
+            </a>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <a
+              href="https://madisontheater.com/"
+              target="_blank"
+              rel="noreferrer noopener"
+              className="qcs-button-3d rounded-md bg-fuchsia-500 px-4 py-2 text-sm font-semibold text-white hover:bg-fuchsia-400"
+            >
+              {t.officialSite}
+            </a>
+            <a
+              href="https://maps.google.com/maps?q=Madison+Theater,+Madison+Avenue,+Covington,+KY&hl=en&sll=39.13634,-84.540401&sspn=0.350446,0.727158&hq=Madison+Theater,&hnear=Madison+Ave,+Covington,+Kentucky&t=m&z=14&iwloc=A"
+              target="_blank"
+              rel="noreferrer noopener"
+              className="rounded-md border border-white/20 bg-white/6 px-4 py-2 text-sm font-semibold text-slate-100 hover:bg-white/12"
+            >
+              {t.directions}
             </a>
           </div>
         </div>
