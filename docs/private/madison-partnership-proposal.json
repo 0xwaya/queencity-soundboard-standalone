@@ -1,0 +1,117 @@
+{
+  "artifact": "madison-partnership-proposal",
+  "visibility": "private-internal",
+  "status": "draft-v1",
+  "owner": "QueenCity Soundboard",
+  "createdAt": "2026-05-06",
+  "purpose": "Internal partnership proposal for Madison Theater ownership discussions. Not for public route publishing.",
+  "audience": [
+    "Madison Theater ownership",
+    "Venue operations leadership",
+    "Partnership decision stakeholders"
+  ],
+  "executiveSummary": {
+    "headline": "Build Madison Theater into the flagship home for premium Latin cultural programming in the Cincinnati/Covington market.",
+    "oneSentenceValue": "QueenCity Soundboard operates end-to-end programming, marketing, and ticketing workflows to increase event quality, consistency, and venue revenue.",
+    "primaryAsk": "Schedule a 30-minute alignment meeting to review pilot calendar, economics, and operating model."
+  },
+  "proposalStructure": [
+    {
+      "section": "Market Opportunity",
+      "objective": "Establish demand and whitespace.",
+      "talkingPoints": [
+        "Cincinnati/Covington audience demand for consistent Latin cultural programming is under-served.",
+        "Madison Theater has the capacity, location, and brand recognition to become the default home for this category.",
+        "Programming consistency creates compounding audience trust and repeat attendance."
+      ]
+    },
+    {
+      "section": "Partnership Model",
+      "objective": "Define role clarity and operating responsibilities.",
+      "talkingPoints": [
+        "Venue partner: house operations, technical baseline, and facility readiness.",
+        "QCS partner: artist pipeline, curation, campaign execution, and event production direction.",
+        "Shared planning cadence with a rolling calendar and monthly performance reviews."
+      ]
+    },
+    {
+      "section": "Programming Blueprint",
+      "objective": "Show practical execution.",
+      "talkingPoints": [
+        "Program mix: anchor headliners, curated mid-tier nights, and community growth events.",
+        "Season design: 8-12 week cycle with event spacing to preserve demand quality.",
+        "Audience path: discovery to ticket purchase to repeat attendance and referrals."
+      ]
+    },
+    {
+      "section": "Commercial Framework",
+      "objective": "Align on revenue and upside.",
+      "talkingPoints": [
+        "Ticket revenue participation and transparent settlement process.",
+        "Incremental upside from sponsorship packages and branded activations.",
+        "Merch and premium experience add-ons as secondary revenue streams."
+      ]
+    },
+    {
+      "section": "Pilot Plan",
+      "objective": "Reduce risk and accelerate decision speed.",
+      "talkingPoints": [
+        "Pilot period: first 60-90 days with agreed event count and KPIs.",
+        "Weekly operating sync and post-event review loop.",
+        "Decision gate at pilot close for scale-up commitment."
+      ]
+    }
+  ],
+  "kpis": [
+    {
+      "name": "Ticket conversion rate",
+      "target": "Improve month-over-month during pilot"
+    },
+    {
+      "name": "Average paid attendance",
+      "target": "Sustained growth across pilot events"
+    },
+    {
+      "name": "Repeat attendance",
+      "target": "Track return behavior by campaign cohort"
+    },
+    {
+      "name": "Revenue per event",
+      "target": "Improve through programming quality and upsell"
+    },
+    {
+      "name": "Marketing efficiency",
+      "target": "Lower cost per ticket sold over pilot cycle"
+    }
+  ],
+  "risksAndMitigations": [
+    {
+      "risk": "Inconsistent event cadence",
+      "mitigation": "Use rolling 8-12 week calendar with locked campaign windows."
+    },
+    {
+      "risk": "Audience fragmentation",
+      "mitigation": "Segment campaign messaging by event type and audience intent."
+    },
+    {
+      "risk": "Operational variance on show day",
+      "mitigation": "Standardized show-run checklist and post-mortem protocol."
+    }
+  ],
+  "meetingAgenda30Min": [
+    "5 min - Strategic objective and venue vision",
+    "10 min - Program and campaign blueprint",
+    "10 min - Commercial model and pilot KPIs",
+    "5 min - Next steps and decision timeline"
+  ],
+  "nextSteps": [
+    "Confirm stakeholder attendees for alignment meeting.",
+    "Share preferred pilot window and blackout dates.",
+    "Finalize pilot event mix and draft commercial terms.",
+    "Set kickoff date and reporting cadence."
+  ],
+  "notes": [
+    "This file is intentionally not connected to any public Next.js route.",
+    "Public-facing content remains on /madison-theater and should continue reflecting active site content."
+  ]
+}
