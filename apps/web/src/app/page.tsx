@@ -169,14 +169,14 @@ export default async function Home() {
             >
               madisontheater.com
             </a>
-            <a
+            <TrackedLink
+              href="/madison-theater"
+              event="cta_click"
+              label="home_venue_spotlight_cta"
               className="inline-flex items-center justify-center rounded-lg bg-amber-400 px-4 py-2 text-xs font-semibold text-[#0b1020] hover:bg-amber-300"
-              href="https://madisontheater.com/"
-              target="_blank"
-              rel="noreferrer noopener"
             >
               {t.venueCta}
-            </a>
+            </TrackedLink>
           </div>
         </div>
       </section>
