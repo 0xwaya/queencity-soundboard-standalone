@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import {
-  getServerSupabaseClient,
+  getServerSupabaseClients,
   hasServerSupabaseConfig,
 } from "@/lib/supabase-server";
 
@@ -127,38 +127,38 @@ export async function POST(request: Request) {
 
   const { artist_name } = parsed.data;
 
-  try {
-    const supabase = getServerSupabaseClient();
-    const { error: insertError } = await supabase
-      .from("artist_votes")
-      .insert({ artist_name });
+  let lastError: unknown = null;
 
-    if (insertError) {
-      console.error("[POST /api/poll] Insert failed", insertError);
-      return NextResponse.json(
-        { error: "Vote failed. Please try again." },
-        { status: 500 },
-      );
+  try {
+    for (const supabase of getServerSupabaseClients()) {
+      const { error: insertError } = await supabase
+        .from("artist_votes")
+        .insert({ artist_name });
+
+      if (!insertError) {
+        const response = NextResponse.json({ success: true }, { status: 200 });
+        response.cookies.set(VOTE_COOKIE, "1", {
+          httpOnly: true,
+          sameSite: "lax",
+          path: "/",
+          maxAge: VOTE_COOKIE_MAX_AGE,
+          secure: process.env.NODE_ENV === "production",
+        });
+
+        return response;
+      }
+
+      lastError = insertError;
     }
   } catch (err) {
-    console.error("[POST /api/poll] Unexpected error", err);
-    return NextResponse.json(
-      { error: "Vote failed. Please try again." },
-      { status: 500 },
-    );
+    lastError = err;
   }
 
-  // Set durable anti-spam cookie
-  const response = NextResponse.json({ success: true }, { status: 200 });
-  response.cookies.set(VOTE_COOKIE, "1", {
-    httpOnly: true,
-    sameSite: "lax",
-    path: "/",
-    maxAge: VOTE_COOKIE_MAX_AGE,
-    secure: process.env.NODE_ENV === "production",
-  });
-
-  return response;
+  console.error("[POST /api/poll] All Supabase insert attempts failed", lastError);
+  return NextResponse.json(
+    { error: "Poll backend unavailable. Please try again later." },
+    { status: 503 },
+  );
 }
 
 // --- GET /api/poll  (fetch vote totals) ---
@@ -173,43 +173,51 @@ export async function GET() {
   }
 
   try {
-    const supabase = getServerSupabaseClient();
-    const counts = Object.fromEntries(ARTISTS.map((a) => [a, 0]));
+    let lastError: unknown = null;
 
-    const { data, error: rpcError } = await supabase.rpc(
-      "get_artist_vote_totals",
-    );
+    for (const supabase of getServerSupabaseClients()) {
+      const counts = Object.fromEntries(ARTISTS.map((a) => [a, 0]));
 
-    if (rpcError) {
-      // Fallback: aggregate client-side from raw rows
-      const { data: rows, error: selectError } = await supabase
-        .from("artist_votes")
-        .select("artist_name");
+      const { data, error: rpcError } = await supabase.rpc(
+        "get_artist_vote_totals",
+      );
 
-      if (selectError) throw selectError;
+      if (rpcError) {
+        // Fallback: aggregate client-side from raw rows
+        const { data: rows, error: selectError } = await supabase
+          .from("artist_votes")
+          .select("artist_name");
 
-      (rows ?? []).forEach((row: { artist_name: string }) => {
+        if (selectError) {
+          lastError = selectError;
+          continue;
+        }
+
+        (rows ?? []).forEach((row: { artist_name: string }) => {
+          if (row.artist_name in counts) {
+            counts[row.artist_name as Artist] += 1;
+          }
+        });
+
+        return NextResponse.json({ counts }, { status: 200 });
+      }
+
+      (data ?? []).forEach((row: VoteTotalRow) => {
         if (row.artist_name in counts) {
-          counts[row.artist_name as Artist] += 1;
+          const value = Number(row.vote_count);
+          counts[row.artist_name as Artist] = Number.isFinite(value) ? value : 0;
         }
       });
 
       return NextResponse.json({ counts }, { status: 200 });
-    }
-
-    (data ?? []).forEach((row: VoteTotalRow) => {
-      if (row.artist_name in counts) {
-        const value = Number(row.vote_count);
-        counts[row.artist_name as Artist] = Number.isFinite(value) ? value : 0;
-      }
     });
 
-    return NextResponse.json({ counts }, { status: 200 });
+    console.error("[GET /api/poll] All Supabase read attempts failed", lastError);
+    const counts = Object.fromEntries(ARTISTS.map((a) => [a, 0]));
+    return NextResponse.json({ counts, offline: true }, { status: 200 });
   } catch (err) {
     console.error("[GET /api/poll] Failed to fetch vote totals", err);
-    return NextResponse.json(
-      { error: "Unable to load votes." },
-      { status: 500 },
-    );
+    const counts = Object.fromEntries(ARTISTS.map((a) => [a, 0]));
+    return NextResponse.json({ counts, offline: true }, { status: 200 });
   }
 }

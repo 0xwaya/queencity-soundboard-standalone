@@ -4,13 +4,22 @@ import { describe, expect, it, vi, beforeEach } from "vitest";
 const mockRpc = vi.fn();
 const mockInsert = vi.fn();
 const mockFrom = vi.fn();
+const mockRpcFallback = vi.fn();
+const mockInsertFallback = vi.fn();
+const mockFromFallback = vi.fn();
 
 vi.mock("@/lib/supabase-server", () => ({
   hasServerSupabaseConfig: () => true,
-  getServerSupabaseClient: () => ({
-    rpc: mockRpc,
-    from: mockFrom,
-  }),
+  getServerSupabaseClients: () => [
+    {
+      rpc: mockRpc,
+      from: mockFrom,
+    },
+    {
+      rpc: mockRpcFallback,
+      from: mockFromFallback,
+    },
+  ],
 }));
 
 // Import after mocks are in place
@@ -38,6 +47,9 @@ function makeRequest(opts: { method?: string; body?: unknown; cookies?: string; 
 describe("GET /api/poll", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockRpcFallback.mockReset();
+    mockInsertFallback.mockReset();
+    mockFromFallback.mockReset();
   });
 
   it("returns zero counts for all artists when RPC returns empty data", async () => {
@@ -94,9 +106,31 @@ describe("GET /api/poll", () => {
 
   it("returns 500 on unexpected error", async () => {
     mockRpc.mockRejectedValue(new Error("DB down"));
+    mockRpcFallback.mockRejectedValue(new Error("DB still down"));
 
     const res = await GET();
-    expect(res.status).toBe(500);
+    const json = await res.json();
+
+    expect(res.status).toBe(200);
+    expect(json.offline).toBe(true);
+  });
+
+  it("falls back to the secondary configured client when the preferred one fails", async () => {
+    mockRpc.mockResolvedValue({ data: null, error: { message: "rpc error" } });
+    mockFrom.mockReturnValue({
+      select: () => Promise.resolve({ data: null, error: { message: "missing relation" } }),
+    });
+
+    mockRpcFallback.mockResolvedValue({
+      data: [{ artist_name: "Elena Rose", vote_count: 7 }],
+      error: null,
+    });
+
+    const res = await GET();
+    const json = await res.json();
+
+    expect(res.status).toBe(200);
+    expect(json.counts["Elena Rose"]).toBe(7);
   });
 });
 
@@ -104,6 +138,7 @@ describe("POST /api/poll", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockFrom.mockReturnValue({ insert: mockInsert });
+    mockFromFallback.mockReturnValue({ insert: mockInsertFallback });
   });
 
   it("inserts a valid vote and returns 200", async () => {
@@ -151,11 +186,12 @@ describe("POST /api/poll", () => {
 
   it("returns 500 when DB insert fails", async () => {
     mockInsert.mockResolvedValue({ error: { message: "db error" } });
+    mockInsertFallback.mockResolvedValue({ error: { message: "db error" } });
 
     const req = makeRequest({ method: "POST", body: { artist_name: "Elena Rose" }, ip: "10.0.0.5" });
     const res = await POST(req);
 
-    expect(res.status).toBe(500);
+    expect(res.status).toBe(503);
   });
 
   it("sets the voted cookie on success", async () => {
@@ -167,5 +203,18 @@ describe("POST /api/poll", () => {
     expect(res.status).toBe(200);
     const setCookie = res.headers.get("set-cookie");
     expect(setCookie).toContain("qcs_poll_voted=1");
+  });
+
+  it("falls back to the secondary configured client when the preferred insert fails", async () => {
+    mockInsert.mockResolvedValue({ error: { message: "wrong project" } });
+    mockInsertFallback.mockResolvedValue({ error: null });
+
+    const req = makeRequest({ method: "POST", body: { artist_name: "Elena Rose" }, ip: "10.0.0.7" });
+    const res = await POST(req);
+    const json = await res.json();
+
+    expect(res.status).toBe(200);
+    expect(json.success).toBe(true);
+    expect(mockInsertFallback).toHaveBeenCalledWith({ artist_name: "Elena Rose" });
   });
 });
