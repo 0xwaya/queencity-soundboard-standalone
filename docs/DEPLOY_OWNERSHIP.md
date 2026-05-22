@@ -9,6 +9,9 @@
 - **Root Directory:** `apps/web`
 - **Framework:** `nextjs`
 
+If Vercel shows the project slug `queencity-soundboard`, that is expected; the
+deployment source must still be this standalone GitHub repository.
+
 The legacy monorepo-shaped repo is not the canonical deploy source for this project.
 
 ## Canonical Domains

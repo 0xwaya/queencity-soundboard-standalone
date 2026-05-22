@@ -21,6 +21,9 @@ A web-first, mobile-friendly platform for:
 - **Ticketing:** Ticket Tailor widget
 - **Canonical GitHub repo:** `github.com/0xwaya/queencity-soundboard-standalone`
 
+> Vercel may still show the project slug `queencity-soundboard`; the source repo
+> should remain this standalone repository.
+
 ## Runtime notes
 
 - Locale switching uses a client-side `qcs_locale` preference cookie only. It stores language choice, not auth or sensitive user data.
