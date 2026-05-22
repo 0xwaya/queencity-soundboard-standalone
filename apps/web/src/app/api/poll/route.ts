@@ -17,8 +17,13 @@ type Artist = (typeof ARTISTS)[number];
 // --- Rate limiting (soft, in-memory per serverless instance) ---
 // Acts as a first line of defence against rapid-fire abuse within the same
 // cold-start window.  The durable guard is the HttpOnly cookie set on success.
+// Note: this map is reset on every cold-start / deployment in serverless
+// environments (e.g. Vercel).  That is intentional — it provides best-effort
+// abuse prevention and is not a substitute for a distributed rate-limit store.
 const IP_RATE_WINDOW_MS = 60_000; // 1 minute
 const IP_RATE_MAX_VOTES = 3;
+// Cap map size to prevent memory growth in long-running environments.
+const IP_RATE_MAP_MAX_ENTRIES = 2_000;
 
 type IpEntry = { count: number; windowStart: number };
 const ipRateMap = new Map<string, IpEntry>();
@@ -38,11 +43,20 @@ function isIpRateLimited(ip: string): boolean {
   return false;
 }
 
-// Prune stale IP entries periodically to avoid unbounded memory growth.
+// Prune stale IP entries to avoid unbounded memory growth.
+// Also enforces a hard cap to handle burst scenarios in long-running instances.
 function pruneIpRateMap() {
   const now = Date.now();
   for (const [ip, entry] of ipRateMap.entries()) {
     if (now - entry.windowStart > IP_RATE_WINDOW_MS) {
+      ipRateMap.delete(ip);
+    }
+  }
+  // If the map is still over the cap after expiry pruning, evict oldest entries.
+  if (ipRateMap.size > IP_RATE_MAP_MAX_ENTRIES) {
+    let evict = ipRateMap.size - IP_RATE_MAP_MAX_ENTRIES;
+    for (const ip of ipRateMap.keys()) {
+      if (evict-- <= 0) break;
       ipRateMap.delete(ip);
     }
   }
@@ -74,17 +88,25 @@ export async function POST(request: Request) {
     );
   }
 
-  // IP guard — soft per-instance throttle
+  // IP guard — soft per-instance throttle.
+  // Prefer platform headers (Vercel / Cloudflare) over raw x-forwarded-for,
+  // which can be spoofed by clients that connect without a trusted proxy.
   const ip =
-    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+    request.headers.get("x-real-ip") ??
+    request.headers.get("cf-connecting-ip") ??
+    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
+    null;
 
-  pruneIpRateMap();
-
-  if (isIpRateLimited(ip)) {
-    return NextResponse.json(
-      { error: "Too many votes. Please wait a moment." },
-      { status: 429 },
-    );
+  // If we cannot determine the IP (e.g. local dev behind no proxy) skip the
+  // IP guard and rely solely on the cookie guard above.
+  if (ip !== null) {
+    pruneIpRateMap();
+    if (isIpRateLimited(ip)) {
+      return NextResponse.json(
+        { error: "Too many votes. Please wait a moment." },
+        { status: 429 },
+      );
+    }
   }
 
   // Validate body
