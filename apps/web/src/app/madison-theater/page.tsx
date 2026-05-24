@@ -3,9 +3,9 @@ import { buildPageMetadata } from "@/lib/seo";
 import { getLocale } from "@/lib/i18n";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Madison Theater — Events, FAQ, Contact",
+  title: "Madison Theater Covington KY — Events, FAQ, Contact",
   description:
-    "Explore Madison Theater's public venue information: featured events, full event listing, FAQ, contact, and ticket links.",
+    "Explore Madison Theater in Covington, KY: featured events, full listing, FAQ, contact, and ticket links for Greater Cincinnati live music nights.",
   path: "/madison-theater",
   keywords: [
     "Madison Theater events",
@@ -14,6 +14,8 @@ export const metadata: Metadata = buildPageMetadata({
     "Covington KY venue",
     "ticket links",
     "live music Covington",
+    "Cincinnati live music venue",
+    "Northern Kentucky concerts",
   ],
 });
 
@@ -130,8 +132,61 @@ export default async function MadisonTheaterPage() {
     },
   ];
 
+  const madisonTheaterJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "MusicVenue",
+    "@id": "https://queencitysoundboard.com/madison-theater#venue",
+    name: "Madison Theater",
+    url: "https://queencitysoundboard.com/madison-theater",
+    telephone: "+1-859-491-2444",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "730 Madison Ave",
+      addressLocality: "Covington",
+      addressRegion: "KY",
+      postalCode: "41011",
+      addressCountry: "US",
+    },
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: 39.08332,
+      longitude: -84.50827,
+    },
+    areaServed: [
+      { "@type": "City", name: "Covington" },
+      { "@type": "City", name: "Cincinnati" },
+    ],
+  };
+
+  const breadcrumbsJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: "https://queencitysoundboard.com/",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Madison Theater",
+        item: "https://queencitysoundboard.com/madison-theater",
+      },
+    ],
+  };
+
   return (
     <div className="space-y-7">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(madisonTheaterJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbsJsonLd) }}
+      />
       <section className="qcs-ambient-card rounded-3xl p-6 md:p-10">
         <div className="absolute inset-0 bg-[url('/madison2.JPG')] bg-cover bg-position-[50%_42%] opacity-42 [filter:contrast(1.12)_saturate(1.04)_brightness(0.95)]" />
         <div className="absolute inset-0 bg-linear-to-r from-[#0a1020] via-[#0a1020]/92 to-[#0a1020]/48" />

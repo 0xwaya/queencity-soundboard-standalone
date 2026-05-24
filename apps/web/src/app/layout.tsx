@@ -61,6 +61,8 @@ export const metadata: Metadata = {
   other: {
     "geo.region": "US-KY",
     "geo.placename": "Covington",
+    "geo.position": `${SEO.venue.latitude};${SEO.venue.longitude}`,
+    ICBM: `${SEO.venue.latitude}, ${SEO.venue.longitude}`,
   },
 };
 
@@ -81,9 +83,12 @@ export default async function RootLayout({
   const localBusinessJsonLd = {
     "@context": "https://schema.org",
     "@type": "MusicVenue",
-    name: SEO.siteName,
+    "@id": `${SEO.baseUrl}/#organization`,
+    name: SEO.legalBusinessName,
     url: SEO.baseUrl,
     email: SEO.contactEmail,
+    telephone: SEO.contactPhone,
+    image: `${SEO.baseUrl}${SEO.ogImage}`,
     address: {
       "@type": "PostalAddress",
       streetAddress: SEO.venue.streetAddress,
@@ -92,10 +97,22 @@ export default async function RootLayout({
       postalCode: SEO.venue.postalCode,
       addressCountry: SEO.venue.country,
     },
-    areaServed: [
-      { "@type": "City", name: "Covington" },
-      { "@type": "City", name: "Cincinnati" },
-    ],
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: SEO.venue.latitude,
+      longitude: SEO.venue.longitude,
+    },
+    areaServed: SEO.serviceAreas.map((name) => ({ "@type": "City", name })),
+    sameAs: SEO.socialProfiles,
+  };
+
+  const websiteJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": `${SEO.baseUrl}/#website`,
+    name: SEO.siteName,
+    url: SEO.baseUrl,
+    inLanguage: ["en", "es"],
   };
 
   return (
@@ -104,6 +121,10 @@ export default async function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
         />
         <Header locale={locale} />
         <main className="qcs-shell py-10">{children}</main>

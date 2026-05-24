@@ -1,9 +1,33 @@
 import type { Metadata } from "next";
 import EventsViewToggle from "@/components/events-view-toggle";
 import TicketWidget from "@/components/ticket-widget";
+import TrackedLink from "@/components/tracked-link";
 import { getPublishedEvents } from "@/lib/data";
 import { getLocale } from "@/lib/i18n";
 import { buildPageMetadata } from "@/lib/seo";
+
+const DEFAULT_VENUE_ADDRESS = {
+  streetAddress: "730 Madison Ave",
+  postalCode: "41011",
+  latitude: 39.08332,
+  longitude: -84.50827,
+};
+
+function getVenueSchemaData(event: { venues?: { name?: string | null; city?: string | null; state?: string | null } | null }) {
+  const venueName = event.venues?.name ?? "Madison Theater";
+  const city = event.venues?.city ?? "Covington";
+  const state = event.venues?.state ?? "KY";
+
+  return {
+    venueName,
+    city,
+    state,
+    streetAddress: DEFAULT_VENUE_ADDRESS.streetAddress,
+    postalCode: DEFAULT_VENUE_ADDRESS.postalCode,
+    latitude: DEFAULT_VENUE_ADDRESS.latitude,
+    longitude: DEFAULT_VENUE_ADDRESS.longitude,
+  };
+}
 
 export const metadata: Metadata = buildPageMetadata({
   title: "Upcoming Latin Concerts and Acoustic Nights",
@@ -62,6 +86,9 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
           compact: "Compacto",
           unavailable: "Los eventos están temporalmente no disponibles. Intenta de nuevo en breve.",
           dateTbd: "Fecha por anunciar",
+          cityHubsLabel: "Hubs locales",
+          cityHubCincinnati: "Hub Cincinnati",
+          cityHubCovington: "Hub Covington",
         }
       : {
           eyebrow: "Live lineup",
@@ -82,6 +109,9 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
           compact: "Compact",
           unavailable: "Events are temporarily unavailable. Please try again soon.",
           dateTbd: "Date TBD",
+          cityHubsLabel: "City hubs",
+          cityHubCincinnati: "Cincinnati Hub",
+          cityHubCovington: "Covington Hub",
         };
   const jsonLd =
     events.length > 0
@@ -89,6 +119,9 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
           "@context": "https://schema.org",
           "@type": "ItemList",
           itemListElement: events.map((event, index) => ({
+            ...(() => {
+              const venue = getVenueSchemaData(event);
+              return {
             "@type": "ListItem",
             position: index + 1,
             item: {
@@ -99,17 +132,24 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
               eventStatus: "https://schema.org/EventScheduled",
               location: {
                 "@type": "Place",
-                name: event.venues?.name ?? "Madison Theater",
+                name: venue.venueName,
                 address: {
                   "@type": "PostalAddress",
-                  addressLocality: event.venues?.city ?? "Covington",
-                  addressRegion: event.venues?.state ?? "KY",
+                  streetAddress: venue.streetAddress,
+                  addressLocality: venue.city,
+                  addressRegion: venue.state,
+                  postalCode: venue.postalCode,
                   addressCountry: "US",
+                },
+                geo: {
+                  "@type": "GeoCoordinates",
+                  latitude: venue.latitude,
+                  longitude: venue.longitude,
                 },
               },
               image: ["https://queencitysoundboard.com/qcs-logo.png"],
               description:
-                event.description ?? `${event.title} live at ${event.venues?.name ?? "Madison Theater"}.`,
+                event.description ?? `${event.title} live at ${venue.venueName}.`,
               performer: event.artist_name ? { "@type": "PerformingGroup", name: event.artist_name } : undefined,
               offers: event.ticket_url && !isProyectoUnoTbdEvent(event.artist_name) && !isProyectoUnoTbdEvent(event.title)
                 ? {
@@ -120,6 +160,8 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
                   }
                 : undefined,
             },
+          };
+            })(),
           })),
         }
       : null;
@@ -189,6 +231,25 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
             </span>
           ))}
           <EventsViewToggle view={view} labels={{ spotlight: t.spotlight, compact: t.compact }} />
+        </div>
+        <div className="mt-4 flex flex-wrap items-center gap-2">
+          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-200/85">{t.cityHubsLabel}</p>
+          <TrackedLink
+            href="/cincinnati"
+            event="cta_click"
+            label="events_hero_city_hub_cincinnati"
+            className="rounded-full border border-cyan-300/35 bg-cyan-500/10 px-3 py-1.5 text-xs font-semibold text-cyan-100 hover:bg-cyan-500/20"
+          >
+            {t.cityHubCincinnati}
+          </TrackedLink>
+          <TrackedLink
+            href="/covington"
+            event="cta_click"
+            label="events_hero_city_hub_covington"
+            className="rounded-full border border-amber-300/35 bg-amber-400/10 px-3 py-1.5 text-xs font-semibold text-amber-100 hover:bg-amber-400/20"
+          >
+            {t.cityHubCovington}
+          </TrackedLink>
         </div>
       </section>
 

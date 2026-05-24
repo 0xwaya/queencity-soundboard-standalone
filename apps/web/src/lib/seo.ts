@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 export const SEO = {
   siteName: "QueenCity Soundboard",
+  legalBusinessName: "QueenCity Soundboard",
   baseUrl: "https://queencitysoundboard.com",
   ogImage: "/og-image.png?v=2",
   defaultTitle: "QueenCity Soundboard",
@@ -21,8 +22,22 @@ export const SEO = {
     region: "KY",
     postalCode: "41011",
     country: "US",
+    latitude: 39.08332,
+    longitude: -84.50827,
   },
+  serviceAreas: [
+    "Covington, Kentucky",
+    "Cincinnati, Ohio",
+    "Northern Kentucky",
+    "Greater Cincinnati",
+  ],
+  socialProfiles: [
+    "https://www.instagram.com/queencitysoundboard",
+    "https://www.tiktok.com/@queencitysoundboard",
+    "https://x.com/queencitysound",
+  ],
   contactEmail: "event@queencitysoundboard.com",
+  contactPhone: "+1-859-491-2444",
 };
 
 export function buildPageMetadata(input: {

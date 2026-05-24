@@ -11,44 +11,45 @@ import datetime as dt
 from pathlib import Path
 import requests
 
-BASE_URL = os.getenv("NEXT_PUBLIC_SUPABASE_URL")
+SUPABASE_URL = os.getenv("NEXT_PUBLIC_SUPABASE_URL")
 ANON_KEY = os.getenv("NEXT_PUBLIC_SUPABASE_ANON_KEY")
+POLL_BASE_URL = os.getenv("POLL_BASE_URL") or os.getenv("NEXT_PUBLIC_SITE_URL") or "http://localhost:3000"
 
-if not BASE_URL or not ANON_KEY:
-    raise SystemExit("Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY")
-
-HEADERS = {
-    "apikey": ANON_KEY,
-    "Authorization": f"Bearer {ANON_KEY}",
-}
+HEADERS = None
+if SUPABASE_URL and ANON_KEY:
+    HEADERS = {
+        "apikey": ANON_KEY,
+        "Authorization": f"Bearer {ANON_KEY}",
+    }
 
 
 def fetch_events():
-    url = f"{BASE_URL}/rest/v1/events?select=title,event_date,artist_name,description,status&order=event_date.asc"
+    if not SUPABASE_URL or not HEADERS:
+        return []
+
+    url = f"{SUPABASE_URL}/rest/v1/events?select=title,event_date,artist_name,description,status&order=event_date.asc"
     r = requests.get(url, headers=HEADERS, timeout=20)
     r.raise_for_status()
     return r.json()
 
 
 def fetch_votes():
-    url = f"{BASE_URL}/rest/v1/artist_votes?select=artist_name"
-    r = requests.get(url, headers=HEADERS, timeout=20)
+    url = f"{POLL_BASE_URL.rstrip('/')}/api/votes/totals"
+    r = requests.get(url, timeout=20)
     r.raise_for_status()
-    return r.json()
+    payload = r.json()
+    if isinstance(payload, dict):
+        totals = payload.get("totals")
+        if isinstance(totals, dict):
+            return totals
+    return {}
 
 
 def main():
     events = [e for e in fetch_events() if e.get("status") == "published"]
-    votes = fetch_votes()
+    vote_counts = fetch_votes()
 
-    vote_counts = {}
-    for v in votes:
-        name = v.get("artist_name")
-        if not name:
-            continue
-        vote_counts[name] = vote_counts.get(name, 0) + 1
-
-    top_artist = max(vote_counts, key=vote_counts.get) if vote_counts else "your favorite artist"
+    top_artist = max(vote_counts, key=vote_counts.get) if vote_counts else "Ilegales"
     next_event = events[0] if events else None
 
     today = dt.date.today().isoformat()

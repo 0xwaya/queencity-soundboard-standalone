@@ -1,14 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { POLL_ARTISTS } from "@/lib/poll-artists";
 import type { Locale } from "@/lib/i18n";
 
-const ARTISTS = [
-  "Rudy La Escala",
-  "Elena Rose",
-  "José Feliciano",
-  "Servando y Florentino",
-];
+const VOTED_STORAGE_KEY = "qcs_poll_voted_v2";
 
 type VoteCounts = Record<string, number>;
 
@@ -28,17 +24,17 @@ export default function PollWidget({ locale, variant = "full" }: PollWidgetProps
   const copy =
     locale === "es-ve"
       ? {
-          eyebrow: "Pulso del público",
-          title: "¿Quién va después?",
-          body: "Vota por el artista que quieres sumar al próximo showcase.",
+          eyebrow: "Pulso del publico",
+          title: "Quien va despues?",
+          body: "Vota por el artista que quieres sumar al proximo showcase.",
           tally: "Conteo en vivo",
           total: "votos totales",
           votes: "votos",
           thanks: "Gracias por votar",
           vote: "Votar",
-          offline: "Votación disponible pronto.",
-          loadError: "No se pudieron cargar los votos todavía.",
-          voteError: "La votación falló. Intenta de nuevo.",
+          alreadyVoted: "Ya registramos tu voto en este dispositivo.",
+          loadError: "No se pudieron cargar los votos todavia.",
+          voteError: "La votacion fallo. Intenta de nuevo.",
         }
       : {
           eyebrow: "Fan Signal",
@@ -49,7 +45,7 @@ export default function PollWidget({ locale, variant = "full" }: PollWidgetProps
           votes: "votes",
           thanks: "Thanks for voting",
           vote: "Vote",
-          offline: "Voting will be available soon.",
+          alreadyVoted: "We already recorded your vote on this device.",
           loadError: "Unable to load votes yet.",
           voteError: "Vote failed. Please try again.",
         };
@@ -57,35 +53,21 @@ export default function PollWidget({ locale, variant = "full" }: PollWidgetProps
 
   const loadVotes = useCallback(async () => {
     const nextCounts: VoteCounts = {};
-    ARTISTS.forEach((artist) => (nextCounts[artist] = 0));
+    POLL_ARTISTS.forEach((artist) => (nextCounts[artist] = 0));
 
     try {
-      const res = await fetch("/api/poll", { cache: "no-store" });
-      if (!res.ok) {
-        const json = (await res.json().catch(() => ({}))) as { error?: string };
-        setCounts(nextCounts);
-        setError(json.error ?? copy.loadError);
-        return;
-      }
+      const response = await fetch("/api/votes/totals", {
+        method: "GET",
+        cache: "no-store",
+      });
+      if (!response.ok) throw new Error("vote_totals_failed");
 
-      const json = (await res.json()) as {
-        counts?: Record<string, number>;
-        offline?: boolean;
-        error?: string;
-      };
-
-      if (json.offline) {
-        setCounts(nextCounts);
-        setError(copy.offline);
-        return;
-      }
-
-      if (json.counts) {
-        ARTISTS.forEach((artist) => {
-          const value = json.counts![artist];
-          nextCounts[artist] = typeof value === "number" && Number.isFinite(value) ? value : 0;
-        });
-      }
+      const payload = (await response.json()) as { totals?: Record<string, number> };
+      const totals = payload.totals ?? {};
+      POLL_ARTISTS.forEach((artist) => {
+        const value = Number(totals[artist] ?? 0);
+        nextCounts[artist] = Number.isFinite(value) ? value : 0;
+      });
 
       setCounts(nextCounts);
       setError(null);
@@ -94,34 +76,35 @@ export default function PollWidget({ locale, variant = "full" }: PollWidgetProps
       setCounts(nextCounts);
       setError(copy.loadError);
     }
-  }, [copy.loadError, copy.offline]);
+  }, [copy.loadError]);
 
   const handleVote = async (artist: string) => {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/poll", {
+      const response = await fetch("/api/votes/submit", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ artist_name: artist }),
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ artist }),
       });
 
-      const json = (await res.json().catch(() => ({}))) as {
-        success?: boolean;
-        error?: string;
-      };
-
-      if (!res.ok) {
-        // 429 from the cookie guard means the browser already voted
-        if (res.status === 429 && !json.error?.includes("wait")) {
+      if (!response.ok) {
+        if (response.status === 429) {
+          setError(copy.alreadyVoted);
           setVoted(true);
-        } else {
-          setError(json.error ?? copy.voteError);
+          if (typeof window !== "undefined") {
+            window.localStorage.setItem(VOTED_STORAGE_KEY, "1");
+          }
+          await loadVotes();
+          return;
         }
-        return;
+        throw new Error("vote_submit_failed");
       }
 
       setVoted(true);
+      if (typeof window !== "undefined") {
+        window.localStorage.setItem(VOTED_STORAGE_KEY, "1");
+      }
       await loadVotes();
     } catch (err) {
       console.error("[PollWidget] Failed to submit vote", err);
@@ -131,12 +114,13 @@ export default function PollWidget({ locale, variant = "full" }: PollWidgetProps
     }
   };
 
-  // Initial load
   useEffect(() => {
+    if (typeof window !== "undefined" && window.localStorage.getItem(VOTED_STORAGE_KEY) === "1") {
+      setVoted(true);
+    }
     loadVotes();
   }, [loadVotes]);
 
-  // Live tally: refresh vote counts every 30 s
   useEffect(() => {
     const id = setInterval(() => {
       loadVotes();
@@ -167,7 +151,7 @@ export default function PollWidget({ locale, variant = "full" }: PollWidgetProps
       </div>
 
       <div className={`${isCompact ? "mt-4" : "mt-5"} grid gap-2.5`}>
-        {ARTISTS.map((artist) => {
+        {POLL_ARTISTS.map((artist) => {
           const count = counts[artist] ?? 0;
           const pct = totalVotes > 0 ? Math.round((count / totalVotes) * 100) : 0;
 
@@ -188,9 +172,11 @@ export default function PollWidget({ locale, variant = "full" }: PollWidgetProps
                   {voted ? copy.thanks : copy.vote}
                 </button>
               </div>
-              <div className="mt-3 h-2 rounded-full bg-white/10">
-                <div className="h-2 rounded-full bg-fuchsia-400" style={{ width: `${pct}%` }} />
-              </div>
+              <progress
+                className="mt-3 h-2 w-full appearance-none overflow-hidden rounded-full bg-white/10 [&::-webkit-progress-bar]:bg-white/10 [&::-webkit-progress-value]:bg-fuchsia-400 [&::-moz-progress-bar]:bg-fuchsia-400"
+                value={pct}
+                max={100}
+              />
             </div>
           );
         })}
