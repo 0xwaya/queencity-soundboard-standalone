@@ -51,6 +51,17 @@ export default function PollWidget({ locale, variant = "full" }: PollWidgetProps
         };
   const isCompact = variant === "compact";
 
+  const applyTotals = useCallback((totals?: Record<string, number>) => {
+    if (!totals) return;
+
+    const nextCounts: VoteCounts = {};
+    POLL_ARTISTS.forEach((artist) => {
+      const value = Number(totals[artist] ?? 0);
+      nextCounts[artist] = Number.isFinite(value) ? value : 0;
+    });
+    setCounts(nextCounts);
+  }, []);
+
   const loadVotes = useCallback(async () => {
     const nextCounts: VoteCounts = {};
     POLL_ARTISTS.forEach((artist) => (nextCounts[artist] = 0));
@@ -88,6 +99,8 @@ export default function PollWidget({ locale, variant = "full" }: PollWidgetProps
         body: JSON.stringify({ artist }),
       });
 
+      const payload = (await response.json().catch(() => ({}))) as { totals?: Record<string, number> };
+
       if (!response.ok) {
         if (response.status === 429) {
           setError(copy.alreadyVoted);
@@ -95,11 +108,14 @@ export default function PollWidget({ locale, variant = "full" }: PollWidgetProps
           if (typeof window !== "undefined") {
             window.localStorage.setItem(VOTED_STORAGE_KEY, "1");
           }
+          applyTotals(payload.totals);
           await loadVotes();
           return;
         }
         throw new Error("vote_submit_failed");
       }
+
+      applyTotals(payload.totals);
 
       setVoted(true);
       if (typeof window !== "undefined") {
