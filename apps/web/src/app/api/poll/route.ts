@@ -4,13 +4,9 @@ import {
   getServerSupabaseClient,
   hasServerSupabaseConfig,
 } from "@/lib/supabase-server";
+import { POLL_ARTISTS } from "@/lib/poll-options";
 
-const ARTISTS = [
-  "Rudy La Escala",
-  "Elena Rose",
-  "José Feliciano",
-  "Servando y Florentino",
-] as const;
+const ARTISTS = POLL_ARTISTS;
 
 type Artist = (typeof ARTISTS)[number];
 
@@ -71,6 +67,28 @@ const voteBodySchema = z.object({
   artist_name: z.enum(ARTISTS),
 });
 
+function hasVoteCookie(cookieHeader: string): boolean {
+  return cookieHeader
+    .split(";")
+    .map((part) => part.trim())
+    .some((part) => part === `${VOTE_COOKIE}=1`);
+}
+
+function normalizeIp(input: string | null): string | null {
+  if (!input) return null;
+  const value = input.trim().slice(0, 128);
+  return value.length > 0 ? value : null;
+}
+
+function getClientIp(request: Request): string | null {
+  return normalizeIp(
+    request.headers.get("x-real-ip") ??
+      request.headers.get("cf-connecting-ip") ??
+      request.headers.get("x-forwarded-for")?.split(",")[0] ??
+      null,
+  );
+}
+
 export async function POST(request: Request) {
   if (!hasServerSupabaseConfig()) {
     return NextResponse.json(
@@ -81,21 +99,25 @@ export async function POST(request: Request) {
 
   // Cookie guard — durable per-browser rate limit
   const cookieHeader = request.headers.get("cookie") ?? "";
-  if (cookieHeader.includes(`${VOTE_COOKIE}=1`)) {
+  if (hasVoteCookie(cookieHeader)) {
     return NextResponse.json(
       { error: "You have already voted." },
       { status: 429 },
     );
   }
 
+  const contentType = request.headers.get("content-type") ?? "";
+  if (!contentType.toLowerCase().includes("application/json")) {
+    return NextResponse.json(
+      { error: "Invalid content type." },
+      { status: 415 },
+    );
+  }
+
   // IP guard — soft per-instance throttle.
   // Prefer platform headers (Vercel / Cloudflare) over raw x-forwarded-for,
   // which can be spoofed by clients that connect without a trusted proxy.
-  const ip =
-    request.headers.get("x-real-ip") ??
-    request.headers.get("cf-connecting-ip") ??
-    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-    null;
+  const ip = getClientIp(request);
 
   // If we cannot determine the IP (e.g. local dev behind no proxy) skip the
   // IP guard and rely solely on the cookie guard above.

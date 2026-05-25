@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import TrackedLink from "@/components/tracked-link";
+import { safeJsonLd } from "@/lib/json-ld";
 import { buildPageMetadata, SEO } from "@/lib/seo";
 
 export const metadata: Metadata = buildPageMetadata({
@@ -36,7 +37,7 @@ export default function CincinnatiPage() {
     <div className="space-y-6">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(localJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(localJsonLd) }}
       />
 
       <section className="qcs-ambient-card rounded-3xl p-7 md:p-10">

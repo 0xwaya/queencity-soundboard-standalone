@@ -4,6 +4,7 @@ import TicketWidget from "@/components/ticket-widget";
 import TrackedLink from "@/components/tracked-link";
 import { getPublishedEvents } from "@/lib/data";
 import { getLocale } from "@/lib/i18n";
+import { safeJsonLd } from "@/lib/json-ld";
 import { buildPageMetadata } from "@/lib/seo";
 
 const DEFAULT_VENUE_ADDRESS = {
@@ -202,7 +203,7 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
       {jsonLd ? (
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLd) }}
         />
       ) : null}
       <div className="space-y-6">

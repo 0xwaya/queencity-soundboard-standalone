@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { POLL_ARTISTS } from "@/lib/poll-artists";
+import { POLL_ARTISTS } from "@/lib/poll-options";
 import type { Locale } from "@/lib/i18n";
 
 const VOTED_STORAGE_KEY = "qcs_poll_voted_v2";
@@ -56,14 +56,14 @@ export default function PollWidget({ locale, variant = "full" }: PollWidgetProps
     POLL_ARTISTS.forEach((artist) => (nextCounts[artist] = 0));
 
     try {
-      const response = await fetch("/api/votes/totals", {
+      const response = await fetch("/api/poll", {
         method: "GET",
         cache: "no-store",
       });
       if (!response.ok) throw new Error("vote_totals_failed");
 
-      const payload = (await response.json()) as { totals?: Record<string, number> };
-      const totals = payload.totals ?? {};
+      const payload = (await response.json()) as { counts?: Record<string, number> };
+      const totals = payload.counts ?? {};
       POLL_ARTISTS.forEach((artist) => {
         const value = Number(totals[artist] ?? 0);
         nextCounts[artist] = Number.isFinite(value) ? value : 0;
@@ -82,10 +82,10 @@ export default function PollWidget({ locale, variant = "full" }: PollWidgetProps
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch("/api/votes/submit", {
+      const response = await fetch("/api/poll", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ artist }),
+        body: JSON.stringify({ artist_name: artist }),
       });
 
       if (!response.ok) {

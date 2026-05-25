@@ -4,6 +4,7 @@ import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import Header from "@/components/header";
 import { getLocale } from "@/lib/i18n";
+import { safeJsonLd } from "@/lib/json-ld";
 import { SEO } from "@/lib/seo";
 
 const bebasNeue = Bebas_Neue({
@@ -120,11 +121,11 @@ export default async function RootLayout({
       <body className={`${bebasNeue.variable} bg-[#07090f] text-slate-100 antialiased`}>
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd) }}
+          dangerouslySetInnerHTML={{ __html: safeJsonLd(localBusinessJsonLd) }}
         />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+          dangerouslySetInnerHTML={{ __html: safeJsonLd(websiteJsonLd) }}
         />
         <Header locale={locale} />
         <main className="qcs-shell py-10">{children}</main>

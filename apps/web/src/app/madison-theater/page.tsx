@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { buildPageMetadata } from "@/lib/seo";
 import { getLocale } from "@/lib/i18n";
+import { safeJsonLd } from "@/lib/json-ld";
 
 export const metadata: Metadata = buildPageMetadata({
   title: "Madison Theater Covington KY — Events, FAQ, Contact",
@@ -181,11 +182,11 @@ export default async function MadisonTheaterPage() {
     <div className="space-y-7">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(madisonTheaterJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(madisonTheaterJsonLd) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbsJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(breadcrumbsJsonLd) }}
       />
       <section className="qcs-ambient-card rounded-3xl p-6 md:p-10">
         <div className="absolute inset-0 bg-[url('/madison2.JPG')] bg-cover bg-position-[50%_42%] opacity-42 [filter:contrast(1.12)_saturate(1.04)_brightness(0.95)]" />
