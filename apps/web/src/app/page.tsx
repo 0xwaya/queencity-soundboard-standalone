@@ -6,7 +6,6 @@ import TrackedLink from "@/components/tracked-link";
 import { getLocale } from "@/lib/i18n";
 import { buildPageMetadata } from "@/lib/seo";
 import { getFeaturedLatinEvents } from "@/lib/latin-events";
-import { getPublishedEvents } from "@/lib/data";
 
 export const metadata: Metadata = buildPageMetadata({
   title: "Latin Live Music Events in Cincinnati & Covington",
@@ -22,12 +21,42 @@ export const metadata: Metadata = buildPageMetadata({
   ],
 });
 
+type MadisonTheaterEvent = {
+  title: string;
+  date: string;
+  venue: string;
+  ticketUrl?: string;
+  detailsUrl?: string;
+};
+
+async function fetchMadisonTheaterEvents(): Promise<MadisonTheaterEvent[]> {
+  try {
+    const response = await fetch("https://madisontheater.com/api/events", {
+      method: "GET",
+      next: { revalidate: 3600 },
+      headers: {
+        accept: "application/json",
+        "user-agent": "QueenCitySoundboard/1.0",
+      },
+    });
+
+    if (!response.ok) {
+      return [];
+    }
+
+    const body = (await response.json()) as { events?: MadisonTheaterEvent[] };
+    return body.events ?? [];
+  } catch (error) {
+    console.error("[home] fetch Madison Theater events error", error);
+    return [];
+  }
+}
+
 export default async function Home() {
   const locale = await getLocale();
   
-  // Fetch Madison Theater official events from Supabase
-  const eventsResult = await getPublishedEvents();
-  const madisonEvents = eventsResult.data?.filter((e) => e.venues?.name === "Madison Theater") || [];
+  // Fetch Madison Theater official events from their API
+  const madisonEvents = await fetchMadisonTheaterEvents();
   const firstMadisonEvent = madisonEvents[0];
   
   const t =
