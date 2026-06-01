@@ -29,6 +29,13 @@ A web-first, mobile-friendly platform for:
 - Locale switching uses a client-side `qcs_locale` preference cookie only. It stores language choice, not auth or sensitive user data.
 - Next.js 16 route APIs such as `cookies()` and `searchParams` must be handled asynchronously in server components.
 
+## Recent updates (2026-06-01)
+
+- Poll feature relaxed: allows unlimited repeated votes from same user (configurable via `POLL_RATE_LIMIT_MAX_VOTES` env).
+- Poll UX improved: vote count refreshes every 12s (was 30s), auto-dismiss confirmation banner after 3.5s.
+- Poll backend optimized: Redis batch `mget` support for sub-100ms vote totals retrieval.
+- Added regression tests for poll vote store with `npm test -- --run src/lib/votes-store.test.ts`.
+
 ## Recent updates (2026-04-23)
 
 - Added URL hardening for ticket checkout links (`https://` only) in app + DB constraints.

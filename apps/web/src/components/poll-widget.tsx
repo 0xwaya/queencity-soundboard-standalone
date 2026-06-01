@@ -4,8 +4,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { POLL_ARTISTS } from "@/lib/poll-artists";
 import type { Locale } from "@/lib/i18n";
 
-const VOTED_STORAGE_KEY = "qcs_poll_voted_v2";
-
 type VoteCounts = Record<string, number>;
 
 type PollWidgetProps = {
@@ -17,7 +15,7 @@ export default function PollWidget({ locale, variant = "full" }: PollWidgetProps
   const [counts, setCounts] = useState<VoteCounts>({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [voted, setVoted] = useState(false);
+  const [success, setSuccess] = useState<string | null>(null);
 
   const totalVotes = useMemo(() => Object.values(counts).reduce((sum, val) => sum + val, 0), [counts]);
 
@@ -26,28 +24,28 @@ export default function PollWidget({ locale, variant = "full" }: PollWidgetProps
       ? {
           eyebrow: "Pulso del publico",
           title: "Quien va despues?",
-          body: "Vota por el artista que quieres sumar al proximo showcase.",
+          body: "Vota tantas veces como quieras por el artista que quieres sumar al proximo showcase.",
           tally: "Conteo en vivo",
           total: "votos totales",
           votes: "votos",
           thanks: "Gracias por votar",
           vote: "Votar",
-          alreadyVoted: "Ya registramos tu voto en este dispositivo.",
+          rateLimited: "Demasiados votos muy rapido. Intenta de nuevo en breve.",
           loadError: "No se pudieron cargar los votos todavia.",
           voteError: "La votacion fallo. Intenta de nuevo.",
         }
       : {
           eyebrow: "Fan Signal",
           title: "Who should follow?",
-          body: "Vote for the artist you want added to the next showcase.",
+          body: "Vote as often as you like for the artist you want added to the next showcase.",
           tally: "Live tally",
           total: "total votes",
           votes: "votes",
           thanks: "Thanks for voting",
           vote: "Vote",
-          alreadyVoted: "We already recorded your vote on this device.",
           loadError: "Unable to load votes yet.",
           voteError: "Vote failed. Please try again.",
+          rateLimited: "Too many votes too quickly. Try again shortly.",
         };
   const isCompact = variant === "compact";
 
@@ -103,46 +101,40 @@ export default function PollWidget({ locale, variant = "full" }: PollWidgetProps
 
       if (!response.ok) {
         if (response.status === 429) {
-          setError(copy.alreadyVoted);
-          setVoted(true);
-          if (typeof window !== "undefined") {
-            window.localStorage.setItem(VOTED_STORAGE_KEY, "1");
-          }
-          applyTotals(payload.totals);
-          await loadVotes();
+          setError(copy.rateLimited);
           return;
         }
         throw new Error("vote_submit_failed");
       }
 
       applyTotals(payload.totals);
-
-      setVoted(true);
-      if (typeof window !== "undefined") {
-        window.localStorage.setItem(VOTED_STORAGE_KEY, "1");
-      }
-      await loadVotes();
+      setSuccess(copy.thanks);
+      setError(null);
     } catch (err) {
       console.error("[PollWidget] Failed to submit vote", err);
       setError(copy.voteError);
+      setSuccess(null);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    if (typeof window !== "undefined" && window.localStorage.getItem(VOTED_STORAGE_KEY) === "1") {
-      setVoted(true);
-    }
     loadVotes();
   }, [loadVotes]);
 
   useEffect(() => {
     const id = setInterval(() => {
       loadVotes();
-    }, 30_000);
+    }, 12_000);
     return () => clearInterval(id);
   }, [loadVotes]);
+
+  useEffect(() => {
+    if (!success) return;
+    const timer = setTimeout(() => setSuccess(null), 3500);
+    return () => clearTimeout(timer);
+  }, [success]);
 
   return (
     <section
@@ -181,11 +173,11 @@ export default function PollWidget({ locale, variant = "full" }: PollWidgetProps
                   </p>
                 </div>
                 <button
-                  disabled={loading || voted}
+                  disabled={loading}
                   onClick={() => handleVote(artist)}
                   className="shrink-0 rounded-lg bg-fuchsia-500 px-3 py-2 text-xs font-semibold text-white transition hover:bg-fuchsia-400 disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  {voted ? copy.thanks : copy.vote}
+                  {loading ? "Voting..." : copy.vote}
                 </button>
               </div>
               <progress
@@ -198,6 +190,7 @@ export default function PollWidget({ locale, variant = "full" }: PollWidgetProps
         })}
       </div>
 
+      {success ? <p className="mt-3 text-xs text-emerald-300">{success}</p> : null}
       {error ? <p className="mt-3 text-xs text-amber-300">{error}</p> : null}
     </section>
   );

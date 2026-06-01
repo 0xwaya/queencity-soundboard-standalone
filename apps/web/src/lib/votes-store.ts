@@ -5,7 +5,7 @@ import { dirname } from "node:path";
 
 export type VoteCounts = Record<PollArtist, number>;
 
-const DEFAULT_LIMIT_MAX = 1;
+const DEFAULT_LIMIT_MAX = 0; // 0 means unlimited votes per window
 const DEFAULT_LIMIT_WINDOW_SECONDS = 6 * 60 * 60;
 const DEFAULT_STORAGE_FILE = "/tmp/qcs-poll-votes.json";
 const DEFAULT_AUDIT_FILE = "/tmp/qcs-poll-reset-audit.log";
@@ -46,7 +46,7 @@ function normalizeIp(ip: string): string {
 function canVote(ip: string, now: number): { allowed: boolean; retryAfterSeconds: number } {
   const key = normalizeIp(ip);
   const windowMs = Math.max(1, rateLimitWindowSeconds) * 1000;
-  const maxVotes = Math.max(1, rateLimitMaxVotes);
+  const maxVotes = rateLimitMaxVotes <= 0 ? Infinity : Math.max(1, rateLimitMaxVotes);
   const oldestAllowedTs = now - windowMs;
   const attempts = (ipVotes.get(key) ?? []).filter((ts) => ts >= oldestAllowedTs);
 
@@ -142,9 +142,21 @@ async function getVoteTotalsFromKv(): Promise<VoteCounts> {
     return next;
   }
 
+  const keys = POLL_ARTISTS.map(getVoteKey);
+  if (typeof (redis as any).mget === "function") {
+    const values = (await (redis as any).mget(...keys)) as Array<string | null>;
+    values.forEach((value, index) => {
+      const artist = POLL_ARTISTS[index];
+      const numeric = Number(value);
+      next[artist] = Number.isFinite(numeric) && numeric >= 0 ? Math.floor(numeric) : 0;
+    });
+    return next;
+  }
+
   await Promise.all(
-    POLL_ARTISTS.map(async (artist) => {
-      const value = Number(await redis.get<number>(getVoteKey(artist)));
+    keys.map(async (key, index) => {
+      const value = Number(await redis.get<number>(key));
+      const artist = POLL_ARTISTS[index];
       next[artist] = Number.isFinite(value) && value >= 0 ? Math.floor(value) : 0;
     }),
   );
@@ -161,7 +173,7 @@ async function submitVoteToKv(input: { artist: PollArtist; ipAddress: string; no
   }
 
   const { windowEnd, windowStart } = getWindowMeta(input.now);
-  const maxVotes = Math.max(1, rateLimitMaxVotes);
+  const maxVotes = rateLimitMaxVotes <= 0 ? Infinity : Math.max(1, rateLimitMaxVotes);
   const rateKey = getRateLimitKey(input.ipAddress, windowStart);
   const attempts = await redis.incr(rateKey);
   if (attempts === 1) {
