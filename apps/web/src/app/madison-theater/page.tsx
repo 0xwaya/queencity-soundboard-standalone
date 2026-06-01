@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { buildPageMetadata } from "@/lib/seo";
 import { getLocale } from "@/lib/i18n";
 import { safeJsonLd } from "@/lib/json-ld";
+import { getPublishedEvents } from "@/lib/data";
 
 export const metadata: Metadata = buildPageMetadata({
   title: "Madison Theater Covington KY — Events, FAQ, Contact",
@@ -22,6 +23,41 @@ export const metadata: Metadata = buildPageMetadata({
 
 export default async function MadisonTheaterPage() {
   const locale = await getLocale();
+  
+  // Fetch events from database
+  const eventsResult = await getPublishedEvents();
+  const allEvents = eventsResult.data || [];
+  
+  // Filter for Madison Theater venue
+  const madisonEvents = allEvents
+    .filter((event) => event.venues?.name === "Madison Theater")
+    .sort((a, b) => new Date(a.event_date).getTime() - new Date(b.event_date).getTime());
+  
+  // Take first 2 as featured, rest for full listing
+  const featuredEvents = madisonEvents.slice(0, 2).map((event) => ({
+    title: event.title,
+    support: event.artist_name || event.description || "Live Performance",
+    venue: `@ ${event.venues?.name || "Madison Theater"}`,
+    date: new Date(event.event_date).toLocaleDateString("en-US", { month: "short", day: "numeric" }),
+    time: new Date(event.event_date).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }),
+    price: "$TBA", // TODO: sync from Madison Theater API if available
+    detailsUrl: event.ticket_url || "https://madisontheater.com/events",
+    buyUrl: event.ticket_url || "https://madisontheater.com/events",
+  }));
+
+  const fullListing = madisonEvents.map((event) => ({
+    date: new Date(event.event_date).toLocaleDateString("en-US", { month: "short", day: "numeric" }),
+    title: event.title,
+    support: event.artist_name || event.description || "Live Performance",
+    venue: `@ ${event.venues?.name || "Madison Theater"}`,
+    time: new Date(event.event_date).toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    }),
+    detailsUrl: event.ticket_url || "https://madisontheater.com/events",
+    buyUrl: event.ticket_url || "https://madisontheater.com/events",
+  }));
   const t =
     locale === "es-ve"
       ? {
@@ -69,69 +105,9 @@ export default async function MadisonTheaterPage() {
           directions: "Get directions",
         };
 
-  const featuredEvents = [
-    {
-      title: "Graham Nash - Live on Tour 2026",
-      support: "With Graham Nash",
-      venue: "@ Madison Theater",
-      date: "Jul 28",
-      doors: "Doors: 6:30 PM",
-      show: "Show: 7:30 PM",
-      price: "$60 - $335",
-      detailsUrl: "https://madisontheater.com/events/2026/07/graham-nash-live-on-tour-2026",
-      buyUrl: "https://www.ticketweb.com/event/graham-nash-live-madison-theater-730-tickets/14795033",
-    },
-    {
-      title: "Resonance Theory Presents: BOOGIE T",
-      support: "With Boogie T",
-      venue: "@ Madison Theater",
-      date: "May 9",
-      doors: "Doors: 8:00 PM",
-      show: "Show: 8:00 PM",
-      price: "$20 - $35",
-      detailsUrl: "https://madisontheater.com/events/2026/05/resonance-theory-presents-boogie-t",
-      buyUrl: "https://www.ticketweb.com/event/resonance-theory-presents-boogie-t-madison-theater-730-tickets/14096614",
-    },
-  ];
+  // Note: events are now dynamically fetched from database
+  // and filtered for Madison Theater venue (see above)
 
-  const fullListing = [
-    {
-      date: "May 9",
-      title: "Resonance Theory Presents: BOOGIE T",
-      support: "With Boogie T",
-      venue: "@ Madison Theater",
-      time: "Doors 8:00PM / Show 8:00PM",
-      detailsUrl: "https://madisontheater.com/events/2026/05/resonance-theory-presents-boogie-t",
-      buyUrl: "https://www.ticketweb.com/event/resonance-theory-presents-boogie-t-madison-theater-730-tickets/14096614",
-    },
-    {
-      date: "May 12",
-      title: "Unprocessed",
-      support: "With ALLT, Midwinter",
-      venue: "@ Madison Live",
-      time: "Doors 6:30PM / Show 7:30PM",
-      detailsUrl: "https://madisontheater.com/events/2026/05/unprocessed",
-      buyUrl: "https://www.ticketweb.com/event/unprocessed-allt-midwinter-madison-live-734-tickets/14673323",
-    },
-    {
-      date: "May 15",
-      title: "Boy Bandicoot - MULLIGAN Vinyl Release Show",
-      support: "With Moonbeau, Feems",
-      venue: "@ Madison Live",
-      time: "Doors 6:00PM / Show 7:00PM",
-      detailsUrl: "https://madisontheater.com/events/2026/05/boy-bandicoot-mulligan-vinyl-release-show-w-moonbeau-and-feems",
-      buyUrl: "https://www.ticketweb.com/event/boy-bandicoot-mulligan-madison-live-734-tickets/14819523",
-    },
-    {
-      date: "May 16",
-      title: "False Hydra",
-      support: "With Run Rabbit Run, Moneyball, R.A.A.W",
-      venue: "@ The Rooftop",
-      time: "Doors 6:00PM / Show 7:00PM",
-      detailsUrl: "https://madisontheater.com/events/2026/05/false-hyrda",
-      buyUrl: "https://www.ticketweb.com/event/false-hydra-run-rabbit-run-the-rooftop-madison-live-tickets/14824393",
-    },
-  ];
 
   const madisonTheaterJsonLd = {
     "@context": "https://schema.org",
@@ -245,8 +221,7 @@ export default async function MadisonTheaterPage() {
                 <p className="mt-1 text-sm text-[#d4b87e]">{event.venue}</p>
                 <div className="mt-4 flex flex-wrap gap-2 text-xs text-slate-300">
                   <span className="rounded-full border border-[#d4b87e]/30 bg-[#d4b87e]/10 px-3 py-1 text-[#f4ecda]">{event.date}</span>
-                  <span className="rounded-full border border-[#d4b87e]/20 bg-white/6 px-3 py-1">{event.doors}</span>
-                  <span className="rounded-full border border-[#d4b87e]/20 bg-white/6 px-3 py-1">{event.show}</span>
+                  <span className="rounded-full border border-[#d4b87e]/20 bg-white/6 px-3 py-1">Show: {event.time}</span>
                   <span className="rounded-full border border-[#d4b87e]/20 bg-white/6 px-3 py-1">{event.price}</span>
                   <span className="rounded-full border border-[#d4b87e]/20 bg-white/6 px-3 py-1">{t.allAges}</span>
                 </div>
