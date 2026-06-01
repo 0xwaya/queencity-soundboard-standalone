@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import PollWidget from "@/components/poll-widget";
 import TrackedExternalLink from "@/components/tracked-external-link";
 import TrackedLink from "@/components/tracked-link";
 import { getLocale } from "@/lib/i18n";
 import { buildPageMetadata } from "@/lib/seo";
+import { getFeaturedLatinEvents } from "@/lib/latin-events";
+import { getPublishedEvents } from "@/lib/data";
 
 export const metadata: Metadata = buildPageMetadata({
   title: "Latin Live Music Events in Cincinnati & Covington",
@@ -21,6 +24,12 @@ export const metadata: Metadata = buildPageMetadata({
 
 export default async function Home() {
   const locale = await getLocale();
+  
+  // Fetch Madison Theater official events from Supabase
+  const eventsResult = await getPublishedEvents();
+  const madisonEvents = eventsResult.data?.filter((e) => e.venues?.name === "Madison Theater") || [];
+  const firstMadisonEvent = madisonEvents[0];
+  
   const t =
     locale === "es-ve"
       ? {
@@ -234,6 +243,116 @@ export default async function Home() {
 
         <PollWidget locale={locale} variant="compact" />
       </div>
+
+      {/* Local Events Hero Card */}
+      <section className="rounded-3xl border border-[#d4b87e]/10 shadow-[0_30px_60px_rgba(0,0,0,0.25)]">
+        <div className="absolute inset-0 bg-[url('/proyecto-uno-live.jpg')] bg-cover bg-center opacity-80" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#02050f]/80 via-[#040912]/75 to-[#02050f]/80" />
+        <div className="relative bg-[#101523]/70 p-8 backdrop-blur-sm lg:p-10">
+          {(() => {
+            const featured = getFeaturedLatinEvents();
+            const heroEvent = featured[0];
+            
+            return (
+              <div className="grid gap-8 lg:grid-cols-[1.5fr_0.9fr] lg:items-center">
+                <div>
+                  <p className="text-sm uppercase tracking-[0.24em] text-[#d4b87e]/90">(Local Events) Next Up</p>
+                  <h2 className="mt-4 text-3xl font-extrabold text-[#f4ecda] md:text-4xl">
+                    {heroEvent?.title || "Salsa on the Square"}
+                  </h2>
+                  <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-300 sm:text-base">
+                    {heroEvent?.description || "Discover Latin music and dance events happening in Cincinnati and Northern Kentucky."}
+                  </p>
+                  <div className="mt-6 flex flex-wrap gap-3">
+                    <span className="rounded-full border border-[#d4b87e]/20 bg-[#d4b87e]/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#d4b87e]">
+                      Cincinnati + NKY
+                    </span>
+                    <span className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-200">
+                      Live music, dance, workshops
+                    </span>
+                  </div>
+                </div>
+
+                <div className="rounded-3xl border border-[#d4b87e]/15 bg-[#0f1726]/95 p-6 shadow-[inset_0_0_0_1px_rgba(212,184,126,0.12)]">
+                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#d4b87e]">(local) next event</p>
+                  <h3 className="mt-3 text-xl font-bold text-[#f4ecda]">{heroEvent?.title || "Salsa on the Square"}</h3>
+                  <p className="mt-2 text-sm text-slate-400">{heroEvent?.venue || "Fountain Square"}</p>
+                  <div className="mt-4 flex flex-wrap gap-2 text-xs text-slate-300">
+                    <span className="rounded-full border border-[#d4b87e]/20 bg-white/5 px-2 py-1">{heroEvent?.eventDate || "Year-round"}</span>
+                    <span className="rounded-full border border-[#d4b87e]/20 bg-white/5 px-2 py-1">{heroEvent?.genre || "Salsa"}</span>
+                    <span className="rounded-full border border-[#d4b87e]/20 bg-white/5 px-2 py-1">{heroEvent?.eventType || "Recurring"}</span>
+                  </div>
+                  <p className="mt-4 text-sm leading-6 text-slate-300">{heroEvent?.description || "Free outdoor salsa dancing and live Latin music."}</p>
+                  <div className="mt-6 flex flex-wrap gap-3">
+                    <Link href="/latin-events" className="rounded-full bg-[#d4b87e] px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#0b1020] transition hover:bg-[#f4ea9f]">
+                      Browse all local events
+                    </Link>
+                    <TrackedLink
+                      href="/latin-events"
+                      event="cta_click"
+                      label="home_local_events_jump"
+                      className="rounded-full border border-[#d4b87e]/30 bg-white/5 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-200 transition hover:bg-white/10"
+                    >
+                      View details
+                    </TrackedLink>
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
+        </div>
+      </section>
+
+      {/* Madison Theater Official Events Hero Card */}
+      <section className="rounded-3xl border border-amber-600/10 shadow-[0_30px_60px_rgba(0,0,0,0.25)]">
+        <div className="absolute inset-0 bg-[url('/madison2.JPG')] bg-cover bg-center opacity-70" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0a1020]/90 via-[#0a1020]/85 to-[#0a1020]/75" />
+        <div className="relative bg-[#0f1726]/70 p-8 backdrop-blur-sm lg:p-10">
+          <div className="grid gap-8 lg:grid-cols-[1.5fr_0.9fr] lg:items-center">
+            <div>
+              <p className="text-sm uppercase tracking-[0.24em] text-amber-400/80">(Official Events) Featured</p>
+              <h2 className="mt-4 text-3xl font-extrabold text-[#f4ecda] md:text-4xl">
+                Madison Theater
+              </h2>
+              <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-300 sm:text-base">
+                {firstMadisonEvent?.title || "Historic Covington venue hosting live music, concerts, and cultural events. Check their official schedule for current bookings."}
+              </p>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <span className="rounded-full border border-amber-600/20 bg-amber-600/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-amber-300">
+                  Covington, KY
+                </span>
+                <span className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-200">
+                  Live Music · Theater
+                </span>
+              </div>
+            </div>
+
+            <div className="rounded-3xl border border-amber-600/15 bg-[#0f1726]/95 p-6 shadow-[inset_0_0_0_1px_rgba(180,130,71,0.12)]">
+              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-amber-400">(official) venue</p>
+              <h3 className="mt-3 text-xl font-bold text-[#f4ecda]">Madison Theater</h3>
+              <p className="mt-2 text-sm text-slate-400">730 Madison Ave, Covington, KY 41011</p>
+              <div className="mt-4 flex flex-wrap gap-2 text-xs text-slate-300">
+                <span className="rounded-full border border-amber-600/20 bg-white/5 px-2 py-1">Historic Venue</span>
+                <span className="rounded-full border border-amber-600/20 bg-white/5 px-2 py-1">Est. 1927</span>
+              </div>
+              <p className="mt-4 text-sm leading-6 text-slate-300">A cultural landmark in Northern Kentucky featuring world-class acoustics and intimate performances.</p>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <Link href="/madison-theater" className="rounded-full bg-amber-600 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#0b1020] transition hover:bg-amber-500">
+                  View all events
+                </Link>
+                <a
+                  href="https://madisontheater.com"
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="rounded-full border border-amber-600/30 bg-white/5 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-200 transition hover:bg-white/10"
+                >
+                  Official site
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <section className="qcs-ambient-card rounded-3xl p-6 md:p-8">
         <div className="absolute inset-0 bg-[url('/madison3.JPG')] bg-cover bg-position-[50%_70%] opacity-40 filter-[contrast(1.14)_saturate(1.1)_brightness(1.03)]" />

@@ -4,8 +4,6 @@ import { getLocale } from "@/lib/i18n";
 import { safeJsonLd } from "@/lib/json-ld";
 import { getPublishedEvents } from "@/lib/data";
 
-export const dynamic = "force-dynamic";
-
 export const metadata: Metadata = buildPageMetadata({
   title: "Madison Theater Covington KY — Events, FAQ, Contact",
   description:
@@ -23,92 +21,42 @@ export const metadata: Metadata = buildPageMetadata({
   ],
 });
 
-type MadisonTheaterApiEvent = {
-  title: string;
-  date: string;
-  venue: string;
-  ticketUrl?: string;
-  detailsUrl?: string;
-};
-
-async function fetchMadisonTheaterEvents(): Promise<MadisonTheaterApiEvent[]> {
-  try {
-    const response = await fetch("https://madisontheater.com/api/events", {
-      method: "GET",
-      next: { revalidate: 3600 },
-      headers: {
-        accept: "application/json",
-        "user-agent": "QueenCitySoundboard/1.0",
-      },
-    });
-
-    if (!response.ok) {
-      console.warn("[madison-theater] failed to fetch Madison Theater events", response.status);
-      return [];
-    }
-
-    const body = (await response.json()) as { events?: MadisonTheaterApiEvent[] };
-    return body.events ?? [];
-  } catch (error) {
-    console.error("[madison-theater] fetch error", error);
-    return [];
-  }
-}
-
 export default async function MadisonTheaterPage() {
   const locale = await getLocale();
 
-  const rawMadisonEvents = await fetchMadisonTheaterEvents();
-  let madisonEvents = rawMadisonEvents
-    .map((event) => ({
-      title: event.title,
-      support: event.title.split(" - ")[0] || event.title,
-      venue: `@ ${event.venue || "Madison Theater"}`,
-      eventDate: event.date,
-      detailsUrl: event.detailsUrl || "https://madisontheater.com/events",
-      buyUrl: event.ticketUrl || event.detailsUrl || "https://madisontheater.com/events",
-    }))
-    .sort((a, b) => new Date(a.eventDate).getTime() - new Date(b.eventDate).getTime());
+  // Fetch events from database
+  const eventsResult = await getPublishedEvents();
+  const allEvents = eventsResult.data || [];
 
-  if (madisonEvents.length === 0) {
-    const eventsResult = await getPublishedEvents();
-    const allEvents = eventsResult.data || [];
-    madisonEvents = allEvents
-      .filter((event) => event.venues?.name === "Madison Theater")
-      .map((event) => ({
-        title: event.title,
-        support: event.artist_name || event.description || "Live Performance",
-        venue: `@ ${event.venues?.name || "Madison Theater"}`,
-        eventDate: event.event_date,
-        detailsUrl: event.ticket_url || "https://madisontheater.com/events",
-        buyUrl: event.ticket_url || "https://madisontheater.com/events",
-      }))
-      .sort((a, b) => new Date(a.eventDate).getTime() - new Date(b.eventDate).getTime());
-  }
+  // Filter for Madison Theater venue
+  const madisonEvents = allEvents
+    .filter((event) => event.venues?.name === "Madison Theater")
+    .sort((a, b) => new Date(a.event_date).getTime() - new Date(b.event_date).getTime());
 
+  // Take first 2 as featured, rest for full listing
   const featuredEvents = madisonEvents.slice(0, 2).map((event) => ({
     title: event.title,
-    support: event.support,
-    venue: event.venue,
-    date: new Date(event.eventDate).toLocaleDateString("en-US", { month: "short", day: "numeric" }),
-    time: new Date(event.eventDate).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }),
+    support: event.artist_name || event.description || "Live Performance",
+    venue: `@ ${event.venues?.name || "Madison Theater"}`,
+    date: new Date(event.event_date).toLocaleDateString("en-US", { month: "short", day: "numeric" }),
+    time: new Date(event.event_date).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }),
     price: "$TBA",
-    detailsUrl: event.detailsUrl,
-    buyUrl: event.buyUrl,
+    detailsUrl: event.ticket_url || "https://madisontheater.com/events",
+    buyUrl: event.ticket_url || "https://madisontheater.com/events",
   }));
 
   const fullListing = madisonEvents.map((event) => ({
-    date: new Date(event.eventDate).toLocaleDateString("en-US", { month: "short", day: "numeric" }),
+    date: new Date(event.event_date).toLocaleDateString("en-US", { month: "short", day: "numeric" }),
     title: event.title,
-    support: event.support,
-    venue: event.venue,
-    time: new Date(event.eventDate).toLocaleTimeString("en-US", {
+    support: event.artist_name || event.description || "Live Performance",
+    venue: `@ ${event.venues?.name || "Madison Theater"}`,
+    time: new Date(event.event_date).toLocaleTimeString("en-US", {
       hour: "2-digit",
       minute: "2-digit",
       hour12: true,
     }),
-    detailsUrl: event.detailsUrl,
-    buyUrl: event.buyUrl,
+    detailsUrl: event.ticket_url || "https://madisontheater.com/events",
+    buyUrl: event.ticket_url || "https://madisontheater.com/events",
   }));
   const t =
     locale === "es-ve"
@@ -157,8 +105,8 @@ export default async function MadisonTheaterPage() {
           directions: "Get directions",
         };
 
-  // Note: events are scraped from Madison Theater's official schedule API first.
-  // Supabase is only used as a fallback source for older or promoted event data.
+  // Note: events are now dynamically fetched from Supabase
+  // and filtered for Madison Theater venue (see above)
 
   const madisonTheaterJsonLd = {
     "@context": "https://schema.org",
