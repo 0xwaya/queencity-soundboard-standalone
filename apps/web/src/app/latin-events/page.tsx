@@ -168,6 +168,61 @@ export default async function LatinEventsPage() {
           </p>
         </section>
 
+        <section className="mb-12">
+          <div className="qcs-ambient-card rounded-3xl border border-[#d4b87e]/10 bg-[#101523]/95 p-8 shadow-[0_30px_60px_rgba(0,0,0,0.25)]">
+            <div className="grid gap-8 lg:grid-cols-[1.5fr_0.9fr] lg:items-center">
+              <div>
+                <p className="text-sm uppercase tracking-[0.24em] text-[#d4b87e]/90">Local Latin Events</p>
+                <h2 className="mt-4 text-3xl font-extrabold text-[#f4ecda] md:text-4xl">
+                  Your Cincinnati/NKY Latin event guide
+                </h2>
+                <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-300 sm:text-base">
+                  Curated weekly anticipation for salsa nights, bachata parties, reggaeton dance floors, Latin jazz concerts,
+                  and family-friendly festivals. Local venues, upcoming highlights, and direct ticket links in one place.
+                </p>
+                <div className="mt-6 flex flex-wrap gap-3">
+                  <span className="rounded-full border border-[#d4b87e]/20 bg-[#d4b87e]/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#d4b87e]">
+                    Cincinnati + NKY
+                  </span>
+                  <span className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-200">
+                    Live music, dance, workshops
+                  </span>
+                  <span className="rounded-full border border-[#c6a15c]/20 bg-[#c6a15c]/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#f4ecda]">
+                    Updated June 2026
+                  </span>
+                </div>
+              </div>
+
+              <div className="rounded-3xl border border-[#d4b87e]/15 bg-[#0f1726]/95 p-6 shadow-[inset_0_0_0_1px_rgba(212,184,126,0.12)]">
+                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#d4b87e]">Next spotlight</p>
+                <h3 className="mt-3 text-xl font-bold text-[#f4ecda]">{upcoming[0]?.title || featured[0]?.title || latinEvents[0].title}</h3>
+                <p className="mt-2 text-sm text-slate-400">
+                  {upcoming[0]?.venue || featured[0]?.venue || latinEvents[0].venue}
+                </p>
+                <div className="mt-4 flex flex-wrap gap-2 text-xs text-slate-300">
+                  <span className="rounded-full border border-[#d4b87e]/20 bg-white/5 px-2 py-1">{upcoming[0]?.eventDate || featured[0]?.eventDate || latinEvents[0].eventDate}</span>
+                  <span className="rounded-full border border-[#d4b87e]/20 bg-white/5 px-2 py-1">{upcoming[0]?.genre || featured[0]?.genre || latinEvents[0].genre}</span>
+                  <span className="rounded-full border border-[#d4b87e]/20 bg-white/5 px-2 py-1">{upcoming[0]?.eventType || featured[0]?.eventType || latinEvents[0].eventType}</span>
+                </div>
+                <p className="mt-4 text-sm leading-6 text-slate-300">
+                  {upcoming[0]?.description || featured[0]?.description || latinEvents[0].description}
+                </p>
+                <div className="mt-6 flex flex-wrap gap-3">
+                  <Link href="/latin-events" className="rounded-full bg-[#d4b87e] px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#0b1020] transition hover:bg-[#f4ea9f]">
+                    Browse all events
+                  </Link>
+                  <a
+                    href="#all-events"
+                    className="rounded-full border border-[#d4b87e]/30 bg-white/5 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-200 transition hover:bg-white/10"
+                  >
+                    Jump to listings
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Featured Events */}
         {featured.length > 0 && (
           <section className="mb-16">
@@ -207,7 +262,7 @@ export default async function LatinEventsPage() {
         )}
 
         {/* All Events by Type */}
-        <section className="mb-16">
+        <section id="all-events" className="mb-16">
           <h2 className="mb-6 text-2xl font-extrabold text-[#f4ecda]">All Latin Events</h2>
           <div className="grid gap-5">
             {latinEvents.map((event) => (
