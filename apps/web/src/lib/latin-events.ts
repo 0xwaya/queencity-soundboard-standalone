@@ -84,25 +84,6 @@ export const latinEvents: LatinEvent[] = [
     featured: true,
     lastUpdated: "2026-06-01",
   },
-  {
-    id: "proyecto-uno-merengue-hiphop",
-    title: "90's Hiphop Merengue with Proyecto Uno",
-    description: "Project Uno confirmed interest in a Cincinnati show. This event spotlights their iconic urban merengue sound for a night of dancing, nostalgia, and Latin party energy.",
-    venue: "Madison Theater",
-    venueCity: "Covington",
-    eventDate: "Date TBD",
-    startTime: "8:00 PM",
-    genre: "Merengue",
-    eventType: "Live Music",
-    ageRestriction: "All Ages",
-    ticketPrice: "TBD",
-    ticketUrl: "https://proyectouno.net/event/",
-    websiteUrl: "https://proyectouno.net",
-    instagramHandle: "@proyectounoofficial",
-    notes: "Official event interest confirmed; date and venue are being finalized. Sign up for updates and expect high-energy merengue hiphop hits.",
-    featured: true,
-    lastUpdated: "2026-06-01",
-  },
 
   // UPCOMING SPECIFIC EVENTS
   {

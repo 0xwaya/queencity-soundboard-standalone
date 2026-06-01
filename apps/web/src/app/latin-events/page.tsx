@@ -26,7 +26,7 @@ export default async function LatinEventsPage() {
   const locale = await getLocale();
   const featured = getFeaturedLatinEvents();
   const upcoming = getUpcomingLatinEvents(90);
-  const heroEvent = latinEvents.find((event) => event.id === "proyecto-uno-merengue-hiphop") || featured[0] || latinEvents[0];
+  const heroEvent = featured[0] || latinEvents[0];
   const cincyEvents = getEventsByCity("Cincinnati");
   const koventucky = getEventsByCity("Covington");
   const newportEvents = getEventsByCity("Newport");
