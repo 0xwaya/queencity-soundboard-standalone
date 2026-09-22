@@ -16,9 +16,10 @@ export async function getPublishedEvents(): Promise<QueryResult<EventItem[]>> {
     const { data, error } = await supabase
       .from("events")
       .select(
-        "id,title,artist_name,description,hero_image_url,event_date,status,venue_id,ticket_url,venues(id,name,city,state)",
+        "id,title,artist_name,description,hero_image_url,event_date,status,venue_id,ticket_url,category,is_promoted,venues(id,name,city,state)",
       )
       .eq("status", "published")
+      .order("is_promoted", { ascending: false })
       .order("event_date", { ascending: true });
 
     if (error) {
@@ -37,6 +38,12 @@ export async function getPublishedEvents(): Promise<QueryResult<EventItem[]>> {
     console.error("[getPublishedEvents] Unexpected failure", err);
     return { data: [], error: "Unable to load events right now." };
   }
+}
+
+/** Distinct categories present among published events, for filter pills. */
+export function getEventCategories(events: EventItem[]): string[] {
+  const categories = new Set(events.map((event) => event.category).filter((c): c is string => Boolean(c)));
+  return Array.from(categories).sort();
 }
 
 export async function getActiveMerch(): Promise<QueryResult<MerchItem[]>> {

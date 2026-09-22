@@ -34,6 +34,8 @@ export type EventItem = {
   status: "draft" | "published" | "archived";
   venue_id: string | null;
   ticket_url?: string | null;
+  category?: string;
+  is_promoted?: boolean;
   venues?: Venue | null;
 };
 

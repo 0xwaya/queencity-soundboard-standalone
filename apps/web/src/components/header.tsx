@@ -19,9 +19,8 @@ export default function Header({ locale }: HeaderProps) {
   const toggleLabel = locale === "es-ve" ? "EN" : "ES";
   const nav = [
     { href: "/events", label: locale === "es-ve" ? "Eventos" : "Events" },
-    { href: "/latin-events", label: locale === "es-ve" ? "Latino" : "Latin" },
-    { href: "/madison-theater", label: locale === "es-ve" ? "Madison Theater" : "Madison Theater" },
     { href: "/merch", label: locale === "es-ve" ? "Merch" : "Merch" },
+    { href: "/partners", label: locale === "es-ve" ? "Colabora" : "Partners" },
     { href: "/about", label: locale === "es-ve" ? "Nosotros" : "About" },
   ];
 

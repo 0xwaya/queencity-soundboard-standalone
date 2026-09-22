@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { recordResetAuditForApi, resetVoteTotalsForApi } from "@/lib/votes-store";
+import { getActivePollArtists } from "@/lib/poll-artists";
 
 export const dynamic = "force-dynamic";
 
@@ -51,7 +52,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
-  const totals = await resetVoteTotalsForApi();
+  const totals = await resetVoteTotalsForApi(await getActivePollArtists());
   await recordResetAuditForApi({
     outcome: "success",
     ipAddress,

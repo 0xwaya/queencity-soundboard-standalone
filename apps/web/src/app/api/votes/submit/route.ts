@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { submitVote } from "@/lib/votes-store";
+import { getActivePollArtists } from "@/lib/poll-artists";
 
 const voteSchema = z.object({
   artist: z.string().trim().min(1),
@@ -33,6 +34,7 @@ export async function POST(request: Request) {
   const result = await submitVote({
     artist: parsed.data.artist,
     ipAddress: getClientIp(request.headers),
+    validArtists: await getActivePollArtists(),
   });
 
   if (!result.ok && result.reason === "invalid_artist") {

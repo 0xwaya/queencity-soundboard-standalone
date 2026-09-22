@@ -1,10 +1,31 @@
-# Madison Theater Event Sync Automation
+# Event Sync Automation
 
 ## Overview
 
-Automated weekly sync of events from [Madison Theater's official website](https://madisontheater.com/) to QueenCity Soundboard.
+QueenCity Soundboard pulls events from multiple sources into a single `events` table, tagged with
+`source` (`sync` | `manual` | `submission`) and `category`. Priority order for onboarding a new venue:
 
-## How It Works
+1. **Aggregator API** (Ticketmaster Discovery API, SeatGeek) — covers most touring/mid-size venues with
+   minimal maintenance and gives a "trending" signal for free.
+2. **Direct venue scrape** — only for venues an aggregator doesn't cover but which expose a public
+   JSON/API endpoint (see the Madison Theater sync below as the reference pattern).
+3. **Manual entry / `/partners` submission** — everything else (small/indie rooms, one-off shows).
+
+## Sync Functions
+
+### `sync-ticketmaster-events`
+
+- Queries the [Ticketmaster Discovery API](https://developer.ticketmaster.com/) (free tier) for
+  Music/Comedy/Sports events within a 25-mile radius of Cincinnati.
+- Maps Ticketmaster classifications to our `category` enum, upserts the venue by name if missing,
+  and upserts events on `(title, event_date)`.
+- Requires `TICKETMASTER_API_KEY` — without it the function returns `503 not_configured` instead of failing.
+- Deploy: `cd supabase/functions/sync-ticketmaster-events && supabase functions deploy sync-ticketmaster-events --no-verify-jwt`
+
+### `sync-madison-theater-events`
+
+Automated weekly sync of events from [Madison Theater's official website](https://madisontheater.com/).
+Kept as the reference implementation for scraping a venue that isn't covered by an aggregator.
 
 1. **Supabase Edge Function** (`sync-madison-theater-events`)
    - Fetches event data from Madison Theater's public API
@@ -27,6 +48,7 @@ supabase functions deploy sync-madison-theater-events --no-verify-jwt
 ```
 
 ### 2. Create Weekly Cron Job
+
 
 In Supabase SQL editor:
 

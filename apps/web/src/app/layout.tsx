@@ -60,10 +60,8 @@ export const metadata: Metadata = {
     icon: "/qcs-logo-animated.gif",
   },
   other: {
-    "geo.region": "US-KY",
-    "geo.placename": "Covington",
-    "geo.position": `${SEO.venue.latitude};${SEO.venue.longitude}`,
-    ICBM: `${SEO.venue.latitude}, ${SEO.venue.longitude}`,
+    "geo.region": "US-OH",
+    "geo.placename": "Cincinnati",
   },
 };
 
@@ -83,26 +81,13 @@ export default async function RootLayout({
       : "Built by";
   const localBusinessJsonLd = {
     "@context": "https://schema.org",
-    "@type": "MusicVenue",
+    "@type": "Organization",
     "@id": `${SEO.baseUrl}/#organization`,
     name: SEO.legalBusinessName,
     url: SEO.baseUrl,
     email: SEO.contactEmail,
     telephone: SEO.contactPhone,
     image: `${SEO.baseUrl}${SEO.ogImage}`,
-    address: {
-      "@type": "PostalAddress",
-      streetAddress: SEO.venue.streetAddress,
-      addressLocality: SEO.venue.city,
-      addressRegion: SEO.venue.region,
-      postalCode: SEO.venue.postalCode,
-      addressCountry: SEO.venue.country,
-    },
-    geo: {
-      "@type": "GeoCoordinates",
-      latitude: SEO.venue.latitude,
-      longitude: SEO.venue.longitude,
-    },
     areaServed: SEO.serviceAreas.map((name) => ({ "@type": "City", name })),
     sameAs: SEO.socialProfiles,
   };

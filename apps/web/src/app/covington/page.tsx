@@ -4,14 +4,14 @@ import { safeJsonLd } from "@/lib/json-ld";
 import { buildPageMetadata, SEO } from "@/lib/seo";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Covington KY Concerts, Venue Nights, and Tickets",
+  title: "Covington KY Events, Venue Nights, and Tickets",
   description:
     "Find Covington, KY live music nights, venue highlights, and direct ticket links for QueenCity Soundboard experiences.",
   path: "/covington",
   keywords: [
-    "Covington KY concerts",
+    "Covington KY events",
     "Covington live music",
-    "Madison Theater Covington",
+    "Northern Kentucky events",
     "Northern Kentucky nightlife",
   ],
 });
@@ -41,16 +41,14 @@ export default function CovingtonPage() {
       />
 
       <section className="qcs-ambient-card rounded-3xl p-7 md:p-10">
-        <div className="absolute inset-0 bg-[url('/madison3.JPG')] bg-cover bg-position-[50%_66%] opacity-34 [filter:contrast(1.08)_saturate(1.02)_brightness(0.96)]" />
-        <div className="absolute inset-0 bg-linear-to-r from-[#0b1228] via-[#0b1228]/88 to-[#0b1228]/45" />
         <div className="qcs-card-content max-w-3xl">
           <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-amber-300/85">Local Hub</p>
           <h1 className="mt-3 text-3xl font-extrabold tracking-tight text-white md:text-5xl">
-            Covington, KY Music Nights with a Historic Stage
+            Covington, KY Events Across the River
           </h1>
           <p className="mt-4 text-sm leading-6 text-slate-200 md:text-base">
-            Covington anchors the QueenCity Soundboard experience through Madison Theater: a historic room designed for immersive sound,
-            intimate artist moments, and high-energy community nights connected to the broader Cincinnati market.
+            Northern Kentucky&apos;s live music and culture scene, tracked alongside Cincinnati — historic rooms,
+            riverfront series, and neighborhood nights, all in one calendar.
           </p>
         </div>
       </section>
@@ -71,12 +69,12 @@ export default function CovingtonPage() {
               View Upcoming Events
             </TrackedLink>
             <TrackedLink
-              href="/madison-theater"
+              href="/partners"
               event="cta_click"
-              label="covington_view_madison_theater"
+              label="covington_partner"
               className="rounded-lg border border-white/20 bg-white/6 px-4 py-2.5 text-sm font-semibold text-slate-100 hover:bg-white/10"
             >
-              Venue Details and FAQ
+              Submit an Event
             </TrackedLink>
             <TrackedLink
               href="/cincinnati"

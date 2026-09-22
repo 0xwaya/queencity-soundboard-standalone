@@ -1,9 +1,9 @@
-import { POLL_ARTISTS, isPollArtist, type PollArtist } from "@/lib/poll-artists";
+import { POLL_ARTISTS } from "@/lib/poll-artists";
 import { Redis } from "@upstash/redis";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
 
-export type VoteCounts = Record<PollArtist, number>;
+export type VoteCounts = Record<string, number>;
 
 const DEFAULT_LIMIT_MAX = 0; // 0 means unlimited votes per window
 const DEFAULT_LIMIT_WINDOW_SECONDS = 6 * 60 * 60;
@@ -32,8 +32,8 @@ const redis = hasKvEnv
 
 hydrateFromDisk();
 
-function initializeCounts(): VoteCounts {
-  return POLL_ARTISTS.reduce((acc, artist) => {
+function initializeCounts(artists: string[] = [...POLL_ARTISTS]): VoteCounts {
+  return artists.reduce((acc, artist) => {
     acc[artist] = 0;
     return acc;
   }, {} as VoteCounts);
@@ -62,8 +62,12 @@ function canVote(ip: string, now: number): { allowed: boolean; retryAfterSeconds
   return { allowed: true, retryAfterSeconds: 0 };
 }
 
-export function getVoteTotals(): VoteCounts {
-  return { ...voteCounts };
+export function getVoteTotals(artists: string[] = [...POLL_ARTISTS]): VoteCounts {
+  const result: VoteCounts = {};
+  artists.forEach((artist) => {
+    result[artist] = voteCounts[artist] ?? 0;
+  });
+  return result;
 }
 
 function shouldUseKvAdapter() {
@@ -87,7 +91,7 @@ function getWindowMeta(now: number) {
   return { windowMs, windowStart, windowEnd };
 }
 
-function getVoteKey(artist: PollArtist): string {
+function getVoteKey(artist: string): string {
   return `${kvPrefix}:campaign:${campaignId}:votes:${artist}`;
 }
 
@@ -109,8 +113,8 @@ function hydrateFromDisk() {
     const payload = JSON.parse(raw) as { counts?: Record<string, unknown> };
     const persistedCounts = payload.counts ?? {};
 
-    POLL_ARTISTS.forEach((artist) => {
-      const value = Number(persistedCounts[artist]);
+    Object.entries(persistedCounts).forEach(([artist, rawValue]) => {
+      const value = Number(rawValue);
       voteCounts[artist] = Number.isFinite(value) && value >= 0 ? Math.floor(value) : 0;
     });
   } catch (error) {
@@ -136,17 +140,17 @@ function persistResetAuditToDisk(event: Record<string, unknown>) {
   }
 }
 
-async function getVoteTotalsFromKv(): Promise<VoteCounts> {
-  const next = initializeCounts();
+async function getVoteTotalsFromKv(artists: string[] = [...POLL_ARTISTS]): Promise<VoteCounts> {
+  const next = initializeCounts(artists);
   if (!redis) {
     return next;
   }
 
-  const keys = POLL_ARTISTS.map(getVoteKey);
+  const keys = artists.map(getVoteKey);
   if (typeof (redis as any).mget === "function") {
     const values = (await (redis as any).mget(...keys)) as Array<string | null>;
     values.forEach((value, index) => {
-      const artist = POLL_ARTISTS[index];
+      const artist = artists[index];
       const numeric = Number(value);
       next[artist] = Number.isFinite(numeric) && numeric >= 0 ? Math.floor(numeric) : 0;
     });
@@ -156,7 +160,7 @@ async function getVoteTotalsFromKv(): Promise<VoteCounts> {
   await Promise.all(
     keys.map(async (key, index) => {
       const value = Number(await redis.get<number>(key));
-      const artist = POLL_ARTISTS[index];
+      const artist = artists[index];
       next[artist] = Number.isFinite(value) && value >= 0 ? Math.floor(value) : 0;
     }),
   );
@@ -164,12 +168,12 @@ async function getVoteTotalsFromKv(): Promise<VoteCounts> {
   return next;
 }
 
-async function submitVoteToKv(input: { artist: PollArtist; ipAddress: string; now: number }): Promise<
+async function submitVoteToKv(input: { artist: string; ipAddress: string; now: number; artists: string[] }): Promise<
   | { ok: true; totals: VoteCounts }
   | { ok: false; reason: "rate_limited"; retryAfterSeconds: number }
 > {
   if (!redis) {
-    return { ok: true, totals: getVoteTotals() };
+    return { ok: true, totals: getVoteTotals(input.artists) };
   }
 
   const { windowEnd, windowStart } = getWindowMeta(input.now);
@@ -186,20 +190,20 @@ async function submitVoteToKv(input: { artist: PollArtist; ipAddress: string; no
   }
 
   await redis.incr(getVoteKey(input.artist));
-  const totals = await getVoteTotalsFromKv();
+  const totals = await getVoteTotalsFromKv(input.artists);
   return { ok: true, totals };
 }
 
-async function resetVotesInKv(): Promise<VoteCounts> {
+async function resetVotesInKv(artists: string[] = [...POLL_ARTISTS]): Promise<VoteCounts> {
   if (!redis) {
-    return initializeCounts();
+    return initializeCounts(artists);
   }
 
-  await Promise.all(POLL_ARTISTS.map((artist) => redis.del(getVoteKey(artist))));
-  return initializeCounts();
+  await Promise.all(artists.map((artist) => redis.del(getVoteKey(artist))));
+  return initializeCounts(artists);
 }
 
-async function submitVoteToLocal(input: { artist: PollArtist; ipAddress: string; now: number }): Promise<
+async function submitVoteToLocal(input: { artist: string; ipAddress: string; now: number; artists: string[] }): Promise<
   | { ok: true; totals: VoteCounts }
   | { ok: false; reason: "rate_limited"; retryAfterSeconds: number }
 > {
@@ -208,25 +212,25 @@ async function submitVoteToLocal(input: { artist: PollArtist; ipAddress: string;
     return { ok: false, reason: "rate_limited", retryAfterSeconds: gate.retryAfterSeconds };
   }
 
-  voteCounts[input.artist] += 1;
+  voteCounts[input.artist] = (voteCounts[input.artist] ?? 0) + 1;
   persistToDisk();
-  return { ok: true, totals: getVoteTotals() };
+  return { ok: true, totals: getVoteTotals(input.artists) };
 }
 
-function resetVotesInLocal(): VoteCounts {
-  POLL_ARTISTS.forEach((artist) => {
+function resetVotesInLocal(artists: string[] = [...POLL_ARTISTS]): VoteCounts {
+  artists.forEach((artist) => {
     voteCounts[artist] = 0;
   });
   persistToDisk();
-  return getVoteTotals();
+  return getVoteTotals(artists);
 }
 
-export async function getVoteTotalsForApi(): Promise<VoteCounts> {
+export async function getVoteTotalsForApi(artists: string[] = [...POLL_ARTISTS]): Promise<VoteCounts> {
   if (shouldUseKvAdapter()) {
-    return getVoteTotalsFromKv();
+    return getVoteTotalsFromKv(artists);
   }
 
-  return getVoteTotals();
+  return getVoteTotals(artists);
 }
 
 export function getVoteStorageStatusForApi(): {
@@ -271,27 +275,33 @@ export async function recordResetAuditForApi(event: {
   persistResetAuditToDisk(payload);
 }
 
-export async function resetVoteTotalsForApi(): Promise<VoteCounts> {
+export async function resetVoteTotalsForApi(artists: string[] = [...POLL_ARTISTS]): Promise<VoteCounts> {
   if (shouldUseKvAdapter()) {
-    return resetVotesInKv();
+    return resetVotesInKv(artists);
   }
 
-  return resetVotesInLocal();
+  return resetVotesInLocal(artists);
 }
 
-export async function submitVote(input: { artist: string; ipAddress: string; now?: number }): Promise<
+export async function submitVote(input: {
+  artist: string;
+  ipAddress: string;
+  now?: number;
+  validArtists?: string[];
+}): Promise<
   | { ok: true; totals: VoteCounts }
   | { ok: false; reason: "invalid_artist" }
   | { ok: false; reason: "rate_limited"; retryAfterSeconds: number }
 > {
   const now = input.now ?? Date.now();
-  if (!isPollArtist(input.artist)) {
+  const artists = input.validArtists ?? [...POLL_ARTISTS];
+  if (!artists.includes(input.artist)) {
     return { ok: false, reason: "invalid_artist" };
   }
 
   if (shouldUseKvAdapter()) {
-    return submitVoteToKv({ artist: input.artist, ipAddress: input.ipAddress, now });
+    return submitVoteToKv({ artist: input.artist, ipAddress: input.ipAddress, now, artists });
   }
 
-  return submitVoteToLocal({ artist: input.artist, ipAddress: input.ipAddress, now });
+  return submitVoteToLocal({ artist: input.artist, ipAddress: input.ipAddress, now, artists });
 }

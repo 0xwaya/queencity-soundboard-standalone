@@ -5,13 +5,9 @@ import { buildPageMetadata } from "@/lib/seo";
 export const metadata: Metadata = buildPageMetadata({
   title: "About QueenCity Soundboard",
   description:
-    "Learn how QueenCity Soundboard connects Latin artists with Midwest audiences through premium local live music experiences.",
+    "QueenCity Soundboard is Cincinnati and Northern Kentucky's discovery hub for the hottest live events, across every genre.",
   path: "/about",
-  keywords: [
-    "about QueenCity Soundboard",
-    "Latin music community Cincinnati",
-    "live event platform Kentucky",
-  ],
+  keywords: ["about QueenCity Soundboard", "Cincinnati events platform", "Northern Kentucky live events"],
 });
 
 export default async function AboutPage() {
@@ -19,25 +15,25 @@ export default async function AboutPage() {
   const t =
     locale === "es-ve"
       ? {
-          eyebrow: "¿Quiénes somos, pues?",
-          title: "Hecho pa’ rumbear con cultura",
+          eyebrow: "¿Quiénes somos?",
+          title: "El soundboard de la Queen City",
           body:
-            "QueenCity Soundboard es la movida fan-first que conecta talento venezolano y latino con el Midwest. Aquí hay pura experiencia premium, entradas sin rollo y drops de merch que están brutales. ¡Pa’ que vaciles como en Caracas, pero en Kentucky!",
+            "QueenCity Soundboard conecta a la comunidad con los eventos que realmente están sonando en Cincinnati y el norte de Kentucky — música en vivo, comedia y cultura en todos los géneros, curados en un solo lugar.",
           cards: [
-            { title: "Eventos en vivo", body: "Showcases, pop-ups y colaboraciones que vienen con todo el flow criollo. ¡No te lo pierdas, pana!" },
-            { title: "Checkout rápido", body: "Compra desde el cel, facilito y sin dar tantas vueltas. Aquí no hay cola, solo gozo." },
-            { title: "Drops de merch", body: "Capsulitas limitadas con artistas, panas y momentos que quedan pa’ la historia. ¡Corre que vuelan!" },
+            { title: "Descubre eventos", body: "Un calendario cruzado por género, venue y vecindario — no otro copy-paste de un solo promotor." },
+            { title: "Vota y participa", body: "Encuestas de interés que ayudan a traer los shows que la ciudad realmente quiere ver." },
+            { title: "Conecta con promotores", body: "Venues y artistas pueden enviar eventos o asociarse directamente con nosotros." },
           ],
         }
       : {
           eyebrow: "About Queen City",
-          title: "Built for culture-driven nights",
+          title: "The soundboard for the Queen City",
           body:
-            "QueenCity Soundboard is a fan-first event platform connecting Venezuelan and Latin music talent with Midwest audiences through premium live experiences, frictionless ticketing, and curated merch drops.",
+            "QueenCity Soundboard connects the community with the events actually trending across Cincinnati and Northern Kentucky — live music, comedy, and culture in every genre, curated in one place.",
           cards: [
-            { title: "Live Events", body: "Discover upcoming showcases, pop-ups, and collaborations." },
-            { title: "Fast Checkout", body: "Mobile-first ticket flow using proven third-party ticketing providers." },
-            { title: "Merch Drops", body: "Limited capsules built around artists, venues, and event moments." },
+            { title: "Discover events", body: "A calendar cross-checked by genre, venue, and neighborhood — not another single-promoter feed." },
+            { title: "Vote and participate", body: "Interest polls that help bring the shows the city is actually asking for." },
+            { title: "Connect with promoters", body: "Venues and artists can submit events or partner with us directly." },
           ],
         };
 

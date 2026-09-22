@@ -100,6 +100,7 @@ export default async function handler(req: Request) {
           ticket_url: event.ticketUrl,
           // external_url for tracking source
           external_url: event.detailsUrl,
+          source: "sync",
         },
         {
           onConflict: "title,event_date", // Avoid duplicates

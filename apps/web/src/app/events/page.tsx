@@ -2,59 +2,35 @@ import type { Metadata } from "next";
 import EventsViewToggle from "@/components/events-view-toggle";
 import TicketWidget from "@/components/ticket-widget";
 import TrackedLink from "@/components/tracked-link";
-import { getPublishedEvents } from "@/lib/data";
+import { getEventCategories, getPublishedEvents } from "@/lib/data";
 import { getLocale } from "@/lib/i18n";
 import { safeJsonLd } from "@/lib/json-ld";
 import { buildPageMetadata } from "@/lib/seo";
 
-const DEFAULT_VENUE_ADDRESS = {
-  streetAddress: "730 Madison Ave",
-  postalCode: "41011",
-  latitude: 39.08332,
-  longitude: -84.50827,
-};
-
 function getVenueSchemaData(event: { venues?: { name?: string | null; city?: string | null; state?: string | null } | null }) {
-  const venueName = event.venues?.name ?? "Madison Theater";
-  const city = event.venues?.city ?? "Covington";
-  const state = event.venues?.state ?? "KY";
-
   return {
-    venueName,
-    city,
-    state,
-    streetAddress: DEFAULT_VENUE_ADDRESS.streetAddress,
-    postalCode: DEFAULT_VENUE_ADDRESS.postalCode,
-    latitude: DEFAULT_VENUE_ADDRESS.latitude,
-    longitude: DEFAULT_VENUE_ADDRESS.longitude,
+    venueName: event.venues?.name ?? null,
+    city: event.venues?.city ?? null,
+    state: event.venues?.state ?? null,
   };
 }
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Upcoming Latin Concerts and Acoustic Nights",
+  title: "Upcoming Events in Cincinnati & Northern Kentucky",
   description:
-    "Browse upcoming QueenCity Soundboard events, check artist lineups, and secure seats for Latin live music nights in Covington and Cincinnati.",
+    "Browse the hottest upcoming events across Cincinnati and Northern Kentucky — live music, comedy, and culture in every genre.",
   path: "/events",
   keywords: [
-    "upcoming concerts Covington KY",
-    "Latin concerts Cincinnati",
-    "Madison Theater events",
-    "live music calendar Kentucky",
+    "upcoming concerts Cincinnati",
+    "things to do Cincinnati",
+    "Northern Kentucky events",
+    "live music calendar Cincinnati",
   ],
 });
 
 type EventsPageProps = {
-  searchParams?: Promise<{ view?: string }>;
+  searchParams?: Promise<{ view?: string; category?: string }>;
 };
-
-function isProyectoUnoTbdEvent(input?: string | null): boolean {
-  const value = (input ?? "").trim().toLowerCase();
-  return value.includes("proyecto uno") || value.includes("90's hiphop merengue");
-}
-
-function getProyectoUnoHeroImage(input?: string | null): string | null {
-  return isProyectoUnoTbdEvent(input) ? "/proyecto-uno-live.jpg" : null;
-}
 
 export default async function EventsPage({ searchParams }: EventsPageProps) {
   const [resolvedSearchParams, eventsResult, locale] = await Promise.all([
@@ -62,54 +38,47 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
     getPublishedEvents(),
     getLocale(),
   ]);
-  const events = eventsResult.data;
+  const allEvents = eventsResult.data;
   const eventsError = eventsResult.error;
   const selectedView = resolvedSearchParams?.view;
   const view = selectedView === "compact" ? "compact" : "spotlight";
+  const categories = getEventCategories(allEvents);
+  const selectedCategory = resolvedSearchParams?.category;
+  const events = selectedCategory ? allEvents.filter((event) => event.category === selectedCategory) : allEvents;
   const t =
     locale === "es-ve"
       ? {
           eyebrow: "Lineup pa’ la gozadera",
-          title: "After Dark Sessions",
-          subtitle: "Proyecto Uno quiere venir a Cincinnati. Fecha por anunciar, lineup activo y sonido pro.",
-          seriesLabel: "El flow de la serie",
-          seriesTitle: "Madison Theater • Covington, KY",
-          seriesMeta: "Puertas 7:00 PM • Show 8:00 PM (¡Llega temprano pa’ agarrar puesto!)",
-          tags: ["To’ el mundo", "After Dark", "Acústico", "Latino", "VIP"],
+          title: "Eventos en Cincinnati + NKY",
+          subtitle: "Todo lo que está sonando en la ciudad — música en vivo, comedia y cultura, en todos los géneros.",
+          seriesLabel: "Filtro activo",
+          allCategories: "Todos",
           featured: "¡Pega’o!",
-          mock: "Demo, pues",
           live: "En vivo",
           artist: "Artista",
-          venue: "Madison Theater • Covington, KY",
-          publishHint:
-            "Publica eventos en Supabase pa’ quitar estas tarjetas demo. El botón usa NEXT_PUBLIC_TICKETING_WIDGET_URL cuando esté listo. ¡No seas lento!",
+          unavailable: "Los eventos están temporalmente no disponibles. Intenta de nuevo en breve.",
+          noEvents: "No hay eventos publicados todavía. Vuelve pronto o",
+          submitLink: "envía un evento",
           spotlight: "Brilla’o",
           compact: "Compacto",
-          unavailable: "Los eventos están temporalmente no disponibles. Intenta de nuevo en breve.",
-          dateTbd: "Fecha por anunciar",
           cityHubsLabel: "Hubs locales",
           cityHubCincinnati: "Hub Cincinnati",
           cityHubCovington: "Hub Covington",
         }
       : {
           eyebrow: "Live lineup",
-          title: "After Dark Sessions",
-          subtitle: "Proyecto Uno wants to perform in Cincinnati. Date to be announced, lineup active, premium sound.",
-          seriesLabel: "Series Focus",
-          seriesTitle: "Madison Theater • Covington, KY",
-          seriesMeta: "Doors 7:00 PM • Showtime 8:00 PM",
-          tags: ["All", "After Dark", "Acoustic", "Latin", "VIP"],
+          title: "Events in Cincinnati + NKY",
+          subtitle: "Everything trending across the city — live music, comedy, and culture, in every genre.",
+          seriesLabel: "Active filter",
+          allCategories: "All",
           featured: "Featured",
-          mock: "Mock Event",
           live: "Live",
           artist: "Artist",
-          venue: "Madison Theater • Covington, KY",
-          publishHint:
-            "Publish events in Supabase to replace these mock cards. Ticket CTA uses NEXT_PUBLIC_TICKETING_WIDGET_URL when set.",
+          unavailable: "Events are temporarily unavailable. Please try again soon.",
+          noEvents: "No published events yet. Check back soon or",
+          submitLink: "submit an event",
           spotlight: "Spotlight",
           compact: "Compact",
-          unavailable: "Events are temporarily unavailable. Please try again soon.",
-          dateTbd: "Date TBD",
           cityHubsLabel: "City hubs",
           cityHubCincinnati: "Cincinnati Hub",
           cityHubCovington: "Covington Hub",
@@ -119,84 +88,45 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
       ? {
           "@context": "https://schema.org",
           "@type": "ItemList",
-          itemListElement: events.map((event, index) => ({
-            ...(() => {
-              const venue = getVenueSchemaData(event);
-              return {
-            "@type": "ListItem",
-            position: index + 1,
-            item: {
-              "@type": "Event",
-              name: event.title,
-              startDate: event.event_date,
-              eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
-              eventStatus: "https://schema.org/EventScheduled",
-              location: {
-                "@type": "Place",
-                name: venue.venueName,
-                address: {
-                  "@type": "PostalAddress",
-                  streetAddress: venue.streetAddress,
-                  addressLocality: venue.city,
-                  addressRegion: venue.state,
-                  postalCode: venue.postalCode,
-                  addressCountry: "US",
-                },
-                geo: {
-                  "@type": "GeoCoordinates",
-                  latitude: venue.latitude,
-                  longitude: venue.longitude,
-                },
+          itemListElement: events.map((event, index) => {
+            const venue = getVenueSchemaData(event);
+            return {
+              "@type": "ListItem",
+              position: index + 1,
+              item: {
+                "@type": "Event",
+                name: event.title,
+                startDate: event.event_date,
+                eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+                eventStatus: "https://schema.org/EventScheduled",
+                location: venue.venueName
+                  ? {
+                      "@type": "Place",
+                      name: venue.venueName,
+                      address: {
+                        "@type": "PostalAddress",
+                        addressLocality: venue.city,
+                        addressRegion: venue.state,
+                        addressCountry: "US",
+                      },
+                    }
+                  : undefined,
+                image: ["https://queencitysoundboard.com/qcs-logo.png"],
+                description: event.description ?? `${event.title}${venue.venueName ? ` live at ${venue.venueName}.` : "."}`,
+                performer: event.artist_name ? { "@type": "PerformingGroup", name: event.artist_name } : undefined,
+                offers: event.ticket_url
+                  ? {
+                      "@type": "Offer",
+                      url: event.ticket_url,
+                      availability: "https://schema.org/InStock",
+                      priceCurrency: "USD",
+                    }
+                  : undefined,
               },
-              image: ["https://queencitysoundboard.com/qcs-logo.png"],
-              description:
-                event.description ?? `${event.title} live at ${venue.venueName}.`,
-              performer: event.artist_name ? { "@type": "PerformingGroup", name: event.artist_name } : undefined,
-              offers: event.ticket_url && !isProyectoUnoTbdEvent(event.artist_name) && !isProyectoUnoTbdEvent(event.title)
-                ? {
-                    "@type": "Offer",
-                    url: event.ticket_url,
-                    availability: "https://schema.org/InStock",
-                    priceCurrency: "USD",
-                  }
-                : undefined,
-            },
-          };
-            })(),
-          })),
+            };
+          }),
         }
       : null;
-
-  const mockEvents = [
-    {
-      title: "90's Hiphop Merengue: Proyecto Uno Live",
-      artist: "Proyecto Uno",
-      dateLabel: t.dateTbd,
-      description: "Confirmed interest for Cincinnati with the 90's merengue hiphop sound that defined a dance era.",
-      heroImageUrl: "/proyecto-uno-live.jpg",
-    },
-    {
-      title: "Bolero Nights: After Dark Sessions",
-      artist: "Rudy La Escala",
-      dateLabel: "May 30 • 8:00 PM",
-      description: "Romantic boleros, slow-burn grooves, and a close-up theater experience.",
-      heroImageUrl: null,
-    },
-    {
-      title: "Alma Acústica: Intimate Sessions",
-      artist: "Elena Rose",
-      dateLabel: "June 6 • 8:00 PM",
-      description: "Soulful, stripped-down sets with candlelight and premium sound.",
-      heroImageUrl: null,
-    },
-    {
-      title: "Noche Acústica: Leyendas y Velas",
-      artist: "José Feliciano",
-      dateLabel: "May 23 • 8:00 PM",
-      description: "Legendary songs, warm strings, and a velvet-lit night of classics.",
-      heroImageUrl: null,
-    },
-  ];
 
   return (
     <>
@@ -216,20 +146,34 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
             </h1>
             <p className="mt-2 max-w-2xl text-sm text-slate-300 md:text-base">{t.subtitle}</p>
           </div>
-          <div className="rounded-2xl border border-white/10 bg-[#0e1732] px-5 py-4 text-sm text-slate-300">
-            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-fuchsia-300/80">{t.seriesLabel}</p>
-            <p className="mt-2 text-base font-semibold text-white">{t.seriesTitle}</p>
-            <p className="mt-1 text-xs text-slate-400">{t.seriesMeta}</p>
-          </div>
         </div>
         <div className="mt-6 flex flex-wrap items-center gap-2">
-          {t.tags.map((label) => (
-            <span
-              key={label}
-              className="rounded-full border border-fuchsia-400/30 bg-fuchsia-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-fuchsia-200"
+          <TrackedLink
+            href="/events"
+            event="cta_click"
+            label="events_filter_all"
+            className={`rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] ${
+              !selectedCategory
+                ? "border-fuchsia-400/60 bg-fuchsia-500/20 text-fuchsia-200"
+                : "border-fuchsia-400/30 bg-fuchsia-500/10 text-fuchsia-200 hover:bg-fuchsia-500/15"
+            }`}
+          >
+            {t.allCategories}
+          </TrackedLink>
+          {categories.map((category) => (
+            <TrackedLink
+              key={category}
+              href={`/events?category=${encodeURIComponent(category)}`}
+              event="cta_click"
+              label={`events_filter_${category}`}
+              className={`rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] ${
+                selectedCategory === category
+                  ? "border-fuchsia-400/60 bg-fuchsia-500/20 text-fuchsia-200"
+                  : "border-fuchsia-400/30 bg-fuchsia-500/10 text-fuchsia-200 hover:bg-fuchsia-500/15"
+              }`}
             >
-              {label}
-            </span>
+              {category}
+            </TrackedLink>
           ))}
           <EventsViewToggle view={view} labels={{ spotlight: t.spotlight, compact: t.compact }} />
         </div>
@@ -259,83 +203,31 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
           {t.unavailable}
         </div>
       ) : events.length === 0 ? (
-        <div className={`grid gap-5 ${view === "compact" ? "md:grid-cols-1" : "md:grid-cols-2"}`}>
-          {mockEvents.map((event, index) => {
-            const featured = index === 0;
-            const salesDisabled = isProyectoUnoTbdEvent(event.artist) || isProyectoUnoTbdEvent(event.title);
-            const heroImageUrl = event.heroImageUrl;
-            return (
-              <article
-                key={event.title}
-                className={`relative overflow-hidden rounded-2xl border bg-[#0b1228] p-5 transition hover:-translate-y-0.5 hover:shadow-[0_18px_40px_rgba(15,23,42,0.35)] ${
-                  featured
-                    ? "border-fuchsia-400/60 shadow-[0_0_35px_rgba(217,70,239,0.18)]"
-                    : "border-white/10 hover:border-fuchsia-400/30"
-                }`}
-              >
-                {heroImageUrl ? (
-                  <>
-                    <div
-                      className="absolute inset-0 bg-cover bg-center opacity-45 [filter:contrast(1.18)_saturate(1.12)_brightness(1.03)]"
-                      style={{ backgroundImage: `url('${heroImageUrl}')` }}
-                    />
-                    <div className="absolute inset-0 bg-linear-to-r from-[#08111f] via-[#08111f]/82 to-[#08111f]/45" />
-                  </>
-                ) : null}
-                <div className="relative z-10 space-y-4">
-                <div className="flex items-start justify-between gap-3">
-                  <h2 className="text-xl font-bold tracking-tight text-slate-100">{event.title}</h2>
-                  <span
-                    className={`rounded-full border px-2 py-1 text-[10px] font-bold uppercase tracking-wider ${
-                      featured ? "border-fuchsia-300/60 text-fuchsia-200" : "border-white/20 text-slate-300"
-                    }`}
-                  >
-                    {featured ? t.featured : t.mock}
-                  </span>
-                </div>
-                <p className="text-sm text-slate-300">{event.dateLabel}</p>
-                <p className="text-sm text-slate-400">{t.venue}</p>
-                <div className="inline-flex items-center gap-2 rounded-full border border-fuchsia-400/40 bg-fuchsia-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-fuchsia-200">
-                  <span className="text-[10px] font-bold text-fuchsia-300/80">{t.artist}</span>
-                  <span className="text-sm font-semibold normal-case tracking-normal text-white">{event.artist}</span>
-                </div>
-                <p className="text-sm text-slate-300">{event.description}</p>
-                <TicketWidget
-                  eventTitle={event.title}
-                  locale={locale}
-                  salesDisabled={salesDisabled}
-                  salesDisabledReason={salesDisabled ? "date-tbd" : "paused"}
-                />
-                </div>
-              </article>
-            );
-          })}
-          <div className="rounded-2xl border border-dashed border-white/10 bg-[#0b1228] p-6 text-sm text-slate-300">
-            {t.publishHint}
-            <code className="mx-1 rounded bg-white/10 px-1">NEXT_PUBLIC_TICKETING_WIDGET_URL</code>.
-          </div>
+        <div className="rounded-2xl border border-dashed border-white/10 bg-[#0b1228] p-6 text-sm text-slate-300">
+          {t.noEvents}{" "}
+          <TrackedLink href="/partners" event="cta_click" label="events_empty_submit" className="text-fuchsia-300 underline">
+            {t.submitLink}
+          </TrackedLink>
+          .
         </div>
       ) : (
         <div className={`grid gap-5 ${view === "compact" ? "md:grid-cols-1" : "md:grid-cols-2"}`}>
           {events.map((event, index) => {
             const featured = index === 0;
-            const dateTbd = isProyectoUnoTbdEvent(event.artist_name) || isProyectoUnoTbdEvent(event.title);
-            const salesDisabled = dateTbd;
-            const heroImageUrl = event.hero_image_url ?? getProyectoUnoHeroImage(event.artist_name) ?? getProyectoUnoHeroImage(event.title);
             return (
             <article
               key={event.id}
               className={`relative overflow-hidden rounded-2xl border bg-[#0b1228] p-5 transition hover:-translate-y-0.5 hover:shadow-[0_18px_40px_rgba(15,23,42,0.35)] ${
-                featured
+                event.is_promoted || featured
                   ? "border-fuchsia-400/60 shadow-[0_0_35px_rgba(217,70,239,0.18)]"
                   : "border-white/10 hover:border-fuchsia-400/30"
               }`}
             >
-              {heroImageUrl ? (
+              {event.hero_image_url ? (
                 <>
                   <div
                     className="absolute inset-0 bg-cover bg-center opacity-45 [filter:contrast(1.18)_saturate(1.12)_brightness(1.03)]"
-                    style={{ backgroundImage: `url('${heroImageUrl}')` }}
+                    style={{ backgroundImage: `url('${event.hero_image_url}')` }}
                   />
                   <div className="absolute inset-0 bg-linear-to-r from-[#08111f] via-[#08111f]/82 to-[#08111f]/45" />
                 </>
@@ -345,21 +237,24 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
                 <h2 className="text-xl font-bold tracking-tight text-slate-100">{event.title}</h2>
                 <span
                   className={`rounded-full border px-2 py-1 text-[10px] font-bold uppercase tracking-wider ${
-                    featured ? "border-fuchsia-300/60 text-fuchsia-200" : "border-white/20 text-slate-300"
+                    event.is_promoted || featured ? "border-fuchsia-300/60 text-fuchsia-200" : "border-white/20 text-slate-300"
                   }`}
                 >
-                  {featured ? t.featured : t.live}
+                  {event.is_promoted ? "Promoted" : featured ? t.featured : t.live}
                 </span>
               </div>
 
-              <p className="text-sm text-slate-300">
-                {dateTbd ? t.dateTbd : new Date(event.event_date).toLocaleString()}
-              </p>
+              <p className="text-sm text-slate-300">{new Date(event.event_date).toLocaleString()}</p>
               {event.venues?.name ? (
                 <p className="text-sm text-slate-400">
                   {event.venues.name}
                   {event.venues.city ? ` • ${event.venues.city}${event.venues.state ? `, ${event.venues.state}` : ""}` : ""}
                 </p>
+              ) : null}
+              {event.category ? (
+                <span className="inline-flex w-fit rounded-full border border-cyan-300/30 bg-cyan-500/10 px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-cyan-200">
+                  {event.category}
+                </span>
               ) : null}
               {event.artist_name ? (
                 <div className="inline-flex items-center gap-2 rounded-full border border-fuchsia-400/40 bg-fuchsia-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-fuchsia-200">
@@ -372,8 +267,7 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
                 eventTitle={event.title}
                 eventTicketUrl={event.ticket_url}
                 locale={locale}
-                salesDisabled={salesDisabled}
-                salesDisabledReason={dateTbd ? "date-tbd" : "paused"}
+                salesDisabled={false}
               />
               </div>
             </article>
@@ -385,3 +279,4 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
     </>
   );
 }
+

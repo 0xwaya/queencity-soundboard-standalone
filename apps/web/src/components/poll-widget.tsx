@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { POLL_ARTISTS } from "@/lib/poll-artists";
 import type { Locale } from "@/lib/i18n";
 
 type VoteCounts = Record<string, number>;
@@ -13,6 +12,7 @@ type PollWidgetProps = {
 
 export default function PollWidget({ locale, variant = "full" }: PollWidgetProps) {
   const [counts, setCounts] = useState<VoteCounts>({});
+  const [artists, setArtists] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -52,18 +52,16 @@ export default function PollWidget({ locale, variant = "full" }: PollWidgetProps
   const applyTotals = useCallback((totals?: Record<string, number>) => {
     if (!totals) return;
 
+    setArtists(Object.keys(totals));
     const nextCounts: VoteCounts = {};
-    POLL_ARTISTS.forEach((artist) => {
-      const value = Number(totals[artist] ?? 0);
-      nextCounts[artist] = Number.isFinite(value) ? value : 0;
+    Object.entries(totals).forEach(([artist, value]) => {
+      const numeric = Number(value);
+      nextCounts[artist] = Number.isFinite(numeric) ? numeric : 0;
     });
     setCounts(nextCounts);
   }, []);
 
   const loadVotes = useCallback(async () => {
-    const nextCounts: VoteCounts = {};
-    POLL_ARTISTS.forEach((artist) => (nextCounts[artist] = 0));
-
     try {
       const response = await fetch("/api/votes/totals", {
         method: "GET",
@@ -73,16 +71,17 @@ export default function PollWidget({ locale, variant = "full" }: PollWidgetProps
 
       const payload = (await response.json()) as { totals?: Record<string, number> };
       const totals = payload.totals ?? {};
-      POLL_ARTISTS.forEach((artist) => {
-        const value = Number(totals[artist] ?? 0);
-        nextCounts[artist] = Number.isFinite(value) ? value : 0;
+      setArtists(Object.keys(totals));
+      const nextCounts: VoteCounts = {};
+      Object.entries(totals).forEach(([artist, value]) => {
+        const numeric = Number(value);
+        nextCounts[artist] = Number.isFinite(numeric) ? numeric : 0;
       });
 
       setCounts(nextCounts);
       setError(null);
     } catch (err) {
       console.error("[PollWidget] Failed to load vote totals", err);
-      setCounts(nextCounts);
       setError(copy.loadError);
     }
   }, [copy.loadError]);
@@ -159,7 +158,7 @@ export default function PollWidget({ locale, variant = "full" }: PollWidgetProps
       </div>
 
       <div className={`${isCompact ? "mt-4" : "mt-5"} grid gap-2.5`}>
-        {POLL_ARTISTS.map((artist) => {
+        {artists.map((artist) => {
           const count = counts[artist] ?? 0;
           const pct = totalVotes > 0 ? Math.round((count / totalVotes) * 100) : 0;
 

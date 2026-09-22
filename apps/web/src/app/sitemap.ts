@@ -18,12 +18,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.95,
     },
     {
-      url: `${SEO.baseUrl}/madison-theater`,
-      lastModified,
-      changeFrequency: "weekly",
-      priority: 0.9,
-    },
-    {
       url: `${SEO.baseUrl}/cincinnati`,
       lastModified,
       changeFrequency: "weekly",
@@ -34,6 +28,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified,
       changeFrequency: "weekly",
       priority: 0.88,
+    },
+    {
+      url: `${SEO.baseUrl}/partners`,
+      lastModified,
+      changeFrequency: "monthly",
+      priority: 0.7,
     },
     {
       url: `${SEO.baseUrl}/merch`,
